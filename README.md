@@ -6,3 +6,5 @@ Roles
 -   Developer
 -   User
 -   Administrator
+
+Pakai template projects
