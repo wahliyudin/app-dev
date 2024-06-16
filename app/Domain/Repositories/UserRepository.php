@@ -19,4 +19,9 @@ class UserRepository
             'password' => isset($data['password']) ? $data['password'] : null,
         ]);
     }
+
+    public function firstOrFail($nik)
+    {
+        return User::query()->with(['permissions:id'])->where('nik', $nik)->firstOrFail();
+    }
 }

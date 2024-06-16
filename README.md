@@ -8,3 +8,6 @@ Roles
 -   Administrator
 
 Pakai template projects
+
+-   Permission
+-   Approval
