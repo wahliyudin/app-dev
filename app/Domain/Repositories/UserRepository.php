@@ -22,6 +22,6 @@ class UserRepository
 
     public function firstOrFail($nik)
     {
-        return User::query()->with(['permissions:id'])->where('nik', $nik)->firstOrFail();
+        return User::query()->with(['permissions:id', 'roles:id'])->where('nik', $nik)->firstOrFail();
     }
 }

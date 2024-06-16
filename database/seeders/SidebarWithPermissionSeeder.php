@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 use App\Models\Permission;
+use App\Models\Role;
 use App\Models\Sidebar;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
@@ -17,12 +18,24 @@ class SidebarWithPermissionSeeder extends Seeder
      */
     public function run(): void
     {
+        $roles = config('sidebar-with-permission.roles');
         $modules = config('sidebar-with-permission.sidebars');
         $mapPermission = collect(config('sidebar-with-permission.permissions_map'));
 
+        foreach ($roles as $role) {
+            $name = str($role)->lower()->snake()->value();
+            Role::query()->updateOrCreate([
+                'name' => $name,
+            ], [
+                'name' => $name,
+                'display_name' => str($role)->ucfirst()->value(),
+            ]);
+        }
         foreach ($modules as $module) {
             $parentName = str($module['title'])->lower()->value();
-            $parent = Sidebar::query()->create([
+            $parent = Sidebar::query()->updateOrCreate([
+                'name' => str($parentName)->snake()->value(),
+            ], [
                 'title' => isset($module['label']) ? $module['label'] : $module['title'],
                 'name' => str($parentName)->snake()->value(),
             ]);
@@ -37,7 +50,10 @@ class SidebarWithPermissionSeeder extends Seeder
                     'name' => str($childName)->snake()->value(),
                     'parent_id' => $parent->getKey(),
                 ];
-                $sidebar = Sidebar::query()->updateOrCreate($data, $data);
+                $sidebar = Sidebar::query()->updateOrCreate([
+                    'name' => str($childName)->snake()->value(),
+                    'parent_id' => $parent->getKey(),
+                ], $data);
                 if (isset($child['permissions'])) {
                     $result = $this->checkPermission($child['permissions'], $mapPermission, $childName, $parentName);
                     $sidebar->permissions()->sync($result);

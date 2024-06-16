@@ -34,14 +34,19 @@ class AccessPermissionController extends Controller
     public function edit($id)
     {
         $user = $this->userRepository->firstOrFail($id);
-        $sidebars = $this->accessPermissionService->getSidebarAlreadyBuild($user);
-        return view('setting.access-permission.edit', compact('user', 'sidebars'));
+        return view('setting.access-permission.edit', [
+            'user' => $user,
+            'sidebars' => $this->accessPermissionService->getSidebarAlreadyBuild($user),
+            'roles' => $this->accessPermissionService->roles($user),
+        ]);
     }
 
     public function update(Request $request, User $user)
     {
         try {
+            $user->roles()->sync($request->roles);
             $user->permissions()->sync($request->permissions);
+            Cache::forget("laratrust_roles_for_users_{$user->id}");
             Cache::forget("laratrust_permissions_for_users_{$user->id}");
             return to_route('settings.access-permission.index')
                 ->with('success', 'Berhasil di update');

@@ -30,9 +30,20 @@
             <form id="formInput" method="POST" action="{{ route('settings.access-permission.update', $user->getKey()) }}">
                 @method('PUT')
                 @csrf
-                <div class="form-check mb-2 ms-3">
-                    <input class="form-check-input all" type="checkbox" name="all" id="all" />
-                    <label class="form-check-label" for="all">Select All</label>
+                <div class="d-flex align-items-center justify-content-between mb-2 ms-3">
+                    <div class="form-check">
+                        <input class="form-check-input all" type="checkbox" name="all" id="all" />
+                        <label class="form-check-label" for="all">Select All</label>
+                    </div>
+                    <div class="d-flex align-items-center gap-4">
+                        @foreach ($roles as $role)
+                            <div class="form-check">
+                                <input class="form-check-input" @checked($role->assigned) type="checkbox" name="roles[]"
+                                    value="{{ $role->getKey() }}" id="{{ $role->name }}" />
+                                <label class="form-check-label" for="{{ $role->name }}">{{ $role->display_name }}</label>
+                            </div>
+                        @endforeach
+                    </div>
                 </div>
                 <table id="momTable" width="100%" cellpadding="0" cellspacing="0" border="0"
                     class="table table-striped table-bordered table-hover">

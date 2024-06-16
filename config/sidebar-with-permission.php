@@ -25,6 +25,11 @@ return [
             ]
         ],
     ],
+    'roles' => [
+        'user',
+        'administrator',
+        'developer',
+    ],
     'permissions_map' => [
         'c' => 'create',
         'r' => 'read',

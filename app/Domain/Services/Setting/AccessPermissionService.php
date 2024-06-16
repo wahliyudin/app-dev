@@ -3,6 +3,7 @@
 namespace App\Domain\Services\Setting;
 
 use App\Models\HCIS\Employee;
+use App\Models\Role;
 use App\Models\Sidebar;
 use App\Models\User;
 
@@ -77,5 +78,16 @@ class AccessPermissionService
             }
         }
         return $sidebar;
+    }
+
+    public function roles(User $user)
+    {
+        $roles = Role::query()->select(['id', 'name', 'display_name'])->get();
+        foreach ($roles as $role) {
+            $role->assigned = $user->roles
+                ->pluck('id')
+                ->contains($role->id);
+        }
+        return $roles;
     }
 }
