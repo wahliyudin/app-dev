@@ -27,7 +27,7 @@ class AccessPermissionController extends Controller
     {
         $data = $this->accessPermissionService->datatable();
         return datatables()->of($data)
-            ->addColumn('is_setting', hasPermission('access_permission_update'))
+            ->addColumn('is_setting', hasPermission('setting_access_permission_update'))
             ->make();
     }
 

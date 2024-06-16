@@ -49,7 +49,7 @@
                     <!--end:Menu link-->
                 </div>
                 <!--end:Menu item-->
-                @permission('access_permission_read')
+                @permission('setting_access_permission_read')
                     <div data-kt-menu-trigger="click" class="menu-item menu-accordion">
                         <span class="menu-link">
                             <span class="menu-icon">
@@ -62,8 +62,19 @@
                             <span class="menu-arrow"></span>
                         </span>
                         <div
-                            class="menu-sub menu-sub-accordion {{ request()->routeIs('settings.access-permission.index') ? 'hover show' : '' }}">
-                            @permission('access_permission_read')
+                            class="menu-sub menu-sub-accordion {{ request()->routeIs('settings.approval.index', 'settings.access-permission.index') ? 'hover show' : '' }}">
+                            @permission('setting_approval_read')
+                                <div class="menu-item">
+                                    <a class="menu-link {{ request()->routeIs('settings.approval.index') ? 'active' : '' }}"
+                                        href="{{ route('settings.approval.index') }}">
+                                        <span class="menu-bullet">
+                                            <span class="bullet bullet-dot"></span>
+                                        </span>
+                                        <span class="menu-title">Approval</span>
+                                    </a>
+                                </div>
+                            @endpermission
+                            @permission('setting_access_permission_read')
                                 <div class="menu-item">
                                     <a class="menu-link {{ request()->routeIs('settings.access-permission.index') ? 'active' : '' }}"
                                         href="{{ route('settings.access-permission.index') }}">
