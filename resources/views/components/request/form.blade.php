@@ -62,6 +62,10 @@
                             @else
                                 <select class="form-select form-select-sm" data-control="select2" data-tags="true"
                                     name="application_name" data-placeholder="Select an option">
+                                    @foreach ($apps as $app)
+                                        <option @selected($app->id == $requestModel?->application_id) value="{{ $app->id }}">
+                                            {{ $app->display_name }}</option>
+                                    @endforeach
                                 </select>
                             @endif
                         </td>
@@ -82,7 +86,11 @@
                                 {{ $formDto->pic_user }}
                             @else
                                 <select class="form-select form-select-sm" name="pic_user">
-
+                                    @if ($requestModel)
+                                        <option selected value="{{ $requestModel?->pic->nik }}">
+                                            {{ $requestModel?->pic?->nik . ' - ' . $requestModel?->pic?->nama_karyawan }}
+                                        </option>
+                                    @endif
                                 </select>
                             @endif
                         </td>
@@ -97,7 +105,8 @@
                                 {{ $formDto->estimated_project }}
                             @else
                                 <input class="form-control form-control-sm flatpickr-input"
-                                    placeholder="Estimated Project" name="estimated_project" />
+                                    placeholder="Estimated Project" name="estimated_project"
+                                    value="{{ $requestModel?->estimated_project }}" />
                             @endif
                         </td>
                     </tr>
@@ -111,7 +120,7 @@
                                 {{ $formDto->email }}
                             @else
                                 <input class="form-control form-control-transparent form-control-sm" placeholder="Email"
-                                    type="email" readonly name="email" />
+                                    type="email" readonly name="email" value="{{ $formDto->email }}" />
                             @endif
                         </td>
                     </tr>
@@ -125,7 +134,7 @@
                                 {{ $formDto->date }}
                             @else
                                 <input class="form-control form-control-sm flatpickr-input" placeholder="Date"
-                                    name="date" />
+                                    name="date" value="{{ $requestModel?->date }}" />
                             @endif
                         </td>
                     </tr>
@@ -146,7 +155,7 @@
                     <td>
                         <input class="form-check-input custom-check custom-check-rectangle"
                             style="width: 18px; height: 18px;" type="radio" value="{{ $typeRequest->value }}"
-                            name="type_request">
+                            name="type_request" @checked($requestModel?->type_request == $typeRequest)>
                     </td>
                     <td>{{ $typeRequest->label() }}</td>
                 </tr>
@@ -169,7 +178,8 @@
                                     <td>
                                         <input class="form-check-input custom-check custom-check-rectangle"
                                             style="width: 18px; height: 18px;" type="radio"
-                                            value="{{ $typeBudget->value }}" name="type_budget">
+                                            value="{{ $typeBudget->value }}" name="type_budget"
+                                            @checked($requestModel?->type_budget == $typeBudget)>
                                     </td>
                                     <td>{{ $typeBudget->label() }}</td>
                                 </tr>
@@ -183,7 +193,7 @@
     <hr>
     <div class="form-group">
         <label for="description" class="form-label">Detail Description of the Requested Service</label>
-        <textarea name="description" id="description" class="form-control"></textarea>
+        <textarea name="description" id="description" class="form-control">{{ $requestModel?->description }}</textarea>
     </div>
     <hr>
     <div class="form-group">

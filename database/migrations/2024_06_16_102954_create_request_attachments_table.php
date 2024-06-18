@@ -16,6 +16,7 @@ return new class extends Migration
             $table->foreignId('request_id');
             $table->string('name');
             $table->string('path');
+            $table->string('original_name');
             $table->timestamps();
         });
     }

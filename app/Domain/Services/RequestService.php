@@ -16,16 +16,31 @@ class RequestService
             ->get();
     }
 
+    public function findOrFail($id)
+    {
+        return Request::query()->with([
+            'requestor' => function ($query) {
+                $query->select(['nik', 'nama_karyawan', 'position_id'])
+                    ->with(['position:position_id,dept_id']);
+            },
+            'application:id,name,display_name',
+            'pic:nik,nama_karyawan',
+        ])->findOrFail($id);
+    }
+
     public function store($request)
     {
         DB::transaction(function () use ($request) {
             $application = RequestApplication::query()
-                ->where('id', is_integer($request->application_name) ? $request->application_name : null)
-                ->firstOrCreate([
+                ->where('id', is_numeric($request->application_name) ? $request->application_name : null)
+                ->first();
+            if (!$application) {
+                $application = RequestApplication::query()->create([
                     'department_id' => $request->department_id,
                     'name' => $request->application_name,
                     'display_name' => str($request->application_name)->ucfirst()->toString(),
                 ]);
+            }
             $requestModel = Request::query()->updateOrCreate([
                 'id' => $request->key,
             ], [
@@ -44,16 +59,18 @@ class RequestService
             ]);
 
             if ($request->has('attachments')) {
-                foreach ($request->attachments as $fileName) {
+                foreach ($request->attachments as $attachment) {
                     $requestModel->attachments()->updateOrCreate(
-                        ['name' => $fileName],
-                        ['name' => $fileName, 'path' => 'storage/requests/' . $fileName]
+                        ['name' => $attachment['name']],
+                        ['name' => $attachment['name'], 'original_name' => $attachment['original_name'], 'path' => 'storage/requests/' . $attachment['name']]
                     );
-                    Storage::disk('public')->move('requests/temp/' . $fileName, 'requests/' . $fileName);
+                    if (Storage::disk('public')->exists('requests/temp/' . $attachment['name'])) {
+                        Storage::disk('public')->move('requests/temp/' . $attachment['name'], 'requests/' . $attachment['name']);
+                    }
                 }
                 $existingFiles = $requestModel->attachments->pluck('name')->toArray();
                 foreach ($existingFiles as $fileName) {
-                    if (!in_array($fileName, $request->attachments)) {
+                    if (!in_array($fileName, array_column($request->attachments, 'name'))) {
                         Storage::disk('public')->delete('requests/' . $fileName);
                         $requestModel->attachments()->where('name', $fileName)->delete();
                     }
@@ -80,5 +97,13 @@ class RequestService
         }
 
         return $nextCode;
+    }
+
+    public function appByDept($dept_id)
+    {
+        return RequestApplication::query()
+            ->where('department_id', $dept_id)
+            ->select(['id', 'name', 'display_name'])
+            ->get();
     }
 }

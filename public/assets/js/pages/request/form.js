@@ -39,7 +39,7 @@ $(function () {
             cache: true
         },
         templateSelection: function (data) {
-            if (data.id) {
+            if (data.id && data['data-email']) {
                 $('input[name="email"]').val(data['data-email']);
             }
             return data.text;
@@ -70,12 +70,19 @@ $(function () {
                     processData: false,
                     success: function (data) {
                         data.forEach(item => {
-                            _this.options.addedfile.call(_this, item);
+                            const file = {
+                                name: item.original_name,
+                                size: item.size,
+                                path: item.path,
+                                newname: item.name,
+                            };
+                            _this.files.push(file);
+                            _this.options.addedfile.call(_this, file);
                             const extension = item.name.split('.').pop().toLowerCase();
                             if (['jpg', 'jpeg', 'png', 'gif', 'bmp'].includes(extension)) {
-                                _this.options.thumbnail.call(_this, item, '/storage/' + item.path);
+                                _this.options.thumbnail.call(_this, file, item.path);
                             }
-                            item.previewElement.classList.add('dz-complete');
+                            file.previewElement.classList.add('dz-complete');
                         });
                     },
                     error: function (jqXHR) {
@@ -88,6 +95,7 @@ $(function () {
                 const responseData = response.find(item => item.oldname === file.name);
                 if (responseData) {
                     Object.defineProperty(file, 'path', { value: responseData.path });
+                    Object.defineProperty(file, 'newname', { value: responseData.newname });
                 }
             });
             this.on("removedfile", function (file) {
@@ -124,7 +132,8 @@ $(function () {
             formData.append(field.name, field.value);
         });
         $.each(attachments.files, function (i, file) {
-            formData.append('attachments[]', file.name);
+            formData.append(`attachments[${i}][original_name]`, file.name);
+            formData.append(`attachments[${i}][name]`, file.newname);
         });
         const _this = this;
         $(_this).attr("data-kt-indicator", "on");

@@ -13,5 +13,6 @@ class RequestAttachment extends Model
         'request_id',
         'name',
         'path',
+        'original_name',
     ];
 }

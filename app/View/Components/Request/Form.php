@@ -26,9 +26,11 @@ class Form extends Component
     {
         /** @var RequestService $requestService */
         $requestService = app(RequestService::class);
+        $formDto = $this->requestModel ? FormDto::fromModel($this->requestModel) : FormDto::fromDefault();
         return view('components.request.form', [
-            'formDto' => $this->requestModel ? FormDto::fromModel($this->requestModel) : FormDto::fromDefault(),
+            'formDto' => $formDto,
             'code' => $this->requestModel ? $this->requestModel->code : $requestService->generateCode(),
+            'apps' => $requestService->appByDept($formDto->department_id)
         ]);
     }
 }

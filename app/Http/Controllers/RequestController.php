@@ -48,6 +48,8 @@ class RequestController extends Controller
             ->editColumn('status', function ($data) {
                 return $data->status->badge();
             })
+            ->addColumn('is_edit', fn ($data) => hasPermission('request_update'))
+            ->addColumn('is_delete', fn ($data) => hasPermission('request_delete'))
             ->rawColumns(['action', 'status'])
             ->make();
     }
@@ -67,6 +69,13 @@ class RequestController extends Controller
         } catch (\Throwable $th) {
             throw $th;
         }
+    }
+
+    public function edit($key)
+    {
+        return view('request.edit', [
+            'request' => $this->requestService->findOrFail($key),
+        ]);
     }
 
     public function upload(Request $request)
@@ -96,10 +105,11 @@ class RequestController extends Controller
     public function remove(Request $request)
     {
         try {
-            if (!Storage::disk('public')->exists($request->file)) {
+            $file = str_replace('storage/', '', $request->file);
+            if (!Storage::disk('public')->exists($file)) {
                 throw ValidationException::withMessages(['File not found']);
             }
-            Storage::disk('public')->delete($request->file);
+            Storage::disk('public')->delete($file);
             return response()->json();
         } catch (\Throwable $th) {
             throw $th;
@@ -109,16 +119,14 @@ class RequestController extends Controller
     public function files($key)
     {
         $attachments = RequestAttachment::where('request_id', $key)->get();
-        $files = array_map(function ($attachment) {
-            return $attachment->path;
-        }, $attachments->toArray());
-        $result = array_map(function ($file) {
+        $result = array_map(function ($attachment) {
             return [
-                'name' => basename($file),
-                'size' => Storage::disk('public')->size($file),
-                'path' => $file,
+                'name' => $attachment['name'],
+                'original_name' => $attachment['original_name'],
+                'size' => Storage::disk('public')->size(str_replace('storage/', '', $attachment['path'])),
+                'path' => '/' . $attachment['path'],
             ];
-        }, $files);
+        }, $attachments->toArray());
         return response()->json($result);
     }
 

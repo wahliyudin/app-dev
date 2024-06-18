@@ -54,13 +54,13 @@ $(function () {
                 name: 'status',
                 data: 'status',
             },
-            // {
-            //     name: 'action',
-            //     data: null,
-            //     render: action,
-            //     orderable: false,
-            //     searchable: false
-            // },
+            {
+                name: 'action',
+                data: null,
+                render: action,
+                orderable: false,
+                searchable: false
+            },
         ],
     });
 
