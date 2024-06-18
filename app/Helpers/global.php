@@ -1,6 +1,8 @@
 <?php
 
+use App\Models\HCIS\Employee;
 use App\Models\User;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\File;
 
 if (!function_exists('authUser')) {
@@ -27,5 +29,28 @@ if (!function_exists('pathWeb')) {
             $web[] = $file->getPathname();
         }
         return $web;
+    }
+}
+
+if (!function_exists('carbon')) {
+    function carbon($date)
+    {
+        return new Carbon($date);
+    }
+}
+
+if (!function_exists('userAuth')) {
+    function userAuth(): ?User
+    {
+        return auth()->user();
+    }
+}
+
+if (!function_exists('employeeByNIK')) {
+    function employeeByNIK($nik = null): ?Employee
+    {
+        return Employee::where('nik', $nik ?? userAuth()->nik)
+            ->with(['position.divisi', 'position.project', 'position.department'])
+            ->first();
     }
 }

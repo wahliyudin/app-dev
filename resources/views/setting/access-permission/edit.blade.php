@@ -59,8 +59,9 @@
                     <tbody>
                         @foreach ($sidebars as $sidebar)
                             @php
+                                $sidebarChildren = isset($sidebar['children']) ? $sidebar['children'] : [];
                                 $total = 0;
-                                foreach ($sidebar['children'] as $child) {
+                                foreach ($sidebarChildren as $child) {
                                     $total =
                                         $total +
                                         collect($child['permissions'])
@@ -68,48 +69,64 @@
                                             ->sum();
                                 }
                             @endphp
-                            <tr>
-                                <td rowspan="{{ count($sidebar['children']) + 1 }}">
-                                    <div class="form-check">
+                            @if (count($sidebarChildren) > 0)
+                                <tr>
+                                    <td rowspan="{{ count($sidebarChildren) + 1 }}">
                                         <input class="form-check-input checkall_modul"
-                                            {{ $total >= count($sidebar['children']) ? 'checked' : '' }} type="checkbox"
-                                            value="{{ $sidebar['name'] }}" name="menu" id="menu{{ $sidebar['name'] }}" />
-                                        <label class="form-check-label" for="menu{{ $sidebar['name'] }}">
-                                            {{ $sidebar['title'] }}
-                                        </label>
-                                    </div>
-                                </td>
-                            </tr>
-                            @foreach ($sidebar['children'] as $children)
+                                            {{ $total >= count($sidebarChildren) ? 'checked' : '' }} type="checkbox"
+                                            value="{{ $sidebar['name'] }}" name="menu">
+                                        {{ $sidebar['title'] }}
+                                    </td>
+                                </tr>
+                            @endif
+                            @forelse ($sidebarChildren as $children)
                                 <tr>
                                     <td>
                                         <div class="form-check">
                                             <input class="form-check-input checkall_fitur {{ $sidebar['name'] }}"
+                                                type="checkbox" value="{{ $sidebar['name'] }}"
                                                 {{ collect($children['permissions'])->pluck('assigned')->sum() > 0? 'checked': '' }}
-                                                type="checkbox" value="{{ $sidebar['name'] }}" name="modul[]"
-                                                id="modul[]{{ $children['title'] }}" />
-                                            <label class="form-check-label" for="modul[]{{ $children['title'] }}">
-                                                {{ $children['title'] }}
-                                            </label>
+                                                name="modul[]">
+                                            {{ $children['title'] }}
                                         </div>
                                     </td>
                                     @foreach ($children['permissions'] as $permission)
                                         <td>
                                             <div class="form-check">
                                                 <input class="form-check-input fitur sub_{{ $sidebar['name'] }}"
-                                                    {{ $permission->assigned ? 'checked' : '' }}
                                                     data-modulid="{{ $sidebar['name'] }}" type="checkbox"
-                                                    value="{{ $permission->getKey() }}" name="permissions[]"
-                                                    id="permissions[]{{ $permission->getKey() . $permission->display }}" />
-                                                <label class="form-check-label"
-                                                    for="permissions[]{{ $permission->getKey() . $permission->display }}">
-                                                    {{ $permission->display }}
-                                                </label>
+                                                    value="{{ $permission->getKey() }}"
+                                                    {{ $permission->assigned ? 'checked' : '' }} name="permissions[]">
+                                                {{ $permission->display }}
                                             </div>
                                         </td>
                                     @endforeach
                                 </tr>
-                            @endforeach
+                            @empty
+                                <tr>
+                                    <td>
+                                        <div class="form-check">
+                                            <input class="form-check-input checkall_fitur {{ $sidebar['name'] }}"
+                                                type="checkbox" value="{{ $sidebar['name'] }}"
+                                                {{ collect($sidebar['permissions'])->pluck('assigned')->sum() > 0? 'checked': '' }}
+                                                name="modul[]">
+                                            {{ $sidebar['title'] }}
+                                        </div>
+                                    </td>
+                                    <td></td>
+                                    @foreach ($sidebar['permissions'] as $permission)
+                                        <td>
+                                            <div class="form-check">
+                                                <input class="form-check-input fitur sub_{{ $sidebar['name'] }}"
+                                                    data-modulid="{{ $sidebar['name'] }}" type="checkbox"
+                                                    value="{{ $permission->getKey() }}"
+                                                    {{ $permission->assigned ? 'checked' : '' }} name="permissions[]">
+                                                {{ $permission->display }}
+                                            </div>
+                                        </td>
+                                    @endforeach
+                                </tr>
+                            @endforelse
                         @endforeach
                     </tbody>
                 </table>

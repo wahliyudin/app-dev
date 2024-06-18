@@ -3,6 +3,7 @@
 namespace App\Domain\Services\HCIS;
 
 use App\Models\HCIS\Employee;
+use Illuminate\Support\Facades\DB;
 
 class EmployeeService
 {
@@ -25,5 +26,22 @@ class EmployeeService
             ])
             ->where('nik', $nik)
             ->first();
+    }
+
+    public function getDataForSelect($term, $withNik = true)
+    {
+        $selectText = $withNik ? DB::raw("CONCAT(nik, ' - ', nama_karyawan) AS text") : 'nama_karyawan AS text';
+        return Employee::select([
+            'nik AS id',
+            'email_perusahaan',
+            $selectText,
+        ])
+            ->when($term, function ($query, $term) {
+                $term = mb_strtolower($term);
+                $query->whereRaw('LOWER(nama_karyawan) like ?', ["%{$term}%"])
+                    ->orWhere('nik', 'like', '%' . $term . '%');
+            })
+            ->limit(10)
+            ->get();
     }
 }

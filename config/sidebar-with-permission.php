@@ -12,6 +12,11 @@ return [
             ]
         ],
         [
+            'title' => 'REQUEST',
+            'label' => 'REQUEST',
+            'permissions' => 'c,r,u,d',
+        ],
+        [
             'title' => 'SETTING',
             'child' => [
                 [

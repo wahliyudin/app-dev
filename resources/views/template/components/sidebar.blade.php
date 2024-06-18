@@ -31,24 +31,26 @@
             <!--begin::Menu-->
             <div class="menu menu-column menu-rounded menu-sub-indention fw-semibold px-3" id="#kt_app_sidebar_menu"
                 data-kt-menu="true" data-kt-menu-expand="false">
-                <!--begin:Menu item-->
-                <div class="menu-item">
-                    <!--begin:Menu link-->
-                    <a class="menu-link" href="apps/calendar.html">
-                        <span class="menu-icon">
-                            <i class="ki-duotone ki-calendar-8 fs-2">
-                                <span class="path1"></span>
-                                <span class="path2"></span>
-                                <span class="path3"></span>
-                                <span class="path4"></span>
-                                <span class="path5"></span>
-                                <span class="path6"></span>
-                            </i>
-                        </span>
-                        <span class="menu-title">Calendar</span></a>
-                    <!--end:Menu link-->
-                </div>
-                <!--end:Menu item-->
+                @permission('request_read')
+                    <div class="menu-item">
+                        <a class="menu-link {{ request()->routeIs('requests.index', 'requests.create', 'requests.show', 'requests.edit') ? 'active' : '' }}"
+                            href="{{ route('requests.index') }}">
+                            <span class="menu-icon">
+                                <i class="ki-duotone ki-call fs-2">
+                                    <i class="path1"></i>
+                                    <i class="path2"></i>
+                                    <i class="path3"></i>
+                                    <i class="path4"></i>
+                                    <i class="path5"></i>
+                                    <i class="path6"></i>
+                                    <i class="path7"></i>
+                                    <i class="path8"></i>
+                                </i>
+                            </span>
+                            <span class="menu-title">Request</span>
+                        </a>
+                    </div>
+                @endpermission
                 @permission('setting_access_permission_read')
                     <div data-kt-menu-trigger="click" class="menu-item menu-accordion">
                         <span class="menu-link">

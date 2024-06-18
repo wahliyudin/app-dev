@@ -2,9 +2,7 @@
 
 namespace App\Enums\Workflows;
 
-use App\Interfaces\EnumInterface;
-
-enum Status: string implements EnumInterface
+enum Status: string
 {
     case DRAFT = 'draft';
     case OPEN = 'open';

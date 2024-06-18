@@ -1,0 +1,26 @@
+
+input.custom-check[type="radio"]:checked {
+    background-color: transparent !important;
+    --bs-form-check-bg-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3e%3cpath fill='none' stroke='rgba%280, 0, 0, 0.87%29' stroke-linecap='round' stroke-linejoin='round' stroke-width='3' d='m6 10 3 3 6-6'/%3e%3c/svg%3e");
+}
+
+input.custom-check[type="radio"] {
+    cursor: pointer;
+}
+
+input.custom-check-sm[type="radio"] {
+    width: 1.5rem !important;
+    height: 1.4rem !important;
+    border-radius: 5px;
+}
+
+input.custom-check-rectangle[type="radio"] {
+    width: 3rem !important;
+    height: 1.6rem !important;
+    border-radius: 5px;
+}
+
+input.custom-check[type="radio"]:disabled {
+    opacity: 1;
+    cursor: none;
+}
