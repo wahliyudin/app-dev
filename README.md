@@ -1,13 +1,7 @@
-Jika memilih new application, maka application name nya input text dan ada inputan features
-Jika memilihi new automate application, maka cek apakah aplikasinya ada atau tidak
+Module Task per project
+Dashboard project
+Approval
 
-Roles
-
--   Developer
--   User
--   Administrator
-
-Pakai template projects
-
--   Permission
--   Approval
+Prosess...
+Outstanding pilih developer, input feature submit in progress
+Developer menambahkan task

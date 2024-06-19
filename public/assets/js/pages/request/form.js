@@ -47,6 +47,8 @@ $(function () {
         minimumInputLength: 1,
     });
 
+    const isShow = $('input[name="is_show"]').val() ? JSON.parse($('input[name="is_show"]').val()) : false;
+
     var attachments = new Dropzone("#attachments", {
         url: "/requests/upload",
         headers: {
@@ -55,7 +57,8 @@ $(function () {
         uploadMultiple: true,
         parallelUploads: 100,
         maxFiles: 100,
-        addRemoveLinks: true,
+        addRemoveLinks: !isShow,
+        clickable: !isShow,
         init: function () {
             const _this = this;
             // set default files
@@ -82,6 +85,8 @@ $(function () {
                             if (['jpg', 'jpeg', 'png', 'gif', 'bmp'].includes(extension)) {
                                 _this.options.thumbnail.call(_this, file, item.path);
                             }
+                            file._downloadLink = Dropzone.createElement(`<a class="btn btn-info w-100 btn-sm" id="bt-down" target="_blank" style="cursor:pointer;" href="${item.path}" title="Download" data-dz-download><i class="fa fa-download" style="cursor:pointer;"></i></a>`);
+                            file.previewElement.appendChild(file._downloadLink);
                             file.previewElement.classList.add('dz-complete');
                         });
                     },
@@ -96,6 +101,8 @@ $(function () {
                 if (responseData) {
                     Object.defineProperty(file, 'path', { value: responseData.path });
                     Object.defineProperty(file, 'newname', { value: responseData.newname });
+                    file._downloadLink = Dropzone.createElement(`<a class="btn btn-info w-100 btn-sm" id="bt-down" target="_blank" style="cursor:pointer;" href="${responseData.path_download}" title="Download" data-dz-download><i class="fa fa-download" style="cursor:pointer;"></i></a>`);
+                    file.previewElement.appendChild(file._downloadLink);
                 }
             });
             this.on("removedfile", function (file) {
@@ -121,6 +128,9 @@ $(function () {
                         }
                     }
                 });
+            });
+            this.on("thumbnail", function (file, dataUrl) {
+
             });
         },
     });

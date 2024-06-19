@@ -10,6 +10,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('requests/create', [RequestController::class, 'create'])->name('requests.create');
     Route::post('requests/store', [RequestController::class, 'store'])->name('requests.store');
     Route::get('requests/{key}/edit', [RequestController::class, 'edit'])->name('requests.edit');
+    Route::get('requests/{key}/show', [RequestController::class, 'show'])->name('requests.show');
     Route::post('requests/upload', [RequestController::class, 'upload'])->name('requests.upload');
     Route::post('requests/remove', [RequestController::class, 'remove'])->name('requests.remove');
     Route::get('requests/{key}/files', [RequestController::class, 'files'])->name('requests.files');

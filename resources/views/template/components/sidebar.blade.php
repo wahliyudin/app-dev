@@ -31,6 +31,19 @@
             <!--begin::Menu-->
             <div class="menu menu-column menu-rounded menu-sub-indention fw-semibold px-3" id="#kt_app_sidebar_menu"
                 data-kt-menu="true" data-kt-menu-expand="false">
+                {{-- @permission('request_read') --}}
+                <div class="menu-item">
+                    <a class="menu-link" href="">
+                        <span class="menu-icon">
+                            <i class="ki-duotone ki-home-2 fs-2">
+                                <i class="path1"></i>
+                                <i class="path2"></i>
+                            </i>
+                        </span>
+                        <span class="menu-title">Dashboard</span>
+                    </a>
+                </div>
+                {{-- @endpermission --}}
                 @permission('request_read')
                     <div class="menu-item">
                         <a class="menu-link {{ request()->routeIs('requests.index', 'requests.create', 'requests.show', 'requests.edit') ? 'active' : '' }}"
@@ -51,6 +64,72 @@
                         </a>
                     </div>
                 @endpermission
+                {{-- @permission('setting_access_permission_read') --}}
+                <div data-kt-menu-trigger="click" class="menu-item menu-accordion">
+                    <span class="menu-link">
+                        <span class="menu-icon">
+                            <i class="ki-duotone ki-check fs-2"></i>
+                        </span>
+                        <span class="menu-title">Approval</span>
+                        <span class="menu-arrow"></span>
+                    </span>
+                    <div class="menu-sub menu-sub-accordion">
+                        {{-- @permission('setting_approval_read') --}}
+                        <div class="menu-item">
+                            <a class="menu-link" href="">
+                                <span class="menu-bullet">
+                                    <span class="bullet bullet-dot"></span>
+                                </span>
+                                <span class="menu-title">Request</span>
+                            </a>
+                        </div>
+                        {{-- @endpermission --}}
+                    </div>
+                </div>
+                {{-- @endpermission --}}
+                {{-- @permission('setting_access_permission_read') --}}
+                <div data-kt-menu-trigger="click" class="menu-item menu-accordion">
+                    <span class="menu-link">
+                        <span class="menu-icon">
+                            <i class="ki-duotone ki-notification-status fs-2">
+                                <i class="path1"></i>
+                                <i class="path2"></i>
+                                <i class="path3"></i>
+                                <i class="path4"></i>
+                            </i>
+                        </span>
+                        <span class="menu-title">Outstanding</span>
+                        <span class="menu-arrow"></span>
+                    </span>
+                    <div class="menu-sub menu-sub-accordion">
+                        {{-- @permission('setting_approval_read') --}}
+                        <div class="menu-item">
+                            <a class="menu-link" href="">
+                                <span class="menu-bullet">
+                                    <span class="bullet bullet-dot"></span>
+                                </span>
+                                <span class="menu-title">Request</span>
+                            </a>
+                        </div>
+                        {{-- @endpermission --}}
+                    </div>
+                </div>
+                {{-- @endpermission --}}
+                {{-- @permission('request_read') --}}
+                <div class="menu-item">
+                    <a class="menu-link" href="">
+                        <span class="menu-icon">
+                            <i class="ki-duotone ki-frame fs-2">
+                                <i class="path1"></i>
+                                <i class="path2"></i>
+                                <i class="path3"></i>
+                                <i class="path4"></i>
+                            </i>
+                        </span>
+                        <span class="menu-title">Task</span>
+                    </a>
+                </div>
+                {{-- @endpermission --}}
                 @permission('setting_access_permission_read')
                     <div data-kt-menu-trigger="click" class="menu-item menu-accordion">
                         <span class="menu-link">

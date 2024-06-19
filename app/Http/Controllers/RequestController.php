@@ -78,6 +78,22 @@ class RequestController extends Controller
         ]);
     }
 
+    public function show($key)
+    {
+        return view('request.show', [
+            'request' => $this->requestService->findOrFail($key),
+        ]);
+    }
+
+    public function destroy($id)
+    {
+        try {
+            //code...
+        } catch (\Throwable $th) {
+            throw $th;
+        }
+    }
+
     public function upload(Request $request)
     {
         try {
@@ -93,6 +109,7 @@ class RequestController extends Controller
                         'oldname' => $name,
                         'newname' => $fileName,
                         'path' => $path,
+                        'path_download' => '/storage/' . $path,
                     ];
                 }
             }
@@ -125,6 +142,7 @@ class RequestController extends Controller
                 'original_name' => $attachment['original_name'],
                 'size' => Storage::disk('public')->size(str_replace('storage/', '', $attachment['path'])),
                 'path' => '/' . $attachment['path'],
+                'link_download' => Storage::url(str_replace('storage/', '', $attachment['path'])),
             ];
         }, $attachments->toArray());
         return response()->json($result);

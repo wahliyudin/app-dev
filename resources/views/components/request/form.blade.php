@@ -1,5 +1,6 @@
 <form action="" id="form-request">
     <input type="hidden" name="key" value="{{ $requestModel?->getKey() }}">
+    <input type="hidden" name="is_show" value="{{ $isShow }}">
     <input type="hidden" name="department_id" value="{{ $formDto?->department_id }}">
     <input type="hidden" name="nik_requestor" value="{{ $requestModel?->nik_requestor ?? userAuth()?->nik }}">
     <x-form-header title="SYSTEM APPLICATION DEVELOPMENT" nomor="TBU-FM-IST-003" tanggal="01-03-2020" revisi="00"
@@ -27,8 +28,13 @@
                         </td>
                         <td style="width: 10px;">:</td>
                         <td>
-                            <input type="text" readonly class="form-control form-control-transparent form-control-sm"
-                                value="{{ $formDto->nama_pemohon }}">
+                            @if ($isShow)
+                                {{ $formDto->nama_pemohon }}
+                            @else
+                                <input type="text" readonly
+                                    class="form-control form-control-transparent form-control-sm"
+                                    value="{{ $formDto->nama_pemohon }}">
+                            @endif
                         </td>
                     </tr>
                     <tr>
@@ -37,8 +43,12 @@
                         </td>
                         <td style="width: 10px;">:</td>
                         <td>
-                            <input type="text" name="job_title" placeholder="Job Title"
-                                class="form-control form-control-sm" value="{{ $formDto->job_title }}">
+                            @if ($isShow)
+                                {{ $formDto->job_title }}
+                            @else
+                                <input type="text" name="job_title" placeholder="Job Title"
+                                    class="form-control form-control-sm" value="{{ $formDto->job_title }}">
+                            @endif
                         </td>
                     </tr>
                     <tr>
@@ -47,8 +57,12 @@
                         </td>
                         <td style="width: 10px;">:</td>
                         <td>
-                            <input type="text" readonly name="department" value="{{ $formDto->department }}"
-                                class="form-control form-control-transparent form-control-sm">
+                            @if ($isShow)
+                                {{ $formDto->department }}
+                            @else
+                                <input type="text" readonly name="department" value="{{ $formDto->department }}"
+                                    class="form-control form-control-transparent form-control-sm">
+                            @endif
                         </td>
                     </tr>
                     <tr>
@@ -155,7 +169,7 @@
                     <td>
                         <input class="form-check-input custom-check custom-check-rectangle"
                             style="width: 18px; height: 18px;" type="radio" value="{{ $typeRequest->value }}"
-                            name="type_request" @checked($requestModel?->type_request == $typeRequest)>
+                            name="type_request" @disabled($isShow) @checked($requestModel?->type_request == $typeRequest)>
                     </td>
                     <td>{{ $typeRequest->label() }}</td>
                 </tr>
@@ -178,8 +192,8 @@
                                     <td>
                                         <input class="form-check-input custom-check custom-check-rectangle"
                                             style="width: 18px; height: 18px;" type="radio"
-                                            value="{{ $typeBudget->value }}" name="type_budget"
-                                            @checked($requestModel?->type_budget == $typeBudget)>
+                                            value="{{ $typeBudget->value }}" @disabled($isShow)
+                                            name="type_budget" @checked($requestModel?->type_budget == $typeBudget)>
                                     </td>
                                     <td>{{ $typeBudget->label() }}</td>
                                 </tr>
@@ -193,7 +207,7 @@
     <hr>
     <div class="form-group">
         <label for="description" class="form-label">Detail Description of the Requested Service</label>
-        <textarea name="description" id="description" class="form-control">{{ $requestModel?->description }}</textarea>
+        <textarea name="description" id="description" @readonly($isShow) class="form-control">{{ $requestModel?->description }}</textarea>
     </div>
     <hr>
     <div class="form-group">
@@ -211,22 +225,24 @@
             </div>
         </div>
     </div>
-    <div class="d-flex justify-content-end mt-2">
-        <button type="button" class="btn btn-primary ps-4" id="btn-submit">
-            <span class="indicator-label">
-                <div class="d-flex align-items-center gap-2">
-                    <i class="ki-duotone ki-save-2 fs-2">
-                        <i class="path1"></i>
-                        <i class="path2"></i>
-                    </i>
-                    <span>Submit</span>
-                </div>
-            </span>
-            <span class="indicator-progress">
-                Please wait... <span class="spinner-border spinner-border-sm align-middle ms-2"></span>
-            </span>
-        </button>
-    </div>
+    @if (!$isShow)
+        <div class="d-flex justify-content-end mt-2">
+            <button type="button" class="btn btn-primary ps-4" id="btn-submit">
+                <span class="indicator-label">
+                    <div class="d-flex align-items-center gap-2">
+                        <i class="ki-duotone ki-save-2 fs-2">
+                            <i class="path1"></i>
+                            <i class="path2"></i>
+                        </i>
+                        <span>Submit</span>
+                    </div>
+                </span>
+                <span class="indicator-progress">
+                    Please wait... <span class="spinner-border spinner-border-sm align-middle ms-2"></span>
+                </span>
+            </button>
+        </div>
+    @endif
 </form>
 
 @push('css')
