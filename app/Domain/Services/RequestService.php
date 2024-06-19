@@ -106,4 +106,16 @@ class RequestService
             ->select(['id', 'name', 'display_name'])
             ->get();
     }
+
+    public function destroy($id)
+    {
+        return DB::transaction(function () use ($id) {
+            $request = $this->findOrFail($id);
+            foreach ($request->attachments as $attachment) {
+                Storage::disk('public')->delete('requests/' . $attachment->name);
+            }
+            $request->attachments()->delete();
+            $request->delete();
+        });
+    }
 }

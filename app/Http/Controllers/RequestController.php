@@ -88,7 +88,10 @@ class RequestController extends Controller
     public function destroy($id)
     {
         try {
-            //code...
+            $this->requestService->destroy($id);
+            return response()->json([
+                'message' => 'Request deleted successfully',
+            ]);
         } catch (\Throwable $th) {
             throw $th;
         }
