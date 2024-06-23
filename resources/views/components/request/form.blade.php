@@ -6,6 +6,24 @@
     <x-form-header title="SYSTEM APPLICATION DEVELOPMENT" nomor="TBU-FM-IST-003" tanggal="01-03-2020" revisi="00"
         halaman="1 dari 1" />
     <hr>
+    @if ($requestModel?->note)
+        <div class="alert alert-dismissible bg-danger d-flex flex-column flex-sm-row w-100 p-5 mb-10">
+            <i class="ki-duotone ki-message-text-2 fs-2hx text-light me-4 mb-5 mb-sm-0"><span
+                    class="path1"></span><span class="path2"></span><span class="path3"></span></i>
+
+            <div class="d-flex flex-column text-light pe-0 pe-sm-10">
+                <h4 class="mb-2 text-light">Catatan!</h4>
+                <span>{{ $requestModel?->note }}</span>
+            </div>
+
+            <button type="button"
+                class="position-absolute position-sm-relative m-2 m-sm-0 top-0 end-0 btn btn-icon ms-sm-auto"
+                data-bs-dismiss="alert">
+                <i class="ki-duotone ki-cross fs-2x text-light"><span class="path1"></span><span
+                        class="path2"></span></i>
+            </button>
+        </div>
+    @endif
     <table>
         <tbody>
             <tr>
@@ -244,6 +262,45 @@
         </div>
     @endif
 </form>
+@if ($isShow)
+    <div class="row mt-8">
+        <x-workflow.approval :workflows="$requestModel?->workflows" />
+        <div class="col-md-12 d-flex justify-content-end mt-4">
+            @permission('request_approve')
+                <button type="button" data-key="{{ $requestModel?->id }}"
+                    class="btn btn-success ps-4 {{ !$isCurrentWorkflow ? 'd-none' : '' }}" id="btn-approve">
+                    <span class="indicator-label">
+                        <div class="d-flex align-items-center gap-2">
+                            <i class="ki-duotone ki-check-circle fs-2">
+                                <i class="path1"></i>
+                                <i class="path2"></i>
+                            </i>Approve
+                        </div>
+                    </span>
+                    <span class="indicator-progress">
+                        Please wait... <span class="spinner-border spinner-border-sm align-middle ms-2"></span>
+                    </span>
+                </button>
+            @endpermission
+            @permission('request_reject')
+                <button type="button" data-key="{{ $requestModel?->id }}"
+                    class="btn btn-danger ms-2 ps-4 {{ !$isCurrentWorkflow ? 'd-none' : '' }}" id="btn-reject">
+                    <span class="indicator-label">
+                        <div class="d-flex align-items-center gap-2">
+                            <i class="ki-duotone ki-cross-circle fs-2">
+                                <i class="path1"></i>
+                                <i class="path2"></i>
+                            </i>Reject
+                        </div>
+                    </span>
+                    <span class="indicator-progress">
+                        Please wait... <span class="spinner-border spinner-border-sm align-middle ms-2"></span>
+                    </span>
+                </button>
+            @endpermission
+        </div>
+    </div>
+@endif
 
 @push('css')
     <link href="{{ asset('assets/css/pages/global.css') }}" rel="stylesheet" type="text/css" />

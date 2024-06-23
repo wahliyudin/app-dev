@@ -2,14 +2,18 @@
 
 namespace App\Models\Request;
 
+use App\Domain\Workflows\Contracts\ModelThatHaveWorkflow;
 use App\Enums\Request\TypeBudget;
 use App\Enums\Request\TypeRequest;
+use App\Enums\Workflows\LastAction;
 use App\Enums\Workflows\Status;
 use App\Models\HCIS\Employee;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
-class Request extends Model
+class Request extends Model implements ModelThatHaveWorkflow
 {
     use HasFactory;
 
@@ -35,6 +39,20 @@ class Request extends Model
         'type_budget' => TypeBudget::class,
         'status' => Status::class,
     ];
+
+    public function workflow(): HasOne
+    {
+        return $this->hasOne(RequestWorkflow::class)->ofMany([
+            'sequence' => 'min',
+        ], function ($query) {
+            $query->where('last_action', LastAction::NOTTING);
+        });
+    }
+
+    public function workflows(): HasMany
+    {
+        return $this->hasMany(RequestWorkflow::class);
+    }
 
     public function requestor()
     {

@@ -14,7 +14,7 @@ return [
         [
             'title' => 'REQUEST',
             'label' => 'REQUEST',
-            'permissions' => 'c,r,u,d',
+            'permissions' => 'c,r,u,d,approve,reject',
         ],
         [
             'title' => 'SETTING',
@@ -40,7 +40,7 @@ return [
         'r' => 'read',
         'u' => 'update',
         'd' => 'delete',
-        'approv' => 'approv',
+        'approve' => 'approve',
         'reject' => 'reject',
         'report' => 'report',
         'list' => 'list',

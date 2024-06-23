@@ -3,7 +3,8 @@
 namespace App\View\Components\Request;
 
 use App\Data\Requests\FormDto;
-use App\Domain\Services\RequestService;
+use App\Domain\Services\Request\RequestService;
+use App\Domain\Services\Request\RequestWorkflow;
 use Closure;
 use Illuminate\Contracts\View\View;
 use Illuminate\View\Component;
@@ -30,7 +31,8 @@ class Form extends Component
         return view('components.request.form', [
             'formDto' => $formDto,
             'code' => $this->requestModel ? $this->requestModel->code : $requestService->generateCode(),
-            'apps' => $requestService->appByDept($formDto->department_id)
+            'apps' => $requestService->appByDept($formDto->department_id),
+            'isCurrentWorkflow' => RequestWorkflow::setModel($this->requestModel)->isCurrentWorkflow(),
         ]);
     }
 }

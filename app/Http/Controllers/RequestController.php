@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Domain\Services\HCIS\EmployeeService;
-use App\Domain\Services\RequestService;
+use App\Domain\Services\Request\RequestService;
 use App\Models\Request\RequestAttachment;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
@@ -126,10 +126,9 @@ class RequestController extends Controller
     {
         try {
             $file = str_replace('storage/', '', $request->file);
-            if (!Storage::disk('public')->exists($file)) {
-                throw ValidationException::withMessages(['File not found']);
+            if (Storage::disk('public')->exists($file)) {
+                Storage::disk('public')->delete($file);
             }
-            Storage::disk('public')->delete($file);
             return response()->json();
         } catch (\Throwable $th) {
             throw $th;

@@ -177,4 +177,123 @@ $(function () {
             }
         });
     });
+
+    $('#btn-approve').click(function (e) {
+        e.preventDefault();
+        var key = $(this).data('key');
+        var _this = this;
+        $(_this).attr("data-kt-indicator", "on");
+        Swal.fire({
+            title: 'Apa kamu yakin?',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yakin!',
+            preConfirm: () => {
+                return new Promise(function (resolve) {
+                    $.ajax({
+                        type: "POST",
+                        url: `/approvals/requests/${key}/approv`,
+                        dataType: 'json',
+                    })
+                        .done(function (myAjaxJsonResponse) {
+                            $(_this).removeAttr("data-kt-indicator");
+                            Swal.fire(
+                                'Verified!',
+                                myAjaxJsonResponse.message,
+                                'success'
+                            ).then(function () {
+                                window.location = '/approvals/requests';
+                            });
+                        })
+                        .fail(function (erordata) {
+                            $(_this).removeAttr("data-kt-indicator");
+                            if (erordata.status == 422) {
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: 'Warning!',
+                                    text: erordata.responseJSON
+                                        .message,
+                                })
+                            } else {
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: 'Oops...',
+                                    text: "Terdapat kesalahan sistem. Silakan lengkapi informasi yang diperlukan dan coba kembali.",
+                                })
+                            }
+                        })
+                })
+            },
+            willClose: () => {
+                $(_this).removeAttr("data-kt-indicator");
+            }
+        });
+    });
+    $('#btn-reject').click(function (e) {
+        e.preventDefault();
+        var key = $(this).data('key');
+        var _this = this;
+        $(_this).attr("data-kt-indicator", "on");
+        Swal.fire({
+            title: "Tolak?",
+            text: "Masukan alasan kenapa ditolak!",
+            input: 'textarea',
+            icon: 'warning',
+            inputPlaceholder: 'Catatan',
+            showCancelButton: true,
+            confirmButtonText: 'Ya, tolak!',
+            cancelButtonText: "Batal",
+            reverseButtons: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            showLoaderOnConfirm: true,
+            inputValidator: (value) => {
+                if (!value) {
+                    return 'Catatan tidak boleh kosong!'
+                }
+            },
+            preConfirm: async (note) => {
+                return await $.ajax({
+                    type: "POST",
+                    url: `/approvals/requests/${key}/reject`,
+                    data: {
+                        note: note
+                    },
+                    dataType: 'json',
+                })
+                    .done(function (myAjaxJsonResponse) {
+                        $(_this).removeAttr("data-kt-indicator");
+                        Swal.fire(
+                            'Rejected!',
+                            myAjaxJsonResponse.message,
+                            'success'
+                        ).then(function () {
+                            window.location = '/approvals/requests';
+                        });
+                    })
+                    .fail(function (erordata) {
+                        $(_this).removeAttr("data-kt-indicator");
+                        if (erordata.status == 422) {
+                            Swal.fire({
+                                icon: 'warning',
+                                title: 'Warning!',
+                                text: erordata.responseJSON
+                                    .message,
+                            })
+                        } else {
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Oops...',
+                                text: "Terdapat kesalahan sistem. Silakan lengkapi informasi yang diperlukan dan coba kembali.",
+                            })
+                        }
+                    })
+            },
+            willClose: () => {
+                $(_this).removeAttr("data-kt-indicator");
+            }
+        });
+    });
 });

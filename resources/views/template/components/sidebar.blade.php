@@ -76,7 +76,7 @@
                     <div class="menu-sub menu-sub-accordion">
                         {{-- @permission('setting_approval_read') --}}
                         <div class="menu-item">
-                            <a class="menu-link" href="">
+                            <a class="menu-link" href="{{ route('approvals.requests.index') }}">
                                 <span class="menu-bullet">
                                     <span class="bullet bullet-dot"></span>
                                 </span>

@@ -1,7 +1,8 @@
 <?php
 
-namespace App\Domain\Services;
+namespace App\Domain\Services\Request;
 
+use App\Enums\Workflows\Status;
 use App\Models\Request\Request;
 use App\Models\Request\RequestApplication;
 use Illuminate\Support\Facades\DB;
@@ -25,7 +26,11 @@ class RequestService
             },
             'application:id,name,display_name',
             'pic:nik,nama_karyawan',
-        ])->findOrFail($id);
+            'workflows' => function ($query) {
+                $query->with('employee:nik,nama_karyawan')->orderBy('sequence', 'ASC');
+            }
+        ])
+            ->findOrFail($id);
     }
 
     public function store($request)
@@ -77,6 +82,10 @@ class RequestService
                 }
             }
 
+            if (!$request->key) {
+                RequestWorkflow::setModel($requestModel)->store();
+            }
+
             return $requestModel;
         });
     }
@@ -117,5 +126,16 @@ class RequestService
             $request->attachments()->delete();
             $request->delete();
         });
+    }
+
+    public function getByCurrentApproval()
+    {
+        return Request::select(['id', 'code', 'nik_requestor', 'department', 'application_id', 'type_request', 'type_budget', 'date', 'estimated_project', 'status'])
+            ->with(['requestor:nik,nama_karyawan', 'application:id,name,display_name'])
+            ->where('status', Status::OPEN)
+            ->whereHas('workflow', function ($query) {
+                $query->where('nik', userAuth()?->nik);
+            })
+            ->get();
     }
 }
