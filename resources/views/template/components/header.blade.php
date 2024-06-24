@@ -16,9 +16,9 @@
         <!--begin::Mobile logo-->
         <div class="d-flex align-items-center flex-grow-1 flex-lg-grow-0">
             <a href="index.html" class="d-lg-none">
-                <img alt="Logo" src="{{ asset('assets/media/logos/default-small.svg') }}"
+                <img alt="Logo" src="{{ asset('assets/media/logos/tbu-crop.png') }}"
                     class="theme-light-show h-30px" />
-                <img alt="Logo" src="{{ asset('assets/media/logos/default-small-dark.svg') }}"
+                <img alt="Logo" src="{{ asset('assets/media/logos/tbu-crop.png') }}"
                     class="theme-dark-show h-30px" />
             </a>
         </div>
@@ -111,7 +111,7 @@
                     <div class="cursor-pointer symbol symbol-35px symbol-md-40px"
                         data-kt-menu-trigger="{default: 'click', lg: 'hover'}" data-kt-menu-attach="parent"
                         data-kt-menu-placement="bottom-end">
-                        <img src="{{ asset('assets/media/avatars/300-3.jpg') }}" alt="user" />
+                        <img src="{{ asset('assets/media/avatars/profile.png') }}" alt="user" />
                     </div>
 
                     <!--begin::User account menu-->
@@ -122,41 +122,34 @@
                             <div class="menu-content d-flex align-items-center px-3">
                                 <!--begin::Avatar-->
                                 <div class="symbol symbol-50px me-5">
-                                    <img alt="Logo" src="{{ asset('assets/media/avatars/300-3.jpg') }}" />
+                                    <img alt="Logo" src="{{ asset('assets/media/avatars/profile.png') }}" />
                                 </div>
                                 <!--end::Avatar-->
 
                                 <!--begin::Username-->
                                 <div class="d-flex flex-column">
                                     <div class="fw-bold d-flex align-items-center fs-5">
-                                        Max Smith <span
-                                            class="badge badge-light-success fw-bold fs-8 px-2 py-1 ms-2">Pro</span>
+                                        {{ auth()->user()?->name }}
                                     </div>
 
-                                    <a href="#" class="fw-semibold text-muted text-hover-primary fs-7">
-                                        max@kt.com </a>
+                                    <a href="mailto:{{ auth()->user()?->email }}"
+                                        class="fw-semibold text-muted text-hover-primary fs-7">{{ auth()->user()?->email }}</a>
                                 </div>
                                 <!--end::Username-->
                             </div>
                         </div>
                         <!--end::Menu item-->
-
-                        <!--begin::Menu separator-->
-                        <div class="separator my-2"></div>
-                        <!--end::Menu separator-->
-
                         <!--begin::Menu item-->
                         <div class="menu-item px-5">
-                            <a href="account/overview.html" class="menu-link px-5">
-                                My Profile
-                            </a>
-                        </div>
-                        <!--end::Menu item-->
-                        <!--begin::Menu item-->
-                        <div class="menu-item px-5">
-                            <a href="authentication/layouts/corporate/sign-in.html" class="menu-link px-5">
+                            <a href="{{ route('logout') }}"
+                                onclick="event.preventDefault();
+                            document.getElementById('logout-form').submit();"
+                                class="menu-link px-5">
                                 Sign Out
                             </a>
+                            <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
+                                @csrf
+                            </form>
                         </div>
                         <!--end::Menu item-->
                     </div>
