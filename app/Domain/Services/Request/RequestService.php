@@ -130,12 +130,21 @@ class RequestService
 
     public function getByCurrentApproval()
     {
+        return $this->queryCurrentApproval()->get();
+    }
+
+    public function totalCurrentApproval()
+    {
+        return $this->queryCurrentApproval()->count();
+    }
+
+    private function queryCurrentApproval()
+    {
         return Request::select(['id', 'code', 'nik_requestor', 'department', 'application_id', 'type_request', 'type_budget', 'date', 'estimated_project', 'status'])
             ->with(['requestor:nik,nama_karyawan', 'application:id,name,display_name'])
             ->where('status', Status::OPEN)
             ->whereHas('workflow', function ($query) {
                 $query->where('nik', userAuth()?->nik);
-            })
-            ->get();
+            });
     }
 }

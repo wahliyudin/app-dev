@@ -64,31 +64,39 @@
                         </a>
                     </div>
                 @endpermission
-                {{-- @permission('setting_access_permission_read') --}}
-                <div data-kt-menu-trigger="click" class="menu-item menu-accordion">
-                    <span class="menu-link">
-                        <span class="menu-icon">
-                            <i class="ki-duotone ki-check fs-2"></i>
+                @permission('request_approve|request_reject')
+                    <div data-kt-menu-trigger="click" class="menu-item menu-accordion" id="approval">
+                        <span class="menu-link">
+                            <span class="menu-icon">
+                                <i class="ki-duotone ki-check fs-2"></i>
+                            </span>
+                            <span class="menu-title">Approval</span>
+                            <span class="menu-badge">
+                                <span class="badge badge-success" id="grand-total"><i
+                                        class="fa-solid fa-arrows-spin fa-spin text-white"></i></span>
+                            </span>
+                            <span class="menu-arrow"></span>
                         </span>
-                        <span class="menu-title">Approval</span>
-                        <span class="menu-arrow"></span>
-                    </span>
-                    <div class="menu-sub menu-sub-accordion">
-                        {{-- @permission('setting_approval_read') --}}
-                        <div class="menu-item">
-                            <a class="menu-link" href="{{ route('approvals.requests.index') }}">
-                                <span class="menu-bullet">
-                                    <span class="bullet bullet-dot"></span>
-                                </span>
-                                <span class="menu-title">Request</span>
-                            </a>
+                        <div class="menu-sub menu-sub-accordion">
+                            @permission('request_approve|request_reject')
+                                <div class="menu-item">
+                                    <a class="menu-link" href="{{ route('approvals.requests.index') }}">
+                                        <span class="menu-bullet">
+                                            <span class="bullet bullet-dot"></span>
+                                        </span>
+                                        <span class="menu-title">Request</span>
+                                        <span class="menu-badge">
+                                            <span class="badge badge-success" id="request"><i
+                                                    class="fa-solid fa-arrows-spin fa-spin text-white"></i></span>
+                                        </span>
+                                    </a>
+                                </div>
+                            @endpermission
                         </div>
-                        {{-- @endpermission --}}
                     </div>
-                </div>
-                {{-- @endpermission --}}
+                @endpermission
                 {{-- @permission('setting_access_permission_read') --}}
-                <div data-kt-menu-trigger="click" class="menu-item menu-accordion">
+                <div data-kt-menu-trigger="click" class="menu-item menu-accordion" id="outstanding">
                     <span class="menu-link">
                         <span class="menu-icon">
                             <i class="ki-duotone ki-notification-status fs-2">
@@ -99,6 +107,10 @@
                             </i>
                         </span>
                         <span class="menu-title">Outstanding</span>
+                        <span class="menu-badge">
+                            <span class="badge badge-success" id="grand-total"><i
+                                    class="fa-solid fa-arrows-spin fa-spin text-white"></i></span>
+                        </span>
                         <span class="menu-arrow"></span>
                     </span>
                     <div class="menu-sub menu-sub-accordion">
@@ -109,6 +121,10 @@
                                     <span class="bullet bullet-dot"></span>
                                 </span>
                                 <span class="menu-title">Request</span>
+                                <span class="menu-badge">
+                                    <span class="badge badge-success" id="request"><i
+                                            class="fa-solid fa-arrows-spin fa-spin text-white"></i></span>
+                                </span>
                             </a>
                         </div>
                         {{-- @endpermission --}}

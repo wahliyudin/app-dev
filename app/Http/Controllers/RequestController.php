@@ -8,7 +8,6 @@ use App\Models\Request\RequestAttachment;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
-use Illuminate\Validation\ValidationException;
 
 class RequestController extends Controller
 {
