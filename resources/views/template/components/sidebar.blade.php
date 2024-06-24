@@ -46,7 +46,7 @@
                 {{-- @endpermission --}}
                 @permission('request_read')
                     <div class="menu-item">
-                        <a class="menu-link {{ request()->routeIs('requests.index', 'requests.create', 'requests.show', 'requests.edit') ? 'active' : '' }}"
+                        <a class="menu-link {{ request()->routeIs('requests.*') ? 'active' : '' }}"
                             href="{{ route('requests.index') }}">
                             <span class="menu-icon">
                                 <i class="ki-duotone ki-call fs-2">
@@ -77,10 +77,12 @@
                             </span>
                             <span class="menu-arrow"></span>
                         </span>
-                        <div class="menu-sub menu-sub-accordion">
+                        <div
+                            class="menu-sub menu-sub-accordion {{ request()->routeIs('approvals.requests.*') ? 'hover show' : '' }}">
                             @permission('request_approve|request_reject')
                                 <div class="menu-item">
-                                    <a class="menu-link" href="{{ route('approvals.requests.index') }}">
+                                    <a class="menu-link {{ request()->routeIs('approvals.requests.*') ? 'active' : '' }}"
+                                        href="{{ route('approvals.requests.index') }}">
                                         <span class="menu-bullet">
                                             <span class="bullet bullet-dot"></span>
                                         </span>
@@ -113,10 +115,12 @@
                         </span>
                         <span class="menu-arrow"></span>
                     </span>
-                    <div class="menu-sub menu-sub-accordion">
+                    <div
+                        class="menu-sub menu-sub-accordion {{ request()->routeIs('outstandings.requests.*') ? 'hover show' : '' }}">
                         {{-- @permission('setting_approval_read') --}}
                         <div class="menu-item">
-                            <a class="menu-link" href="">
+                            <a class="menu-link {{ request()->routeIs('outstandings.requests.*') ? 'active' : '' }}"
+                                href="{{ route('outstandings.requests.index') }}">
                                 <span class="menu-bullet">
                                     <span class="bullet bullet-dot"></span>
                                 </span>
@@ -159,10 +163,10 @@
                             <span class="menu-arrow"></span>
                         </span>
                         <div
-                            class="menu-sub menu-sub-accordion {{ request()->routeIs('settings.approval.index', 'settings.access-permission.index') ? 'hover show' : '' }}">
+                            class="menu-sub menu-sub-accordion {{ request()->routeIs('settings.approval.*', 'settings.access-permission.*') ? 'hover show' : '' }}">
                             @permission('setting_approval_read')
                                 <div class="menu-item">
-                                    <a class="menu-link {{ request()->routeIs('settings.approval.index') ? 'active' : '' }}"
+                                    <a class="menu-link {{ request()->routeIs('settings.approval.*') ? 'active' : '' }}"
                                         href="{{ route('settings.approval.index') }}">
                                         <span class="menu-bullet">
                                             <span class="bullet bullet-dot"></span>
@@ -173,7 +177,7 @@
                             @endpermission
                             @permission('setting_access_permission_read')
                                 <div class="menu-item">
-                                    <a class="menu-link {{ request()->routeIs('settings.access-permission.index') ? 'active' : '' }}"
+                                    <a class="menu-link {{ request()->routeIs('settings.access-permission.*') ? 'active' : '' }}"
                                         href="{{ route('settings.access-permission.index') }}">
                                         <span class="menu-bullet">
                                             <span class="bullet bullet-dot"></span>

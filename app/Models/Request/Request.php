@@ -78,4 +78,9 @@ class Request extends Model implements ModelThatHaveWorkflow
     {
         return $this->hasMany(RequestFeature::class, 'request_id', 'id');
     }
+
+    public function developers()
+    {
+        return $this->hasMany(RequestDeveloper::class, 'request_id', 'id');
+    }
 }

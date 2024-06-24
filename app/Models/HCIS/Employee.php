@@ -10,6 +10,7 @@ class Employee extends Model
     use HasFactory;
 
     protected $connection = 'pgsql_hcis';
+
     protected $primaryKey = 'nik';
 
     protected $fillable = [
@@ -34,9 +35,13 @@ class Employee extends Model
         'status'
     ];
 
-
     public function position()
     {
         return $this->hasOne(Position::class, 'position_id', 'position_id');
+    }
+
+    public function identity()
+    {
+        return $this->hasOne(EmployeeIdentity::class, 'nik', 'nik');
     }
 }

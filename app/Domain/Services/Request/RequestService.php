@@ -2,9 +2,12 @@
 
 namespace App\Domain\Services\Request;
 
+use App\Enums\Request\TypeRequest;
 use App\Enums\Workflows\Status;
 use App\Models\Request\Request;
 use App\Models\Request\RequestApplication;
+use App\Models\Request\RequestDeveloper;
+use App\Models\Request\RequestFeature;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 
@@ -146,5 +149,49 @@ class RequestService
             ->whereHas('workflow', function ($query) {
                 $query->where('nik', userAuth()?->nik);
             });
+    }
+
+    public function getByOutstanding()
+    {
+        return $this->queryOutstanding()->get();
+    }
+
+    public function totalOutstanding()
+    {
+        return $this->queryOutstanding()->count();
+    }
+
+    private function queryOutstanding()
+    {
+        return Request::select(['id', 'code', 'nik_requestor', 'department', 'application_id', 'type_request', 'type_budget', 'date', 'estimated_project', 'status'])
+            ->with(['requestor:nik,nama_karyawan', 'application:id,name,display_name'])
+            ->where('status', Status::CLOSE)
+            ->whereDoesntHave('features')
+            ->where('type_request', TypeRequest::NEW_APPLICATION);
+    }
+
+    public function storeSetting($request)
+    {
+        return DB::transaction(function () use ($request) {
+            foreach ($request->developers as $developer) {
+                RequestDeveloper::query()->updateOrCreate([
+                    'request_id' => $request->key,
+                    'nik' => $developer,
+                ], [
+                    'request_id' => $request->key,
+                    'nik' => $developer,
+                ]);
+            }
+            foreach ($request->features as $feature) {
+                RequestFeature::query()->updateOrCreate([
+                    'request_id' => $request->key,
+                    'id' => $feature['key'],
+                ], [
+                    'request_id' => $request->key,
+                    'name' => $feature['name'],
+                    'description' => $feature['description'],
+                ]);
+            }
+        });
     }
 }

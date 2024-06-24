@@ -10,6 +10,7 @@ class RequestFeature extends Model
     use HasFactory;
 
     protected $fillable = [
+        'request_id',
         'name',
         'description',
     ];

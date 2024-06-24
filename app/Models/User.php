@@ -3,6 +3,8 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
+
+use App\Models\HCIS\Employee;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -52,5 +54,10 @@ class User extends Authenticatable implements LaratrustUser
     public function oatuhToken(): HasOne
     {
         return $this->hasOne(OauthToken::class);
+    }
+
+    public function employee()
+    {
+        return $this->belongsTo(Employee::class, 'nik', 'nik');
     }
 }

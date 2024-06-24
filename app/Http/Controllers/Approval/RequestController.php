@@ -45,8 +45,6 @@ class RequestController extends Controller
             ->editColumn('status', function ($data) {
                 return $data->status->badge();
             })
-            ->addColumn('is_edit', fn ($data) => hasPermission('request_update'))
-            ->addColumn('is_delete', fn ($data) => hasPermission('request_delete'))
             ->rawColumns(['action', 'status'])
             ->make();
     }

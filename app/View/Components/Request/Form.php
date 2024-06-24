@@ -32,7 +32,7 @@ class Form extends Component
             'formDto' => $formDto,
             'code' => $this->requestModel ? $this->requestModel->code : $requestService->generateCode(),
             'apps' => $requestService->appByDept($formDto->department_id),
-            'isCurrentWorkflow' => RequestWorkflow::setModel($this->requestModel)->isCurrentWorkflow(),
+            'isCurrentWorkflow' => $this->requestModel ? RequestWorkflow::setModel($this->requestModel)->isCurrentWorkflow() : false,
         ]);
     }
 }
