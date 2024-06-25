@@ -137,7 +137,8 @@
                 {{-- @endpermission --}}
                 {{-- @permission('request_read') --}}
                 <div class="menu-item">
-                    <a class="menu-link" href="">
+                    <a class="menu-link {{ request()->routeIs('tasks.*') ? 'active' : '' }}"
+                        href="{{ route('tasks.index') }}">
                         <span class="menu-icon">
                             <i class="ki-duotone ki-frame fs-2">
                                 <i class="path1"></i>

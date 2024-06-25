@@ -2,12 +2,14 @@
 
 namespace App\Domain\Services\Request;
 
+use App\Enums\Request\Task\Status as TaskStatus;
 use App\Enums\Request\TypeRequest;
 use App\Enums\Workflows\Status;
 use App\Models\Request\Request;
 use App\Models\Request\RequestApplication;
 use App\Models\Request\RequestDeveloper;
 use App\Models\Request\RequestFeature;
+use App\Models\Request\RequestFeatureTask;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 
@@ -192,6 +194,79 @@ class RequestService
                     'description' => $feature['description'],
                 ]);
             }
+        });
+    }
+
+    public function getByTask()
+    {
+        return $this->queryTask()->get();
+    }
+
+    public function totalTask()
+    {
+        return $this->queryTask()->count();
+    }
+
+    private function queryTask()
+    {
+        return Request::select(['id', 'code', 'nik_requestor', 'department', 'application_id', 'type_request', 'type_budget', 'date', 'estimated_project', 'status'])
+            ->with(['requestor:nik,nama_karyawan', 'application:id,name,display_name'])
+            ->where('status', Status::CLOSE)
+            ->whereHas('features')
+            ->where('type_request', TypeRequest::NEW_APPLICATION);
+    }
+
+    public function getTaskByRequest($key)
+    {
+        return RequestFeatureTask::query()->withWhereHas('feature', function ($query) use ($key) {
+            $query->where('request_id', $key);
+        })
+            ->latest()
+            ->get();
+    }
+
+    public function findOrFailForTask($key)
+    {
+        return Request::query()
+            ->with('features')
+            ->findOrFail($key);
+    }
+
+    public function storeTask($request)
+    {
+        return DB::transaction(function () use ($request) {
+            return RequestFeatureTask::query()->updateOrCreate([
+                'request_feature_id' => $request->feature_id,
+                'id' => $request->key,
+            ], [
+                'request_feature_id' => $request->feature_id,
+                'status' => TaskStatus::resetId($request->status),
+                'content' => $request->content,
+            ])
+                ->load('feature');
+        });
+    }
+
+    public function updateTask($request, $key)
+    {
+        return DB::transaction(function () use ($request, $key) {
+            $task = RequestFeatureTask::query()->findOrFail($key);
+            $from = $task->status->label();
+            $to = TaskStatus::resetId($request->status);
+            $task->update([
+                'status' => $to,
+            ]);
+            return [
+                'from' => $from,
+                'to' => $to->label(),
+            ];
+        });
+    }
+
+    public function destroyTask($key)
+    {
+        return DB::transaction(function () use ($key) {
+            RequestFeatureTask::query()->findOrFail($key)->delete();
         });
     }
 }

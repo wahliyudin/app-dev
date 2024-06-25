@@ -14,4 +14,9 @@ class RequestFeature extends Model
         'name',
         'description',
     ];
+
+    public function tasks()
+    {
+        return $this->hasMany(RequestFeatureTask::class, 'request_feature_id', 'id');
+    }
 }
