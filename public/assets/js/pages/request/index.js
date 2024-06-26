@@ -71,7 +71,7 @@ $(function () {
 
     $('#request_table').on('click', '#btn-delete', function () {
         const _this = this;
-        $(_this).attr('data-progress', 'on');
+        $(_this).attr('data-kt-indicator', 'on');
         var key = $(_this).data('key');
         Swal.fire({
             title: 'Are you sure?',
@@ -116,7 +116,7 @@ $(function () {
                 })
             }
         }).then(function () {
-            $(_this).attr('data-progress', 'off');
+            $(_this).attr('data-kt-indicator', 'off');
         });
     });
 })

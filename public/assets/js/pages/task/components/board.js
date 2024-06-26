@@ -52,8 +52,8 @@ export default class Board {
             'title': `
                 <div class="d-flex align-items-center position-relative" data-item-key="${task.id}">
                     <div class="d-flex flex-column align-items-start">
-                        <span class="badge badge-light-success">${task.feature.name}</span>
-                        <span class="text-dark-50 mt-1" id="editable">${task.content}</span>
+                        <span class="badge badge-light-success" id="feature">${task.feature.name}</span>
+                        <span class="text-dark-50 mt-1" id="content">${task.content}</span>
                     </div>
                     <div class="position-absolute" style="top: -20px; right: 0;">
                         <button type="button" class="btn btn-icon btn-bg-light btn-active-color-danger w-20px h-20px p-0" data-key="${task.id}" id="btn-delete">

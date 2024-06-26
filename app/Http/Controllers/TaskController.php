@@ -2,15 +2,16 @@
 
 namespace App\Http\Controllers;
 
-use App\Domain\Services\Request\RequestService;
+use App\Domain\Services\Request\TaskService;
+use App\Http\Requests\Task\Feature\StoreRequest as FeatureStoreRequest;
 use App\Http\Requests\Task\StoreRequest;
+use App\Http\Requests\Task\UpdateRequest;
 use App\Models\Request\RequestFeatureTask;
-use Illuminate\Http\Request;
 
 class TaskController extends Controller
 {
     public function __construct(
-        protected RequestService $requestService
+        protected TaskService $taskService
     ) {
     }
 
@@ -21,7 +22,7 @@ class TaskController extends Controller
 
     public function datatable()
     {
-        $data = $this->requestService->getByTask();
+        $data = $this->taskService->getByTask();
         return datatables()->of($data)
             ->editColumn('application', function ($data) {
                 return $data->application->display_name;
@@ -44,28 +45,36 @@ class TaskController extends Controller
             ->make();
     }
 
+    public function datatableFeatures()
+    {
+        $data = $this->taskService->getFeatures();
+        return datatables()->of($data)
+            ->addIndexColumn()
+            ->make();
+    }
+
     public function show($key)
     {
         return view('task.show', [
-            'requestModel' => $this->requestService->findOrFailForTask($key),
-            'tasks' => $this->requestService->getTaskByRequest($key),
+            'requestModel' => $this->taskService->findOrFail($key),
+            'tasks' => $this->taskService->getTaskByRequest($key),
         ]);
     }
 
     public function store(StoreRequest $request)
     {
         try {
-            $task = $this->requestService->storeTask($request);
+            $task = $this->taskService->store($request);
             return response()->json($task);
         } catch (\Throwable $th) {
             throw $th;
         }
     }
 
-    public function update(Request $request, $key)
+    public function update(UpdateRequest $request, $key)
     {
         try {
-            $data = $this->requestService->updateTask($request, $key);
+            $data = $this->taskService->update($request, $key);
             return response()->json([
                 'message' => 'Task updated successfully',
                 'data' => $data,
@@ -93,9 +102,51 @@ class TaskController extends Controller
     public function destroy($key)
     {
         try {
-            $this->requestService->destroyTask($key);
+            $this->taskService->destroy($key);
             return response()->json([
                 'message' => 'Task deleted successfully',
+            ]);
+        } catch (\Throwable $th) {
+            throw $th;
+        }
+    }
+
+    public function storeFeature(FeatureStoreRequest $request)
+    {
+        try {
+            $feature = $this->taskService->storeFeature($request);
+            return response()->json([
+                'message' => 'Feature saved successfully',
+                'data' => [
+                    'key' => $feature->getKey(),
+                    'name' => $feature->name,
+                ]
+            ]);
+        } catch (\Throwable $th) {
+            throw $th;
+        }
+    }
+
+    public function editFeature($key)
+    {
+        try {
+            $feature = $this->taskService->findOrFailFeature($key);
+            return response()->json([
+                'key' => $feature->getKey(),
+                'name' => $feature->name,
+                'description' => $feature->description,
+            ]);
+        } catch (\Throwable $th) {
+            throw $th;
+        }
+    }
+
+    public function destroyFeature($key)
+    {
+        try {
+            $this->taskService->destroyFeature($key);
+            return response()->json([
+                'message' => 'Feature deleted successfully',
             ]);
         } catch (\Throwable $th) {
             throw $th;

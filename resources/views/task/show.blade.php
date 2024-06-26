@@ -22,15 +22,68 @@
         <div class="card mt-4">
             <div class="card-header">
                 <h3 class="card-title">{{ $requestModel->code }}</h3>
-                <div class="card-toolbar">
-                    <button type="button" class="btn btn-primary btn-sm ps-4" data-bs-toggle="modal"
-                        data-bs-target="#modal-feature">
-                        <i class="ki-duotone ki-plus fs-2"></i>Add Feature
-                    </button>
-                </div>
             </div>
-            <div class="card-body">
-                <div id="kt_docs_jkanban_rich" class="kanban-fixed-height scroll-y" data-kt-jkanban-height="350"></div>
+            <div class="card-body p-3">
+                <div class="accordion mb-4" id="accordian-feature">
+                    <div class="accordion-item">
+                        <h2 class="accordion-header" id="accordian-feature-header">
+                            <button class="accordion-button fs-4 fw-semibold" aria-expanded="true" type="button"
+                                data-bs-toggle="collapse" data-bs-target="#accordian-feature-body" aria-expanded="false"
+                                aria-controls="accordian-feature-body">
+                                Features
+                            </button>
+                        </h2>
+                        <div id="accordian-feature-body" class="accordion-collapse collapse show"
+                            aria-labelledby="accordian-feature-header" data-bs-parent="#accordian-feature">
+                            <div class="accordion-body">
+                                <div class="d-flex align-items-center justify-content-between">
+                                    <div class="d-flex align-items-center position-relative my-1">
+                                        <i class="ki-duotone ki-magnifier fs-3 position-absolute ms-5">
+                                            <span class="path1"></span>
+                                            <span class="path2"></span>
+                                        </i>
+                                        <input type="text" data-kt-access-table-filter="search"
+                                            class="form-control form-control-solid w-250px ps-13" placeholder="Search" />
+                                    </div>
+                                    <button type="button" class="btn btn-primary btn-sm ps-4" id="btn-add-feature"
+                                        data-bs-toggle="modal" data-bs-target="#modal-feature">
+                                        <i class="ki-duotone ki-plus fs-2"></i>Add Feature
+                                    </button>
+                                </div>
+                                <table class="table align-middle table-row-dashed fs-6 gy-5" id="featrures-table">
+                                    <thead>
+                                        <tr class="text-start text-gray-400 fw-bold fs-7 text-uppercase gs-0">
+                                            <th class="text-nowrap" style="max-width: 20px;">No</th>
+                                            <th class="text-nowrap">Name</th>
+                                            <th>Description</th>
+                                            <th class="text-end" style="max-width: 70px;">Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody class="fw-semibold text-gray-600">
+
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="accordion" id="accordian-task">
+                    <div class="accordion-item">
+                        <h2 class="accordion-header" id="accordian-task-header">
+                            <div class="accordion-button fs-4 fw-semibold" style="cursor: default !important;"
+                                aria-expanded="true" type="button" aria-expanded="false">
+                                Tasks
+                            </div>
+                        </h2>
+                        <div id="accordian-task-body" class="accordion-collapse collapse show"
+                            aria-labelledby="accordian-task-header" data-bs-parent="#accordian-task">
+                            <div class="accordion-body">
+                                <div id="kt_docs_jkanban_rich" class="kanban-fixed-height scroll-y"
+                                    data-kt-jkanban-height="350"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -105,6 +158,8 @@
 
                 <div class="modal-body">
                     <form action="" id="modal-form">
+                        <input type="hidden" name="key">
+                        <input type="hidden" name="request_id" value="{{ $requestModel->id }}">
                         <div class="row gap-2">
                             <div class="col-md-12">
                                 <label for="">Name</label>
@@ -120,7 +175,20 @@
 
                 <div class="modal-footer">
                     <button type="button" class="btn btn-light" data-bs-dismiss="modal">Close</button>
-                    <button type="button" class="btn btn-primary">Save changes</button>
+                    <button type="button" class="btn btn-primary ps-4" id="btn-save">
+                        <span class="indicator-label">
+                            <div class="d-flex align-items-center gap-2">
+                                <i class="ki-duotone ki-save-2 fs-2">
+                                    <i class="path1"></i>
+                                    <i class="path2"></i>
+                                </i>
+                                <span>Save changes</span>
+                            </div>
+                        </span>
+                        <span class="indicator-progress">
+                            Please wait... <span class="spinner-border spinner-border-sm align-middle ms-2"></span>
+                        </span>
+                    </button>
                 </div>
             </div>
         </div>
@@ -152,13 +220,20 @@
             --bs-text-opacity: 1;
             color: rgba(var(--bs-success-rgb), var(--bs-text-opacity)) !important;
         }
+
+        #accordian-task .accordion-button::after {
+            display: none;
+        }
     </style>
     <link rel="stylesheet" href="{{ asset('assets/plugins/custom/jkanban/jkanban.bundle.css') }}">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
+    <link rel="stylesheet" href="{{ asset('assets/plugins/custom/toastr/toastr.min.css') }}">
+    <link href="{{ asset('assets/plugins/custom/datatables/datatables.bundle.css') }}" rel="stylesheet"
+        type="text/css" />
 @endpush
 
 @push('js')
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+    <script src="{{ asset('assets/plugins/custom/toastr/toastr.min.js') }}"></script>
+    <script src="{{ asset('assets/plugins/custom/datatables/datatables.bundle.js') }}"></script>
     <script src="{{ asset('assets/plugins/custom/jkanban/jkanban.bundle.js') }}"></script>
     <script type="module" src="{{ asset('assets/js/pages/task/show.js') }}"></script>
 @endpush
