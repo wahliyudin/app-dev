@@ -18,6 +18,7 @@ class FileController extends Controller
         return view('applications.file', [
             'navItemActive' => NavItem::FILE,
             'application' => $this->fileService->findOrFail($id),
+            'attachments' => $this->fileService->getAttachments($id),
         ]);
     }
 }

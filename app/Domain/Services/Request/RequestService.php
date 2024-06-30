@@ -3,6 +3,7 @@
 namespace App\Domain\Services\Request;
 
 use App\Enums\Request\TypeRequest;
+use App\Enums\SvgTypeFile\TypeFile;
 use App\Enums\Workflows\Status;
 use App\Models\Request\Request;
 use App\Models\Request\RequestApplication;
@@ -71,7 +72,13 @@ class RequestService
                 foreach ($request->attachments as $attachment) {
                     $requestModel->attachments()->updateOrCreate(
                         ['name' => $attachment['name']],
-                        ['name' => $attachment['name'], 'original_name' => $attachment['original_name'], 'path' => 'storage/requests/' . $attachment['name']]
+                        [
+                            'name' => $attachment['name'],
+                            'original_name' => $attachment['original_name'],
+                            'path' => 'storage/requests/' . $attachment['name'],
+                            'type_file' => TypeFile::svg($attachment['name']),
+                            'display_name' => str(pathinfo($attachment['original_name'], PATHINFO_FILENAME))->ucfirst()->value(),
+                        ]
                     );
                     if (Storage::disk('public')->exists('requests/temp/' . $attachment['name'])) {
                         Storage::disk('public')->move('requests/temp/' . $attachment['name'], 'requests/' . $attachment['name']);

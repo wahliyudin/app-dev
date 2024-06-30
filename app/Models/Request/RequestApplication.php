@@ -28,4 +28,9 @@ class RequestApplication extends Model
     {
         return $this->logo ? asset('storage/' . $this->logo) : asset('assets/media/logos/tbu-crop.png');
     }
+
+    public function request()
+    {
+        return $this->hasOne(Request::class, 'application_id', 'id');
+    }
 }
