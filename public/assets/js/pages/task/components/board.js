@@ -52,7 +52,7 @@ export default class Board {
             'title': `
                 <div class="d-flex align-items-center position-relative" data-item-key="${task.id}">
                     <div class="d-flex flex-column align-items-start">
-                        <span class="badge badge-light-success" id="feature">${task.feature.name}</span>
+                        <span class="badge badge-light" id="feature">${task.feature.name}</span>
                         <span class="text-dark-50 mt-1" id="content">${task.content}</span>
                     </div>
                     <div class="position-absolute" style="top: -20px; right: 0;">

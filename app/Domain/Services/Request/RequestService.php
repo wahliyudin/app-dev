@@ -47,6 +47,7 @@ class RequestService
                     'department_id' => $request->department_id,
                     'name' => $request->application_name,
                     'display_name' => str($request->application_name)->ucfirst()->toString(),
+                    'due_date' => $request->estimated_project,
                 ]);
             }
             $requestModel = Request::query()->updateOrCreate([

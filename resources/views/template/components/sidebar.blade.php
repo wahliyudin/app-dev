@@ -33,7 +33,7 @@
                 data-kt-menu="true" data-kt-menu-expand="false">
                 {{-- @permission('request_read') --}}
                 <div class="menu-item">
-                    <a class="menu-link" href="">
+                    <a class="menu-link {{ request()->routeIs('home') ? 'active' : '' }}" href="{{ route('home') }}">
                         <span class="menu-icon">
                             <i class="ki-duotone ki-home-2 fs-2">
                                 <i class="path1"></i>
@@ -151,6 +151,18 @@
                     </a>
                 </div>
                 {{-- @endpermission --}}
+                <div class="menu-item">
+                    <a class="menu-link {{ request()->routeIs('applications.*') ? 'active' : '' }}"
+                        href="{{ route('applications.my-app.index') }}">
+                        <span class="menu-icon">
+                            <i class="ki-duotone ki-abstract-41 fs-2">
+                                <span class="path1"></span>
+                                <span class="path2"></span>
+                            </i>
+                        </span>
+                        <span class="menu-title">Applications</span>
+                    </a>
+                </div>
                 @permission('setting_access_permission_read')
                     <div data-kt-menu-trigger="click" class="menu-item menu-accordion">
                         <span class="menu-link">
