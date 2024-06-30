@@ -23,4 +23,9 @@ class RequestApplication extends Model
     protected $casts = [
         'status' => Status::class,
     ];
+
+    public function logo(): string
+    {
+        return $this->logo ? asset('storage/' . $this->logo) : asset('assets/media/logos/tbu-crop.png');
+    }
 }

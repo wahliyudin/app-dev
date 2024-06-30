@@ -137,8 +137,7 @@
                         <div class="card-header border-0 pt-9">
                             <div class="card-title m-0">
                                 <div class="symbol symbol-50px w-50px bg-light">
-                                    <img src="{{ $app->logo ? asset('storage/applications/logo/' . $app->logo) : asset('assets/media/logos/tbu-crop.png') }}"
-                                        alt="image" class="p-3" />
+                                    <img src="{{ $app->logo() }}" alt="image" class="p-3" />
                                 </div>
                             </div>
                             <div class="card-toolbar">
@@ -150,7 +149,7 @@
                                 {{ $app->name }}
                             </div>
                             <p class="text-gray-400 fw-semibold fs-5 mt-1 mb-7">
-                                {{ $app->description }}
+                                {{ \Illuminate\Support\Str::limit($app->description, 100) }}
                             </p>
                             <div class="d-flex flex-wrap mb-5">
                                 <div class="border border-gray-300 border-dashed rounded min-w-125px py-3 px-4 me-7 mb-3">

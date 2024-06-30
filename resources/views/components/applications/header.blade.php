@@ -3,23 +3,21 @@
         <div class="d-flex flex-wrap flex-sm-nowrap mb-6">
             <div
                 class="d-flex flex-center flex-shrink-0 bg-light rounded w-100px h-100px w-lg-150px h-lg-150px me-7 mb-4">
-                <img class="mw-50px mw-lg-75px" src="../../assets/media/svg/brand-logos/volicity-9.svg" alt="image" />
+                <img class="mw-50px mw-lg-75px" src="{{ $application->logo() }}" alt="image" />
             </div>
 
             <div class="flex-grow-1">
                 <div class="d-flex justify-content-between align-items-start flex-wrap mb-2">
                     <div class="d-flex flex-column">
                         <div class="d-flex align-items-center mb-1">
-                            <a href="#" class="text-gray-800 text-hover-primary fs-2 fw-bold me-3">
-                                CRM Dashboard
+                            <a href="" class="text-gray-800 text-hover-primary fs-2 fw-bold me-3">
+                                {{ $application->display_name }}
                             </a>
                         </div>
                     </div>
 
                     <div class="d-flex mb-4">
-                        <span class="badge badge-light-success fs-6 me-auto">In
-                            Progress
-                        </span>
+                        {!! $application->status->badge() !!}
                     </div>
                 </div>
 
@@ -27,7 +25,9 @@
                     <div class="d-flex flex-wrap">
                         <div class="border border-gray-300 border-dashed rounded min-w-125px py-3 px-4 me-6 mb-3">
                             <div class="d-flex align-items-center">
-                                <div class="fs-4 fw-bold">29 Januari, 2023</div>
+                                <div class="fs-4 fw-bold">
+                                    {{ \Carbon\Carbon::parse($application->due_date)->translatedFormat('d F, Y') }}
+                                </div>
                             </div>
 
                             <div class="fw-semibold fs-6 text-gray-400">Due Date</div>

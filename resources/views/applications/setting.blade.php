@@ -31,7 +31,8 @@
                 <div class="card-title fs-3 fw-bold">Project Settings</div>
             </div>
 
-            <form id="kt_project_settings_form" class="form">
+            <form id="form-setting" class="form" enctype="multipart/form-data">
+                <input type="hidden" name="key" value="{{ $application->getKey() }}">
                 <div class="card-body p-9">
                     <div class="row mb-5">
                         <div class="col-xl-3">
@@ -41,7 +42,7 @@
                             <div class="image-input image-input-outline" data-kt-image-input="true"
                                 style="background-image: url('../../assets/media/svg/avatars/blank.svg')">
                                 <div class="image-input-wrapper w-125px h-125px bgi-position-center"
-                                    style="background-size: 75%; background-image: url('../../assets/media/svg/brand-logos/volicity-9.svg')">
+                                    style="background-size: 75%; background-image: url({{ $application->logo() }})">
                                 </div>
                                 <label
                                     class="btn btn-icon btn-circle btn-active-color-primary w-25px h-25px bg-white shadow"
@@ -76,17 +77,8 @@
                             <div class="fs-6 fw-semibold mt-2 mb-3">Project Name</div>
                         </div>
                         <div class="col-xl-9 fv-row">
-                            <input type="text" class="form-control form-control-solid" name="name"
-                                value="9 Degree Award" />
-                        </div>
-                    </div>
-                    <div class="row mb-8">
-                        <div class="col-xl-3">
-                            <div class="fs-6 fw-semibold mt-2 mb-3">Project Type</div>
-                        </div>
-                        <div class="col-xl-9 fv-row">
-                            <input type="text" class="form-control form-control-solid" name="type"
-                                value="Client Relationship" />
+                            <input type="text" class="form-control form-control-solid" name="display_name"
+                                value="{{ $application->display_name }}" />
                         </div>
                     </div>
                     <div class="row mb-8">
@@ -94,7 +86,7 @@
                             <div class="fs-6 fw-semibold mt-2 mb-3">Project Description</div>
                         </div>
                         <div class="col-xl-9 fv-row">
-                            <textarea name="description" class="form-control form-control-solid h-100px">Organize your thoughts with an outline. Here's the outlining strategy I use. I promise it works like a charm. Not only will it make writing your blog post easier, it'll help you make your message</textarea>
+                            <textarea name="description" class="form-control form-control-solid h-100px">{{ $application->description }}</textarea>
                         </div>
                     </div>
                     <div class="row mb-8">
@@ -111,30 +103,8 @@
                                     <span class="path5"></span>
                                     <span class="path6"></span>
                                 </i>
-                                <input class="form-control form-control-solid ps-12" name="date"
-                                    placeholder="Pick a date" id="kt_datepicker_1" />
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row mb-8">
-                        <div class="col-xl-3">
-                            <div class="fs-6 fw-semibold mt-2 mb-3">Notifications</div>
-                        </div>
-                        <div class="col-xl-9">
-                            <div class="d-flex fw-semibold h-100">
-                                <div class="form-check form-check-custom form-check-solid me-9">
-                                    <input class="form-check-input" type="checkbox" value="" id="email" />
-                                    <label class="form-check-label ms-3" for="email">
-                                        Email
-                                    </label>
-                                </div>
-                                <div class="form-check form-check-custom form-check-solid">
-                                    <input class="form-check-input" type="checkbox" value="" id="phone"
-                                        checked="checked" />
-                                    <label class="form-check-label ms-3" for="phone">
-                                        Phone
-                                    </label>
-                                </div>
+                                <input class="form-control form-control-solid ps-12" name="due_date"
+                                    placeholder="Pick a date" id="due_date" value="{{ $application->due_date }}" />
                             </div>
                         </div>
                     </div>
@@ -143,20 +113,32 @@
                             <div class="fs-6 fw-semibold mt-2 mb-3">Status</div>
                         </div>
                         <div class="col-xl-9">
-                            <div class="form-check form-switch form-check-custom form-check-solid">
-                                <input class="form-check-input" type="checkbox" value="" id="status"
-                                    name="status" checked="checked" />
-                                <label class="form-check-label  fw-semibold text-gray-400 ms-3" for="status">
-                                    Active
-                                </label>
-                            </div>
+                            <select name="status" data-control="select2" data-hide-search="true"
+                                class="form-select form-select-solid">
+                                @foreach (\App\Enums\Request\Application\Status::cases() as $status)
+                                    <option @selected($application->status == $status) value="{{ $status->value }}">
+                                        {{ $status->label() }}
+                                    </option>
+                                @endforeach
+                            </select>
                         </div>
                     </div>
                 </div>
                 <div class="card-footer d-flex justify-content-end py-6 px-9">
-                    <button type="reset" class="btn btn-light btn-active-light-primary me-2">Discard</button>
-
-                    <button type="submit" class="btn btn-primary" id="kt_project_settings_submit">Save Changes</button>
+                    <button type="button" class="btn btn-primary ps-4" id="btn-save">
+                        <span class="indicator-label">
+                            <div class="d-flex align-items-center gap-2">
+                                <i class="ki-duotone ki-save-2 fs-2">
+                                    <i class="path1"></i>
+                                    <i class="path2"></i>
+                                </i>
+                                <span>Save Changes</span>
+                            </div>
+                        </span>
+                        <span class="indicator-progress">
+                            Please wait... <span class="spinner-border spinner-border-sm align-middle ms-2"></span>
+                        </span>
+                    </button>
                 </div>
             </form>
         </div>
