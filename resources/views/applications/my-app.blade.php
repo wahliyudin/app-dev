@@ -137,7 +137,7 @@
             @forelse ($applications as $app)
                 <div class="col-md-6 col-xl-4">
                     <a href="{{ route('applications.view-app.index', $app->id) }}" class="card border-hover-primary ">
-                        <div class="card-header border-0 pt-9">
+                        <div class="card-header border-0 p-6">
                             <div class="card-title m-0">
                                 <div class="symbol symbol-50px w-50px bg-light">
                                     <img src="{{ $app->logo() }}" alt="image" class="p-3" />
@@ -147,30 +147,83 @@
                                 {!! $app->status->badge() !!}
                             </div>
                         </div>
-                        <div class="card-body p-9">
+                        <div class="card-body p-6">
                             <div class="fs-3 fw-bold text-dark">
                                 {{ $app->name }}
                             </div>
                             <p class="text-gray-400 fw-semibold fs-5 mt-1 mb-7">
                                 {{ \Illuminate\Support\Str::limit($app->description, 100) }}
                             </p>
-                            <div class="d-flex flex-wrap mb-5">
-                                <div class="border border-gray-300 border-dashed rounded min-w-125px py-3 px-4 me-7 mb-3">
+                            @php
+                                $totalOpen = $app->request?->features?->sum('total_open') ?? 0;
+                                $totalProgress = $app->request?->features?->sum('total_progress') ?? 0;
+                                $totalDone = $app->request?->features?->sum('total_done') ?? 0;
+                                $total = $totalOpen + $totalProgress + $totalDone;
+                                $progress = $total ? round(($totalDone / $total) * 100) : 0;
+                            @endphp
+                            <div class="d-flex flex-wrap mb-5 gap-4">
+                                <div class="border border-gray-300 border-dashed rounded min-w-125px py-3 px-4">
                                     <div class="fs-6 text-gray-800 fw-bold">
                                         {{ \Carbon\Carbon::parse($app->due_date)->translatedFormat('M d, Y') }}
                                     </div>
                                     <div class="fw-semibold text-gray-400">Due Date</div>
                                 </div>
+                                <div class="border border-gray-300 border-dashed rounded min-w-125px py-3 px-4">
+                                    <div class="d-flex align-items-center">
+                                        <i class="ki-duotone ki-abstract-26 fs-3 text-secondary me-2">
+                                            <span class="path1"></span>
+                                            <span class="path2"></span>
+                                        </i>
+                                        <div class="fs-6 fw-bold" data-kt-countup="true"
+                                            data-kt-countup-value="{{ $totalOpen }}">
+                                            0
+                                        </div>
+                                    </div>
+
+                                    <div class="fw-semibold fs-8 text-gray-400">Open Tasks</div>
+                                </div>
+
+                                <div class="border border-gray-300 border-dashed rounded min-w-125px py-3 px-4">
+                                    <div class="d-flex align-items-center">
+                                        <i class="ki-duotone ki-abstract-26 fs-3 text-warning me-2">
+                                            <span class="path1"></span>
+                                            <span class="path2"></span>
+                                        </i>
+                                        <div class="fs-6 fw-bold" data-kt-countup="true"
+                                            data-kt-countup-value="{{ $totalProgress }}">
+                                            0
+                                        </div>
+                                    </div>
+                                    <div class="fw-semibold fs-8 text-gray-400">In Progress Tasks</div>
+                                </div>
+
+                                <div class="border border-gray-300 border-dashed rounded min-w-125px py-3 px-4">
+                                    <div class="d-flex align-items-center">
+                                        <i class="ki-duotone ki-abstract-26 fs-3 text-success me-2">
+                                            <span class="path1"></span>
+                                            <span class="path2"></span>
+                                        </i>
+                                        <div class="fs-6 fw-bold" data-kt-countup="true"
+                                            data-kt-countup-value="{{ $totalDone }}">
+                                            0
+                                        </div>
+                                    </div>
+                                    <div class="fw-semibold fs-8 text-gray-400">Done Tasks</div>
+                                </div>
                             </div>
-                            @php
-                                $totalOpen = $app->request?->features?->sum('total_open') ?? 0;
-                                $totalProgress = $app->request?->features?->sum('total_progress') ?? 0;
-                                $totalDone = $app->request?->features?->sum('total_done') ?? 0;
-                                $progress = round(($totalDone / ($totalOpen + $totalProgress + $totalDone)) * 100);
-                            @endphp
+
                             <div class="h-4px w-100 bg-light mb-5" data-bs-toggle="tooltip"
                                 title="This project {{ $progress }}% completed">
-                                <div class="bg-primary rounded h-4px" role="progressbar"
+                                @php
+                                    $color = 'bg-primary';
+                                    if ($progress < 50) {
+                                        $color = 'bg-warning';
+                                    }
+                                    if ($progress >= 80) {
+                                        $color = 'bg-success';
+                                    }
+                                @endphp
+                                <div class="{{ $color }} rounded h-4px" role="progressbar"
                                     style="width: {{ $progress }}%" aria-valuenow="{{ $progress }}"
                                     aria-valuemin="0" aria-valuemax="100"></div>
                             </div>

@@ -20,7 +20,7 @@ return new class extends Migration
             $table->string('logo')->nullable();
             $table->date('due_date')->nullable();
             $table->text('description')->nullable();
-            $table->string('status')->default(Status::ACTIVE);
+            $table->string('status')->default(Status::YET_TO_START->value);
             $table->timestamps();
         });
     }

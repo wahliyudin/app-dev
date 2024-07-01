@@ -81,7 +81,7 @@ $(function () {
                     response.message,
                     'success'
                 ).then(function () {
-                    location.reload();
+                    location = '/outstandings/requests';
                 });
             },
             error: function (jqXHR, xhr, textStatus, errorThrow, exception) {
