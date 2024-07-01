@@ -26,6 +26,7 @@
 @section('content')
     <div id="kt_app_content_container" class="app-container container-fluid">
         <x-applications.header :navItemActive="$navItemActive" :application="$application" />
+        <input type="hidden" name="request_id" value="{{ $application->request?->id }}">
         <div class="row g-6 g-xl-9">
             <div class="col-lg-6">
                 <div class="card card-flush h-lg-100">

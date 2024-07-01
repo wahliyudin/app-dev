@@ -23,27 +23,33 @@
             <div class="col-lg-6 col-xxl-4">
                 <div class="card h-100">
                     <div class="card-body p-4">
-                        <div class="fs-2hx fw-bold">237</div>
+                        <div class="fs-2hx fw-bold">{{ $currentApp->total }}</div>
                         <div class="fs-4 fw-semibold text-gray-400 mb-7">Current Applications</div>
                         <div class="d-flex flex-wrap">
                             <div class="d-flex flex-center h-100px w-100px me-9 mb-5">
                                 <canvas id="kt_project_list_chart"></canvas>
+                                <input type="hidden" name="current_app" value="{{ json_encode($currentApp) }}">
                             </div>
-                            <div class="d-flex flex-column justify-content-center flex-row-fluid pe-11 mb-5">
-                                <div class="d-flex fs-6 fw-semibold align-items-center mb-3">
+                            <div class="d-flex flex-column justify-content-center flex-row-fluid pe-11 mb-5 gap-3">
+                                <div class="d-flex fs-6 fw-semibold align-items-center">
                                     <div class="bullet bg-primary me-3"></div>
-                                    <div class="text-gray-400">Active</div>
-                                    <div class="ms-auto fw-bold text-gray-700">30</div>
+                                    <div class="text-gray-400">In Progress</div>
+                                    <div class="ms-auto fw-bold text-gray-700">{{ $currentApp->in_progress }}</div>
                                 </div>
-                                <div class="d-flex fs-6 fw-semibold align-items-center mb-3">
+                                <div class="d-flex fs-6 fw-semibold align-items-center">
                                     <div class="bullet bg-success me-3"></div>
                                     <div class="text-gray-400">Completed</div>
-                                    <div class="ms-auto fw-bold text-gray-700">45</div>
+                                    <div class="ms-auto fw-bold text-gray-700">{{ $currentApp->completed }}</div>
                                 </div>
                                 <div class="d-flex fs-6 fw-semibold align-items-center">
                                     <div class="bullet bg-gray-300 me-3"></div>
                                     <div class="text-gray-400">Yet to start</div>
-                                    <div class="ms-auto fw-bold text-gray-700">25</div>
+                                    <div class="ms-auto fw-bold text-gray-700">{{ $currentApp->yet_to_start }}</div>
+                                </div>
+                                <div class="d-flex fs-6 fw-semibold align-items-center">
+                                    <div class="bullet bg-warning me-3"></div>
+                                    <div class="text-gray-400">Pending</div>
+                                    <div class="ms-auto fw-bold text-gray-700">{{ $currentApp->pending }}</div>
                                 </div>
                             </div>
                         </div>
@@ -56,11 +62,7 @@
                         <div class="card-title flex-column">
                             <h3 class="fw-bold mb-1">Tasks Summary</h3>
 
-                            <div class="fs-6 fw-semibold text-gray-400">24 Overdue Tasks</div>
-                        </div>
-
-                        <div class="card-toolbar">
-                            <a href="#" class="btn btn-light btn-sm">View Tasks</a>
+                            <div class="fs-6 fw-semibold text-gray-400">{{ $taskSummary->overdue }} Overdue Tasks</div>
                         </div>
                     </div>
 
@@ -69,37 +71,38 @@
                             <div class="position-relative d-flex flex-center h-175px w-175px me-15 mb-7">
                                 <div
                                     class="position-absolute translate-middle start-50 top-50 d-flex flex-column flex-center">
-                                    <span class="fs-2qx fw-bold">237</span>
+                                    <span class="fs-2qx fw-bold">{{ $taskSummary->total }}</span>
                                     <span class="fs-6 fw-semibold text-gray-400">Total
                                         Tasks</span>
                                 </div>
 
                                 <canvas id="project_overview_chart"></canvas>
+                                <input type="hidden" name="task_summary" value="{{ json_encode($taskSummary) }}">
                             </div>
 
-                            <div class="d-flex flex-column justify-content-center flex-row-fluid pe-11 mb-5">
-                                <div class="d-flex fs-6 fw-semibold align-items-center mb-3">
+                            <div class="d-flex flex-column justify-content-center flex-row-fluid pe-11 mb-5 gap-3">
+                                <div class="d-flex fs-6 fw-semibold align-items-center">
                                     <div class="bullet bg-primary me-3"></div>
-                                    <div class="text-gray-400">Active</div>
-                                    <div class="ms-auto fw-bold text-gray-700">30</div>
+                                    <div class="text-gray-400">In Progress</div>
+                                    <div class="ms-auto fw-bold text-gray-700">{{ $taskSummary->in_progress }}</div>
                                 </div>
 
-                                <div class="d-flex fs-6 fw-semibold align-items-center mb-3">
+                                <div class="d-flex fs-6 fw-semibold align-items-center">
                                     <div class="bullet bg-success me-3"></div>
                                     <div class="text-gray-400">Completed</div>
-                                    <div class="ms-auto fw-bold text-gray-700">45</div>
-                                </div>
-
-                                <div class="d-flex fs-6 fw-semibold align-items-center mb-3">
-                                    <div class="bullet bg-danger me-3"></div>
-                                    <div class="text-gray-400">Overdue</div>
-                                    <div class="ms-auto fw-bold text-gray-700">0</div>
+                                    <div class="ms-auto fw-bold text-gray-700">{{ $taskSummary->done }}</div>
                                 </div>
 
                                 <div class="d-flex fs-6 fw-semibold align-items-center">
                                     <div class="bullet bg-gray-300 me-3"></div>
                                     <div class="text-gray-400">Yet to start</div>
-                                    <div class="ms-auto fw-bold text-gray-700">25</div>
+                                    <div class="ms-auto fw-bold text-gray-700">{{ $taskSummary->notting }}</div>
+                                </div>
+
+                                <div class="d-flex fs-6 fw-semibold align-items-center">
+                                    <div class="bullet bg-danger me-3"></div>
+                                    <div class="text-gray-400">Overdue</div>
+                                    <div class="ms-auto fw-bold text-gray-700">{{ $taskSummary->overdue }}</div>
                                 </div>
                             </div>
                         </div>
@@ -159,24 +162,26 @@
                                     <div class="fw-semibold text-gray-400">Due Date</div>
                                 </div>
                             </div>
+                            @php
+                                $totalOpen = $app->request?->features?->sum('total_open') ?? 0;
+                                $totalProgress = $app->request?->features?->sum('total_progress') ?? 0;
+                                $totalDone = $app->request?->features?->sum('total_done') ?? 0;
+                                $progress = round(($totalDone / ($totalOpen + $totalProgress + $totalDone)) * 100);
+                            @endphp
                             <div class="h-4px w-100 bg-light mb-5" data-bs-toggle="tooltip"
-                                title="This project 50% completed">
-                                <div class="bg-primary rounded h-4px" role="progressbar" style="width: 50%"
-                                    aria-valuenow=" 50" aria-valuemin="0" aria-valuemax="100"></div>
+                                title="This project {{ $progress }}% completed">
+                                <div class="bg-primary rounded h-4px" role="progressbar"
+                                    style="width: {{ $progress }}%" aria-valuenow="{{ $progress }}"
+                                    aria-valuemin="0" aria-valuemax="100"></div>
                             </div>
                             <div class="symbol-group symbol-hover">
-                                <div class="symbol symbol-35px symbol-circle" data-bs-toggle="tooltip"
-                                    title="Emma Smith">
-                                    <img alt="Pic" src="../../assets/media/avatars/300-6.jpg" />
-                                </div>
-                                <div class="symbol symbol-35px symbol-circle" data-bs-toggle="tooltip"
-                                    title="Rudy Stone">
-                                    <img alt="Pic" src="../../assets/media/avatars/300-1.jpg" />
-                                </div>
-                                <div class="symbol symbol-35px symbol-circle" data-bs-toggle="tooltip"
-                                    title="Susan Redwood">
-                                    <span class="symbol-label bg-primary text-inverse-primary fw-bold">S</span>
-                                </div>
+                                @foreach ($app->request?->developers ?? [] as $developer)
+                                    <div class="symbol symbol-35px symbol-circle" data-bs-toggle="tooltip"
+                                        title="{{ $developer->developer?->nama_karyawan }}">
+                                        <img alt="Pic"
+                                            src="{{ \App\Data\Applications\TaskDto::avatar($developer->developer?->identity?->avatar) }}" />
+                                    </div>
+                                @endforeach
                             </div>
                         </div>
                     </a>

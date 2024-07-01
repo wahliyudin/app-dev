@@ -21,9 +21,10 @@ class FeatureService extends ApplicationService
         });
     }
 
-    public function getFeatures()
+    public function getFeatures($requestId)
     {
         return RequestFeature::query()
+            ->where('request_id', $requestId)
             ->latest()
             ->get();
     }

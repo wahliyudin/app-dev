@@ -2,6 +2,7 @@
 
 var viewApp = function () {
     var chart;
+    var requestId;
     var primary = KTUtil.getCssVariableValue('--bs-primary');
     var lightPrimary = KTUtil.getCssVariableValue('--bs-primary-light');
     var success = KTUtil.getCssVariableValue('--bs-success');
@@ -199,7 +200,7 @@ var viewApp = function () {
         chart.render();
         function refreshGraph(year = null, quarter = null) {
             $.ajax({
-                url: "/applications/view-app/task-overtime",
+                url: `/applications/${requestId}/view-app/task-overtime`,
                 type: "POST",
                 data: {
                     year,
@@ -242,6 +243,7 @@ var viewApp = function () {
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                 }
             });
+            requestId = $('input[name="request_id"]').val();
             initChart();
             initGraph();
         }

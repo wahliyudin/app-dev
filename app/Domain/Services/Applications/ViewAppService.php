@@ -8,46 +8,13 @@ use App\Models\Request\RequestFeatureTask;
 
 class ViewAppService extends ApplicationService
 {
-    public function getTaskSummary($requestId)
+    public function getTaskOvertime($requestId, $year, $quarter)
     {
+        list($startDate, $endDate) = quarterDateRange($quarter, $year);
         $tasks = RequestFeatureTask::query()
             ->whereHas('feature', function ($query) use ($requestId) {
                 $query->where('request_id', $requestId);
             })
-            ->get();
-        $now = now()->format('Y-m-d');
-        $totalTasks = $tasks->count();
-        $totalNotting = $tasks->filter(function ($task) use ($now) {
-            return $task->status->isNotting() && $task->due_date >= $now;
-        })->count();
-        $totalInProgress = $tasks->filter(function ($task) use ($now) {
-            return $task->status->isInProgress() && $task->due_date >= $now;
-        })->count();
-        $totalDone = $tasks->filter(function ($task) use ($now) {
-            return $task->status->isDone();
-        })->count();
-        $totalOverdue = $tasks->filter(function ($task) use ($now) {
-            return $task->due_date < $now && !$task->status->isDone();
-        })->count();
-        $totalNottingPercentage = $totalTasks === 0 ? 0 : round(($totalNotting / $totalTasks) * 100, 2);
-        $totalInProgressPercentage = $totalTasks === 0 ? 0 : round(($totalInProgress / $totalTasks) * 100, 2);
-        $totalDonePercentage = $totalTasks === 0 ? 0 : round(($totalDone / $totalTasks) * 100, 2);
-        $totalOverduePercentage = $totalTasks === 0 ? 0 : round(($totalOverdue / $totalTasks) * 100, 2);
-
-        return (object) [
-            'total' => $totalTasks,
-            'notting' => $totalNotting,
-            'in_progress' => $totalInProgress,
-            'done' => $totalDone,
-            'overdue' => $totalOverdue,
-            'data' => [$totalInProgressPercentage, $totalDonePercentage, $totalNottingPercentage, $totalOverduePercentage],
-        ];
-    }
-
-    public function getTaskOvertime($year, $quarter)
-    {
-        list($startDate, $endDate) = quarterDateRange($quarter, $year);
-        $tasks = RequestFeatureTask::query()
             ->whereBetween('created_at', [$startDate, $endDate])
             ->get();
 
@@ -119,12 +86,16 @@ class ViewAppService extends ApplicationService
             ->with(['developer' => function ($query) {
                 $query->select('nik', 'nama_karyawan')
                     ->with('identity:nik,avatar');
-            }, 'user' => function ($query) {
+            }, 'user' => function ($query) use ($requestId) {
                 $query->select('nik', 'name')
-                    ->withCount(['tasks as total_task_open' => function ($query) {
-                        $query->whereIn('status', [Status::NOTTING, Status::IN_PROGRESS]);
-                    }, 'tasks as total_task_done' => function ($query) {
-                        $query->whereIn('status', [Status::DONE]);
+                    ->withCount(['tasks as total_task_open' => function ($query) use ($requestId) {
+                        $query->whereHas('feature', function ($query) use ($requestId) {
+                            $query->where('request_id', $requestId);
+                        })->whereIn('status', [Status::NOTTING, Status::IN_PROGRESS]);
+                    }, 'tasks as total_task_done' => function ($query) use ($requestId) {
+                        $query->whereHas('feature', function ($query) use ($requestId) {
+                            $query->where('request_id', $requestId);
+                        })->whereIn('status', [Status::DONE]);
                     }]);
             }])
             ->get();

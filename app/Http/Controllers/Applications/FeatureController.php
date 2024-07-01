@@ -6,6 +6,7 @@ use App\Domain\Services\Applications\FeatureService;
 use App\Enums\Applications\NavItem;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Applications\Feature\StoreRequest;
+use Illuminate\Http\Request;
 
 class FeatureController extends Controller
 {
@@ -22,9 +23,9 @@ class FeatureController extends Controller
         ]);
     }
 
-    public function datatable()
+    public function datatable($id)
     {
-        $data = $this->featureService->getFeatures();
+        $data = $this->featureService->getFeatures($id);
         return datatables()->of($data)
             ->addIndexColumn()
             ->make();

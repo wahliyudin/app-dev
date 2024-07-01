@@ -26,11 +26,11 @@ class ViewAppController extends Controller
         ]);
     }
 
-    public function taskOvertime(Request $request)
+    public function taskOvertime(Request $request, $id)
     {
         try {
             return response()->json([
-                'data' => $this->viewAppService->getTaskOvertime($request->year, $request->quarter),
+                'data' => $this->viewAppService->getTaskOvertime($id, $request->year, $request->quarter),
             ]);
         } catch (\Throwable $th) {
             throw $th;

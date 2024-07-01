@@ -9,7 +9,7 @@ use Illuminate\Http\Request;
 class MyAppController extends Controller
 {
     public function __construct(
-        private MyAppService $myAppService
+        private MyAppService $myAppService,
     ) {
     }
 
@@ -18,6 +18,8 @@ class MyAppController extends Controller
         $status = $request->get('status') == 'all' ? null : $request->get('status');
         return view('applications.my-app', [
             'applications' => $this->myAppService->getApps($status),
+            'currentApp' => $this->myAppService->getCurrentApp(),
+            'taskSummary' => $this->myAppService->getTaskSummary(),
         ]);
     }
 }

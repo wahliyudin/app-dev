@@ -4,6 +4,7 @@ namespace App\Domain\Services\Applications;
 
 use App\Enums\Request\Task\Status;
 use App\Models\Request\RequestApplication;
+use App\Models\Request\RequestFeatureTask;
 
 class ApplicationService
 {
@@ -28,5 +29,43 @@ class ApplicationService
                     }]);
             }])
             ->findOrFail($id);
+    }
+
+    public function getTaskSummary($requestId = null)
+    {
+        $tasks = RequestFeatureTask::query()
+            ->when($requestId, function ($query) use ($requestId) {
+                $query->whereHas('feature', function ($query) use ($requestId) {
+                    $query->where('request_id', $requestId);
+                });
+            })
+            ->get();
+        $now = now()->format('Y-m-d');
+        $totalTasks = $tasks->count();
+        $totalNotting = $tasks->filter(function ($task) use ($now) {
+            return $task->status->isNotting() && $task->due_date >= $now;
+        })->count();
+        $totalInProgress = $tasks->filter(function ($task) use ($now) {
+            return $task->status->isInProgress() && $task->due_date >= $now;
+        })->count();
+        $totalDone = $tasks->filter(function ($task) use ($now) {
+            return $task->status->isDone();
+        })->count();
+        $totalOverdue = $tasks->filter(function ($task) use ($now) {
+            return $task->due_date < $now && !$task->status->isDone();
+        })->count();
+        $totalNottingPercentage = $totalTasks === 0 ? 0 : round(($totalNotting / $totalTasks) * 100, 2);
+        $totalInProgressPercentage = $totalTasks === 0 ? 0 : round(($totalInProgress / $totalTasks) * 100, 2);
+        $totalDonePercentage = $totalTasks === 0 ? 0 : round(($totalDone / $totalTasks) * 100, 2);
+        $totalOverduePercentage = $totalTasks === 0 ? 0 : round(($totalOverdue / $totalTasks) * 100, 2);
+
+        return (object) [
+            'total' => $totalTasks,
+            'notting' => $totalNotting,
+            'in_progress' => $totalInProgress,
+            'done' => $totalDone,
+            'overdue' => $totalOverdue,
+            'data' => [$totalInProgressPercentage, $totalDonePercentage, $totalNottingPercentage, $totalOverduePercentage],
+        ];
     }
 }
