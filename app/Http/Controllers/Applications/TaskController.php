@@ -5,6 +5,9 @@ namespace App\Http\Controllers\Applications;
 use App\Domain\Services\Applications\TaskService;
 use App\Enums\Applications\NavItem;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Applications\Task\StoreRequest;
+use App\Http\Requests\Applications\Task\UpdateRequest;
+use App\Models\Request\RequestFeatureTask;
 
 class TaskController extends Controller
 {
@@ -15,9 +18,61 @@ class TaskController extends Controller
 
     public function index($id)
     {
+        $app = $this->taskService->findOrFail($id);
         return view('applications.task', [
             'navItemActive' => NavItem::TASK,
-            'application' => $this->taskService->findOrFail($id),
+            'application' => $app,
+            'tasks' => $this->taskService->getTaskByRequest($app->request?->id),
         ]);
+    }
+
+    public function store(StoreRequest $request)
+    {
+        try {
+            $task = $this->taskService->store($request);
+            return response()->json($task);
+        } catch (\Throwable $th) {
+            throw $th;
+        }
+    }
+
+    public function update(UpdateRequest $request, $key)
+    {
+        try {
+            $data = $this->taskService->update($request, $key);
+            return response()->json([
+                'message' => 'Task updated successfully',
+                'data' => $data,
+            ]);
+        } catch (\Throwable $th) {
+            throw $th;
+        }
+    }
+
+    public function edit($key)
+    {
+        try {
+            $task = RequestFeatureTask::with('feature')->findOrFail($key);
+            return response()->json([
+                'key' => $task->getKey(),
+                'status' => $task->status->id(),
+                'content' => $task->content,
+                'feature_id' => $task->feature->getKey(),
+            ]);
+        } catch (\Throwable $th) {
+            throw $th;
+        }
+    }
+
+    public function destroy($key)
+    {
+        try {
+            $this->taskService->destroy($key);
+            return response()->json([
+                'message' => 'Task deleted successfully',
+            ]);
+        } catch (\Throwable $th) {
+            throw $th;
+        }
     }
 }
