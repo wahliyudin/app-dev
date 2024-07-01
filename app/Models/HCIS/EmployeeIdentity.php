@@ -2,6 +2,7 @@
 
 namespace App\Models\HCIS;
 
+use App\Data\Applications\TaskDto;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 

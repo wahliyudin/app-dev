@@ -5,6 +5,8 @@ namespace App\Models;
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 
 use App\Models\HCIS\Employee;
+use App\Models\Request\RequestFeatureTask;
+use App\Models\Request\RequestTaskDeveloper;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -59,5 +61,10 @@ class User extends Authenticatable implements LaratrustUser
     public function employee()
     {
         return $this->belongsTo(Employee::class, 'nik', 'nik');
+    }
+
+    public function tasks()
+    {
+        return $this->hasManyThrough(RequestFeatureTask::class, RequestTaskDeveloper::class, 'nik', 'id', 'nik', 'request_feature_task_id');
     }
 }

@@ -93,13 +93,11 @@ $(function () {
                         toastr.error(jqXHR?.responseJSON?.message, `Failed moved`, { timeOut: 5000, progressBar: true, closeButton: true, })
                         kanban.removeElement(el);
                         const item = board.item({
-                            id: $(el).find('[data-item-key]').data('item-key'),
+                            key: $(el).find('[data-item-key]').data('item-key'),
                             content: $(el).find('#content').text(),
                             status: $(el).find('#due_date').data('status'),
                             due_date: $(el).find('#due_date').data('date'),
-                            feature: {
-                                name: $(el).find('#feature').text(),
-                            }
+                            feature_name: $(el).find('#feature').text(),
                         });
                         kanban.addElement($(source).parent().data('id'), item);
                     }
@@ -195,14 +193,9 @@ $(function () {
 
     $('#modal-board').on('click', '#btn-save', function (e) {
         e.preventDefault();
-        const formData = new FormData();
+        const formData = new FormData($(`#modal-form`)[0]);
         const key = $('input[name="key"]').val();
         const status = $('input[name="status"]').val();
-        formData.append('key', $('input[name="key"]').val());
-        formData.append('status', $('input[name="status"]').val());
-        formData.append('content', $('textarea[name="content"]').val());
-        formData.append('feature_id', $('select[name="feature"]').val());
-        formData.append('due_date', $('input[name="due_date"]').val());
         const _this = this;
         $(_this).attr('data-kt-indicator', 'on');
         $.ajax({
@@ -241,15 +234,17 @@ $(function () {
         $('#modal-board input[name="key"]').val('');
         $('#modal-board input[name="status"]').val('');
         $('#modal-board textarea[name="content"]').val('');
-        $('#modal-board select[name="feature"]').val('').trigger('change');
+        $('#modal-board select[name="feature_id"]').val('').trigger('change');
         $('#modal-board input[name="due_date"]').val('');
+        $('#modal-board select[name="developers[]"]').val('').trigger('change');
     }
 
     function fillFormBoard(data) {
         $('#modal-board input[name="key"]').val(data.key);
         $('#modal-board input[name="status"]').val(data.status);
         $('#modal-board textarea[name="content"]').val(data.content);
-        $('#modal-board select[name="feature"]').val(data.feature_id).trigger('change');
+        $('#modal-board select[name="feature_id"]').val(data.feature_id).trigger('change');
         $('#modal-board input[name="due_date"]').val(data.due_date);
+        $('#modal-board select[name="developers[]"]').val(data.developers).trigger('change');
     }
 });

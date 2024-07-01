@@ -3,31 +3,25 @@
 namespace App\Models\Request;
 
 use App\Models\HCIS\Employee;
-use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class RequestDeveloper extends Model
+class RequestTaskDeveloper extends Model
 {
     use HasFactory;
 
     protected $fillable = [
-        'request_id',
+        'request_feature_task_id',
         'nik',
     ];
 
-    public function request()
+    public function task()
     {
-        return $this->belongsTo(Request::class, 'request_id', 'id');
+        return $this->belongsTo(RequestFeatureTask::class, 'request_feature_task_id', 'id');
     }
 
     public function developer()
     {
         return $this->belongsTo(Employee::class, 'nik', 'nik');
-    }
-
-    public function user()
-    {
-        return $this->belongsTo(User::class, 'nik', 'nik');
     }
 }

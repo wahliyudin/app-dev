@@ -52,13 +52,14 @@ class TaskController extends Controller
     public function edit($key)
     {
         try {
-            $task = RequestFeatureTask::with('feature')->findOrFail($key);
+            $task = RequestFeatureTask::with('feature', 'developers')->findOrFail($key);
             return response()->json([
                 'key' => $task->getKey(),
                 'status' => $task->status->id(),
                 'content' => $task->content,
                 'feature_id' => $task->feature->getKey(),
                 'due_date' => $task->due_date,
+                'developers' => $task->developers->pluck('nik')->toArray(),
             ]);
         } catch (\Throwable $th) {
             throw $th;

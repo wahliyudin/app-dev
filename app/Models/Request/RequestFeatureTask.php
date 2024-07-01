@@ -25,4 +25,9 @@ class RequestFeatureTask extends Model
     {
         return $this->belongsTo(RequestFeature::class, 'request_feature_id', 'id');
     }
+
+    public function developers()
+    {
+        return $this->hasMany(RequestTaskDeveloper::class, 'request_feature_task_id', 'id');
+    }
 }

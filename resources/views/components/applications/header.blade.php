@@ -35,11 +35,14 @@
 
                         <div class="border border-gray-300 border-dashed rounded min-w-125px py-3 px-4 me-6 mb-3">
                             <div class="d-flex align-items-center">
-                                <i class="ki-duotone ki-arrow-down fs-3 text-danger me-2">
+                                <i class="ki-duotone ki-abstract-26 fs-3 text-secondary me-2">
                                     <span class="path1"></span>
                                     <span class="path2"></span>
                                 </i>
-                                <div class="fs-4 fw-bold" data-kt-countup="true" data-kt-countup-value="75">0</div>
+                                <div class="fs-4 fw-bold" data-kt-countup="true"
+                                    data-kt-countup-value="{{ $total_open }}">
+                                    0
+                                </div>
                             </div>
 
                             <div class="fw-semibold fs-6 text-gray-400">Open Tasks</div>
@@ -47,34 +50,41 @@
 
                         <div class="border border-gray-300 border-dashed rounded min-w-125px py-3 px-4 me-6 mb-3">
                             <div class="d-flex align-items-center">
-                                <i class="ki-duotone ki-arrow-down fs-3 text-danger me-2">
+                                <i class="ki-duotone ki-abstract-26 fs-3 text-warning me-2">
                                     <span class="path1"></span>
                                     <span class="path2"></span>
                                 </i>
-                                <div class="fs-4 fw-bold" data-kt-countup="true" data-kt-countup-value="75">0</div>
+                                <div class="fs-4 fw-bold" data-kt-countup="true"
+                                    data-kt-countup-value="{{ $total_progress }}">
+                                    0
+                                </div>
                             </div>
                             <div class="fw-semibold fs-6 text-gray-400">In Progress Tasks</div>
                         </div>
 
                         <div class="border border-gray-300 border-dashed rounded min-w-125px py-3 px-4 me-6 mb-3">
                             <div class="d-flex align-items-center">
-                                <i class="ki-duotone ki-arrow-down fs-3 text-danger me-2">
+                                <i class="ki-duotone ki-abstract-26 fs-3 text-success me-2">
                                     <span class="path1"></span>
                                     <span class="path2"></span>
                                 </i>
-                                <div class="fs-4 fw-bold" data-kt-countup="true" data-kt-countup-value="75">0</div>
+                                <div class="fs-4 fw-bold" data-kt-countup="true"
+                                    data-kt-countup-value="{{ $total_done }}">
+                                    0
+                                </div>
                             </div>
                             <div class="fw-semibold fs-6 text-gray-400">Done Tasks</div>
                         </div>
                     </div>
 
                     <div class="symbol-group symbol-hover mb-3">
-                        <div class="symbol symbol-35px symbol-circle" data-bs-toggle="tooltip" title="Alan Warden">
-                            <span class="symbol-label bg-warning text-inverse-warning fw-bold">A</span>
-                        </div>
-                        <div class="symbol symbol-35px symbol-circle" data-bs-toggle="tooltip" title="Michael Eberon">
-                            <img alt="Pic" src="../../assets/media/avatars/300-11.jpg" />
-                        </div>
+                        @foreach ($application->request?->developers ?? [] as $developer)
+                            <div class="symbol symbol-35px symbol-circle" data-bs-toggle="tooltip"
+                                title="{{ $developer->developer?->nama_karyawan }}">
+                                <img alt="Pic"
+                                    src="{{ \App\Data\Applications\TaskDto::avatar($developer->developer?->identity?->avatar) }}" />
+                            </div>
+                        @endforeach
                     </div>
                 </div>
             </div>

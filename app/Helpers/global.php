@@ -54,3 +54,32 @@ if (!function_exists('employeeByNIK')) {
             ->first();
     }
 }
+
+if (!function_exists('quarterDateRange')) {
+    function quarterDateRange($quarter, $year = null)
+    {
+        $year = $year ?? now()->year;
+        $startDate = Carbon::create($year, $quarter * 3 - 2, 1)->startOfMonth();
+        $endDate = Carbon::create($year, $quarter * 3, 1)->endOfMonth();
+        return [
+            $startDate->format('Y-m-d'),
+            $endDate->format('Y-m-d'),
+        ];
+    }
+}
+
+if (!function_exists('quarterDateRangeMonth')) {
+    function quarterDateRangeMonth($quarter, $year = null)
+    {
+        $year = $year ?? now()->year;
+        $startMonth = ($quarter - 1) * 3 + 1;
+        $endMonth = $quarter * 3;
+        $months = range($startMonth, $endMonth);
+
+        $formattedMonths = array_map(function ($month) use ($year) {
+            return Carbon::createFromDate($year, $month, 1)->translatedFormat('M');
+        }, $months);
+
+        return $formattedMonths;
+    }
+}

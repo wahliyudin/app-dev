@@ -109,12 +109,12 @@
                         </div>
 
                         <div class="card-toolbar">
-                            <select name="status" data-control="select2" data-hide-search="true"
+                            <select name="quarter" data-control="select2" data-hide-search="true"
                                 class="form-select form-select-solid form-select-sm fw-bold w-120px">
-                                <option value="1">2020 Q1</option>
-                                <option value="2">2020 Q2</option>
-                                <option value="3" selected>2020 Q3</option>
-                                <option value="4">2020 Q4</option>
+                                @foreach ($quarters as $quarter)
+                                    <option data-year="{{ $quarter['year'] }}" value="{{ $quarter['quarter'] }}"
+                                        @selected($quarter['is_selected'])>{{ $quarter['label'] }}</option>
+                                @endforeach
                             </select>
                         </div>
                     </div>
@@ -133,174 +133,55 @@
                     <div class="card-header mt-6">
                         <!--begin::Card title-->
                         <div class="card-title flex-column">
-                            <h3 class="fw-bold mb-1">New Contibutors</h3>
+                            <h3 class="fw-bold mb-1">Developers</h3>
 
-                            <div class="fs-6 text-gray-400">From total 482 Participants</div>
+                            <div class="fs-6 text-gray-400">Total {{ $developers->count() }} developers</div>
                         </div>
                         <!--end::Card title-->
 
                         <!--begin::Card toolbar-->
-                        <div class="card-toolbar">
+                        {{-- <div class="card-toolbar">
                             <a href="#" class="btn btn-bg-light btn-active-color-primary btn-sm">View
                                 All</a>
-                        </div>
+                        </div> --}}
                         <!--end::Card toolbar-->
                     </div>
                     <!--end::Card toolbar-->
 
                     <!--begin::Card body-->
                     <div class="card-body d-flex flex-column p-9 pt-3 mb-9">
-
-                        <!--begin::Item-->
-                        <div class="d-flex align-items-center mb-5">
-                            <!--begin::Avatar-->
-                            <div class="me-5 position-relative">
-                                <!--begin::Image-->
-                                <div class="symbol symbol-35px symbol-circle">
-                                    <img alt="Pic" src="../../assets/media/avatars/300-6.jpg" />
+                        @foreach ($developers as $developer)
+                            <!--begin::Item-->
+                            <div class="d-flex align-items-center mb-5">
+                                <!--begin::Avatar-->
+                                <div class="me-5 position-relative">
+                                    <!--begin::Image-->
+                                    <div class="symbol symbol-35px symbol-circle">
+                                        <img alt="Pic"
+                                            src="{{ \App\Data\Applications\TaskDto::avatar($developer->developer?->identity?->avatar) }}" />
+                                    </div>
+                                    <!--end::Image-->
                                 </div>
-                                <!--end::Image-->
+                                <!--end::Avatar-->
 
-                            </div>
-                            <!--end::Avatar-->
+                                <!--begin::Details-->
+                                <div class="fw-semibold">
+                                    <span
+                                        class="fs-5 fw-bold text-gray-900">{{ $developer->developer?->nama_karyawan }}</span>
 
-                            <!--begin::Details-->
-                            <div class="fw-semibold">
-                                <a href="#" class="fs-5 fw-bold text-gray-900 text-hover-primary">Emma
-                                    Smith</a>
-
-                                <div class="text-gray-400">
-                                    8 Pending & 97 Completed Tasks </div>
-                            </div>
-                            <!--end::Details-->
-
-                            <!--begin::Badge-->
-                            <div class="badge badge-light ms-auto">5</div>
-                            <!--end::Badge-->
-                        </div>
-                        <!--end::Item-->
-
-                        <!--begin::Item-->
-                        <div class="d-flex align-items-center mb-5">
-                            <!--begin::Avatar-->
-                            <div class="me-5 position-relative">
-                                <!--begin::Image-->
-                                <div class="symbol symbol-35px symbol-circle">
-                                    <span class="symbol-label bg-light-danger text-danger fw-semibold">
-                                        M </span>
+                                    <div class="text-gray-400">
+                                        {{ $developer->user?->total_task_open }} Open &
+                                        {{ $developer->user?->total_task_done }} Completed Tasks
+                                    </div>
                                 </div>
-                                <!--end::Image-->
+                                <!--end::Details-->
 
-                                <!--begin::Online-->
-                                <div
-                                    class="bg-success position-absolute h-8px w-8px rounded-circle translate-middle start-100 top-100 ms-n1 mt-n1">
-                                </div>
-                                <!--end::Online-->
+                                <!--begin::Badge-->
+                                <div class="badge badge-light ms-auto">{{ $developer->user?->total_task_open }}</div>
+                                <!--end::Badge-->
                             </div>
-                            <!--end::Avatar-->
-
-                            <!--begin::Details-->
-                            <div class="fw-semibold">
-                                <a href="#" class="fs-5 fw-bold text-gray-900 text-hover-primary">Melody
-                                    Macy</a>
-
-                                <div class="text-gray-400">
-                                    5 Pending & 84 Completed </div>
-                            </div>
-                            <!--end::Details-->
-
-                            <!--begin::Badge-->
-                            <div class="badge badge-light ms-auto">8</div>
-                            <!--end::Badge-->
-                        </div>
-                        <!--end::Item-->
-
-                        <!--begin::Item-->
-                        <div class="d-flex align-items-center mb-5">
-                            <!--begin::Avatar-->
-                            <div class="me-5 position-relative">
-                                <!--begin::Image-->
-                                <div class="symbol symbol-35px symbol-circle">
-                                    <img alt="Pic" src="../../assets/media/avatars/300-1.jpg" />
-                                </div>
-                                <!--end::Image-->
-
-                            </div>
-                            <!--end::Avatar-->
-
-                            <!--begin::Details-->
-                            <div class="fw-semibold">
-                                <a href="#" class="fs-5 fw-bold text-gray-900 text-hover-primary">Max
-                                    Smith</a>
-
-                                <div class="text-gray-400">
-                                    9 Pending & 103 Completed </div>
-                            </div>
-                            <!--end::Details-->
-
-                            <!--begin::Badge-->
-                            <div class="badge badge-light ms-auto">9</div>
-                            <!--end::Badge-->
-                        </div>
-                        <!--end::Item-->
-
-                        <!--begin::Item-->
-                        <div class="d-flex align-items-center mb-5">
-                            <!--begin::Avatar-->
-                            <div class="me-5 position-relative">
-                                <!--begin::Image-->
-                                <div class="symbol symbol-35px symbol-circle">
-                                    <img alt="Pic" src="../../assets/media/avatars/300-5.jpg" />
-                                </div>
-                                <!--end::Image-->
-
-                            </div>
-                            <!--end::Avatar-->
-
-                            <!--begin::Details-->
-                            <div class="fw-semibold">
-                                <a href="#" class="fs-5 fw-bold text-gray-900 text-hover-primary">Sean
-                                    Bean</a>
-
-                                <div class="text-gray-400">
-                                    3 Pending & 55 Completed </div>
-                            </div>
-                            <!--end::Details-->
-
-                            <!--begin::Badge-->
-                            <div class="badge badge-light ms-auto">3</div>
-                            <!--end::Badge-->
-                        </div>
-                        <!--end::Item-->
-
-                        <!--begin::Item-->
-                        <div class="d-flex align-items-center ">
-                            <!--begin::Avatar-->
-                            <div class="me-5 position-relative">
-                                <!--begin::Image-->
-                                <div class="symbol symbol-35px symbol-circle">
-                                    <img alt="Pic" src="../../assets/media/avatars/300-25.jpg" />
-                                </div>
-                                <!--end::Image-->
-
-                            </div>
-                            <!--end::Avatar-->
-
-                            <!--begin::Details-->
-                            <div class="fw-semibold">
-                                <a href="#" class="fs-5 fw-bold text-gray-900 text-hover-primary">Brian
-                                    Cox</a>
-
-                                <div class="text-gray-400">
-                                    4 Pending & 115 Completed </div>
-                            </div>
-                            <!--end::Details-->
-
-                            <!--begin::Badge-->
-                            <div class="badge badge-light ms-auto">4</div>
-                            <!--end::Badge-->
-                        </div>
-                        <!--end::Item-->
+                            <!--end::Item-->
+                        @endforeach
                     </div>
                     <!--end::Card body-->
                 </div>

@@ -26,7 +26,7 @@
 @section('content')
     <div id="kt_app_content_container" class="app-container container-fluid">
         <x-applications.header :navItemActive="$navItemActive" :application="$application" />
-        <div class="row">
+        <div class="row bg-white py-4 rounded">
             <div class="col-md-12">
                 <div id="kt_docs_jkanban_rich" class="kanban-fixed-height scroll-y" data-kt-jkanban-height="350"></div>
             </div>
@@ -54,7 +54,7 @@
                         <div class="row gap-2">
                             <div class="col-md-12">
                                 <label for="">Feature</label>
-                                <select name="feature" id="feature" class="form-select" data-control="select2"
+                                <select name="feature_id" id="feature" class="form-select" data-control="select2"
                                     data-dropdown-parent="#modal-board">
                                     <option value="" selected disabled>- Select -</option>
                                     @foreach ($application->request->features as $feature)
@@ -69,6 +69,16 @@
                             <div class="col-md-12">
                                 <label for="">Due Date</label>
                                 <input type="date" name="due_date" id="due_date" class="form-control">
+                            </div>
+                            <div class="col-md-12">
+                                <label for="">Developers</label>
+                                <select name="developers[]" id="developers" class="form-select" data-control="select2"
+                                    data-dropdown-parent="#modal-board" data-placeholder="- Select -" multiple>
+                                    @foreach ($application->request->developers as $developer)
+                                        <option value="{{ $developer->nik }}">{{ $developer->developer?->nama_karyawan }}
+                                        </option>
+                                    @endforeach
+                                </select>
                             </div>
                         </div>
                     </form>

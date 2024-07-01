@@ -1,6 +1,7 @@
 "use strict";
 
 var viewApp = function () {
+    var chart;
     var primary = KTUtil.getCssVariableValue('--bs-primary');
     var lightPrimary = KTUtil.getCssVariableValue('--bs-primary-light');
     var success = KTUtil.getCssVariableValue('--bs-success');
@@ -79,13 +80,7 @@ var viewApp = function () {
         }
 
         var options = {
-            series: [{
-                name: 'Incomplete',
-                data: [70, 70, 80, 80, 75, 75, 75]
-            }, {
-                name: 'Complete',
-                data: [55, 55, 60, 60, 55, 55, 60]
-            }],
+            series: [],
             chart: {
                 type: 'area',
                 height: height,
@@ -104,7 +99,7 @@ var viewApp = function () {
             },
             fill: {
                 type: 'solid',
-                opacity: 1
+                opacity: 0.3
             },
             stroke: {
                 curve: 'smooth',
@@ -113,7 +108,7 @@ var viewApp = function () {
                 colors: [primary, success]
             },
             xaxis: {
-                categories: ['Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug'],
+                categories: [],
                 axisBorder: {
                     show: false,
                 },
@@ -200,12 +195,53 @@ var viewApp = function () {
             }
         };
 
-        var chart = new ApexCharts(element, options);
+        chart = new ApexCharts(element, options);
         chart.render();
+        function refreshGraph(year = null, quarter = null) {
+            $.ajax({
+                url: "/applications/view-app/task-overtime",
+                type: "POST",
+                data: {
+                    year,
+                    quarter
+                },
+                dataType: "json",
+                success: function (response) {
+                    chart.updateSeries([{
+                        name: 'Incomplete',
+                        data: response.data.incomplete
+                    }, {
+                        name: 'Complete',
+                        data: response.data.complete
+                    }]);
+
+                    chart.updateOptions({
+                        xaxis: {
+                            categories: response.data.categories,
+                        },
+                    });
+                }
+            });
+        }
+
+        var year = $('select[name="quarter"]').find('option:selected').data('year');
+        var quarter = $('select[name="quarter"]').val();
+        refreshGraph(year, quarter);
+        $('select[name="quarter"]').on('change', function (e) {
+            e.preventDefault();
+            var year = $(this).find('option:selected').data('year');
+            var quarter = $(this).val();
+            refreshGraph(year, quarter);
+        });
     }
 
     return {
         init: function () {
+            $.ajaxSetup({
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                }
+            });
             initChart();
             initGraph();
         }

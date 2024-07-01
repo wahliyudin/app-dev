@@ -18,6 +18,7 @@ class StoreRequest extends FormRequest
             'due_date' => ['required'],
             'status' => ['required'],
             'content' => ['required'],
+            'developers' => ['array', 'min:1', 'required'],
         ];
     }
 

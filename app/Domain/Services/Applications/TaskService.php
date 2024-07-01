@@ -2,8 +2,10 @@
 
 namespace App\Domain\Services\Applications;
 
+use App\Data\Applications\TaskDto;
 use App\Enums\Request\Task\Status;
 use App\Models\Request\RequestFeatureTask;
+use App\Models\Request\RequestTaskDeveloper;
 use Illuminate\Support\Facades\DB;
 
 class TaskService extends ApplicationService
@@ -13,8 +15,15 @@ class TaskService extends ApplicationService
         return RequestFeatureTask::query()->withWhereHas('feature', function ($query) use ($key) {
             $query->where('request_id', $key);
         })
+            ->with(['developers' => function ($query) {
+                $query->with(['developer' => function ($query) {
+                    $query->select('nik', 'nama_karyawan')
+                        ->with('identity:nik,avatar');
+                }]);
+            }])
             ->latest()
-            ->get();
+            ->get()
+            ->map(fn ($task) => TaskDto::fromModel($task));
     }
 
     public function store($request)
@@ -28,9 +37,18 @@ class TaskService extends ApplicationService
                 'due_date' => $request->due_date,
                 'status' => Status::resetId($request->status),
                 'content' => $request->content,
-            ])
-                ->load('feature');
-            return $task;
+            ]);
+            foreach ($request->developers as $developer) {
+                RequestTaskDeveloper::query()->updateOrCreate([
+                    'request_feature_task_id' => $task->getKey(),
+                    'nik' => $developer,
+                ], [
+                    'request_feature_task_id' => $task->getKey(),
+                    'nik' => $developer,
+                ]);
+            }
+            RequestTaskDeveloper::query()->where('request_feature_task_id', $task->getKey())->whereNotIn('nik', $request->developers)->delete();
+            return TaskDto::fromModel($task);
         });
     }
 
@@ -46,7 +64,7 @@ class TaskService extends ApplicationService
             return [
                 'from' => $from,
                 'to' => $to->label(),
-                'task' => $task,
+                'task' => TaskDto::fromModel($task),
             ];
         });
     }
