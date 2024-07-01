@@ -8,7 +8,7 @@ enum NavItem: string
     case TASK = 'task';
     case FEATURE = 'feature';
     case FILE = 'file';
-    case ACTIVITY = 'activity';
+        // case ACTIVITY = 'activity';
     case SETTING = 'setting';
 
     public function label(): string
@@ -18,7 +18,7 @@ enum NavItem: string
             self::TASK => 'Tasks',
             self::FEATURE => 'Features',
             self::FILE => 'Files',
-            self::ACTIVITY => 'Activity',
+            // self::ACTIVITY => 'Activity',
             self::SETTING => 'Settings',
         };
     }
@@ -30,7 +30,7 @@ enum NavItem: string
             self::TASK => route('applications.tasks.index', $id),
             self::FEATURE => route('applications.features.index', $id),
             self::FILE => route('applications.files.index', $id),
-            self::ACTIVITY => route('applications.activities.index', $id),
+            // self::ACTIVITY => route('applications.activities.index', $id),
             self::SETTING => route('applications.settings.index', $id),
         };
     }

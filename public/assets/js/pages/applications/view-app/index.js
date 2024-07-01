@@ -1,8 +1,6 @@
 "use strict";
 
-// Class definition
 var viewApp = function () {
-    // Colors
     var primary = KTUtil.getCssVariableValue('--bs-primary');
     var lightPrimary = KTUtil.getCssVariableValue('--bs-primary-light');
     var success = KTUtil.getCssVariableValue('--bs-success');
@@ -10,10 +8,12 @@ var viewApp = function () {
     var gray200 = KTUtil.getCssVariableValue('--bs-gray-200');
     var gray500 = KTUtil.getCssVariableValue('--bs-gray-500');
 
-    // Private functions
     var initChart = function () {
-        // init chart
         var element = document.getElementById("project_overview_chart");
+        const taskSummary = document.querySelector('input[name="task_summary"]');
+        if (taskSummary) {
+            var taskSummaryData = JSON.parse(taskSummary.value);
+        }
 
         if (!element) {
             return;
@@ -23,10 +23,10 @@ var viewApp = function () {
             type: 'doughnut',
             data: {
                 datasets: [{
-                    data: [30, 45, 25],
-                    backgroundColor: ['#00A3FF', '#50CD89', '#E4E6EF']
+                    data: taskSummaryData.data,
+                    backgroundColor: ['#00A3FF', '#50CD89', '#E4E6EF', '#F1416C']
                 }],
-                labels: ['Active', 'Completed', 'Yet to start']
+                labels: ['Active', 'Completed', 'Yet to start', 'Overdue']
             },
             options: {
                 chart: {
@@ -204,7 +204,6 @@ var viewApp = function () {
         chart.render();
     }
 
-    // Public methods
     return {
         init: function () {
             initChart();
@@ -213,8 +212,6 @@ var viewApp = function () {
     }
 }();
 
-
-// On document ready
-KTUtil.onDOMContentLoaded(function() {
+KTUtil.onDOMContentLoaded(function () {
     viewApp.init();
 });

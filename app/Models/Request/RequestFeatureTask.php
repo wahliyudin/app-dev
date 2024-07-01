@@ -12,6 +12,7 @@ class RequestFeatureTask extends Model
 
     protected $fillable = [
         'request_feature_id',
+        'due_date',
         'status',
         'content',
     ];

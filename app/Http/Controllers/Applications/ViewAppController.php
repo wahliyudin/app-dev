@@ -15,9 +15,11 @@ class ViewAppController extends Controller
 
     public function index($id)
     {
+        $app = $this->viewAppService->findOrFail($id);
         return view('applications.view-app', [
             'navItemActive' => NavItem::OVERVIEW,
-            'application' => $this->viewAppService->findOrFail($id),
+            'application' => $app,
+            'taskSummary' => $this->viewAppService->getTaskSummary($app->request->id),
         ]);
     }
 }

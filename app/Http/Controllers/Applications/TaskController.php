@@ -58,6 +58,7 @@ class TaskController extends Controller
                 'status' => $task->status->id(),
                 'content' => $task->content,
                 'feature_id' => $task->feature->getKey(),
+                'due_date' => $task->due_date,
             ]);
         } catch (\Throwable $th) {
             throw $th;

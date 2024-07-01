@@ -66,6 +66,10 @@
                                 <label for="">Content</label>
                                 <textarea name="content" id="content" class="form-control"></textarea>
                             </div>
+                            <div class="col-md-12">
+                                <label for="">Due Date</label>
+                                <input type="date" name="due_date" id="due_date" class="form-control">
+                            </div>
                         </div>
                     </form>
                 </div>

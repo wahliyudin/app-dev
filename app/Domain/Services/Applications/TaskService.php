@@ -20,22 +20,24 @@ class TaskService extends ApplicationService
     public function store($request)
     {
         return DB::transaction(function () use ($request) {
-            return RequestFeatureTask::query()->updateOrCreate([
+            $task = RequestFeatureTask::query()->updateOrCreate([
                 'request_feature_id' => $request->feature_id,
                 'id' => $request->key,
             ], [
                 'request_feature_id' => $request->feature_id,
+                'due_date' => $request->due_date,
                 'status' => Status::resetId($request->status),
                 'content' => $request->content,
             ])
                 ->load('feature');
+            return $task;
         });
     }
 
     public function update($request, $key)
     {
         return DB::transaction(function () use ($request, $key) {
-            $task = RequestFeatureTask::query()->findOrFail($key);
+            $task = RequestFeatureTask::query()->with('feature')->findOrFail($key);
             $from = $task->status->label();
             $to = Status::resetId($request->status);
             $task->update([
@@ -44,6 +46,7 @@ class TaskService extends ApplicationService
             return [
                 'from' => $from,
                 'to' => $to->label(),
+                'task' => $task,
             ];
         });
     }

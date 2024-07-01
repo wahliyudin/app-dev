@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::create('request_feature_tasks', function (Blueprint $table) {
             $table->id();
             $table->foreignId('request_feature_id')->constrained()->cascadeOnDelete();
+            $table->date('due_date');
             $table->string('status');
             $table->text('content');
             $table->timestamps();

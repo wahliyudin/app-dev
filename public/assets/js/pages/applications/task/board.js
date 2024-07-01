@@ -48,12 +48,16 @@ export default class Board {
     }
 
     item(task) {
+        task.due_date_badge = this.badgeDueDate(task.due_date, task.status);
         return {
             'title': `
-                <div class="d-flex align-items-center position-relative" data-item-key="${task.id}">
+                <div class="d-flex flex-column position-relative" data-item-key="${task.id}">
                     <div class="d-flex flex-column align-items-start">
                         <span class="badge badge-light" id="feature">${task.feature.name}</span>
                         <span class="text-dark-50 mt-1" id="content">${task.content}</span>
+                    </div>
+                    <div class="d-flex align-items-center justify-content-end">
+                        ${task.due_date_badge}
                     </div>
                     <div class="position-absolute" style="top: -20px; right: 0;">
                         <button type="button" class="btn btn-icon btn-bg-light btn-active-color-danger w-20px h-20px p-0" data-key="${task.id}" id="btn-delete">
@@ -77,5 +81,24 @@ export default class Board {
                 </div>
             `,
         };
+    }
+
+    badgeDueDate(due_date, status) {
+        const now = moment().format('YYYY-MM-DD');
+        const dueDate = moment(due_date);
+        const diffInDays = Math.round(dueDate.diff(now, 'days', true));
+        var text = "Due today";
+        var badge = "badge-light-warning";
+        if (status === 'done') {
+            text = "Done";
+            badge = "badge-light-success";
+        } else if (due_date < now) {
+            text = "Overdue";
+            badge = "badge-light-danger";
+        } else if (diffInDays > 0) {
+            text = `Due in ${diffInDays} days`;
+            badge = "badge-light-primary";
+        }
+        return `<span class="badge ${badge}" data-date="${due_date}" data-status="${status}" id="due_date">${text}</span>`;
     }
 }

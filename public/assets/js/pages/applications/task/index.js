@@ -11,6 +11,7 @@ $(function () {
     });
 
     $('#kt_app_body').attr('data-kt-app-sidebar-minimize', 'on');
+    $('#due_date').flatpickr();
 
     const tasks = JSON.parse($('input[name="tasks"]').val());
 
@@ -80,6 +81,12 @@ $(function () {
                     },
                     dataType: "json",
                     success: function (response) {
+                        const item = board.item(response.data.task);
+                        if (key) {
+                            kanban.replaceElement(el, item);
+                        } else {
+                            kanban.addElement(status, item);
+                        }
                         toastr.success(`From "${response.data.from}" to "${response.data.to}"`, `Successfully moved`, { timeOut: 5000, progressBar: true, closeButton: true, })
                     },
                     error: function (jqXHR) {
@@ -88,6 +95,8 @@ $(function () {
                         const item = board.item({
                             id: $(el).find('[data-item-key]').data('item-key'),
                             content: $(el).find('#content').text(),
+                            status: $(el).find('#due_date').data('status'),
+                            due_date: $(el).find('#due_date').data('date'),
                             feature: {
                                 name: $(el).find('#feature').text(),
                             }
@@ -193,6 +202,7 @@ $(function () {
         formData.append('status', $('input[name="status"]').val());
         formData.append('content', $('textarea[name="content"]').val());
         formData.append('feature_id', $('select[name="feature"]').val());
+        formData.append('due_date', $('input[name="due_date"]').val());
         const _this = this;
         $(_this).attr('data-kt-indicator', 'on');
         $.ajax({
@@ -232,6 +242,7 @@ $(function () {
         $('#modal-board input[name="status"]').val('');
         $('#modal-board textarea[name="content"]').val('');
         $('#modal-board select[name="feature"]').val('').trigger('change');
+        $('#modal-board input[name="due_date"]').val('');
     }
 
     function fillFormBoard(data) {
@@ -239,5 +250,6 @@ $(function () {
         $('#modal-board input[name="status"]').val(data.status);
         $('#modal-board textarea[name="content"]').val(data.content);
         $('#modal-board select[name="feature"]').val(data.feature_id).trigger('change');
+        $('#modal-board input[name="due_date"]').val(data.due_date);
     }
 });

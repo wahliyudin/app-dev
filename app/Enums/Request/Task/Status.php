@@ -34,4 +34,19 @@ enum Status: string
             '_' . self::DONE->value => self::DONE,
         };
     }
+
+    public function isNotting()
+    {
+        return $this == self::NOTTING;
+    }
+
+    public function isInProgress()
+    {
+        return $this == self::IN_PROGRESS;
+    }
+
+    public function isDone()
+    {
+        return $this == self::DONE;
+    }
 }
