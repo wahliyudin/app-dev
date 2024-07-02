@@ -7,7 +7,6 @@ use App\Enums\Applications\NavItem;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Applications\Task\StoreRequest;
 use App\Http\Requests\Applications\Task\UpdateRequest;
-use App\Models\Request\RequestFeatureTask;
 
 class TaskController extends Controller
 {
@@ -52,7 +51,7 @@ class TaskController extends Controller
     public function edit($key)
     {
         try {
-            $task = RequestFeatureTask::with('feature', 'developers')->findOrFail($key);
+            $task = $this->taskService->findOrFailTask($key);
             return response()->json([
                 'key' => $task->getKey(),
                 'status' => $task->status->id(),

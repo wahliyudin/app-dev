@@ -147,7 +147,12 @@
                                 <i class="path4"></i>
                             </i>
                         </span>
-                        <span class="menu-title">Task</span>
+                        <span class="menu-title">My Tasks</span>
+                        <span class="menu-badge">
+                            <span class="badge badge-success" id="task">
+                                <i class="fa-solid fa-arrows-spin fa-spin text-white"></i>
+                            </span>
+                        </span>
                     </a>
                 </div>
                 {{-- @endpermission --}}

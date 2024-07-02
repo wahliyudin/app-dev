@@ -26,6 +26,11 @@ class TaskService extends ApplicationService
             ->map(fn ($task) => TaskDto::fromModel($task));
     }
 
+    public function findOrFailTask($id)
+    {
+        return RequestFeatureTask::with('feature', 'developers')->findOrFail($id);
+    }
+
     public function store($request)
     {
         return DB::transaction(function () use ($request) {

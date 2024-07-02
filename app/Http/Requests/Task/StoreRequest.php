@@ -15,8 +15,10 @@ class StoreRequest extends FormRequest
     {
         return [
             'feature_id' => ['required'],
+            'due_date' => ['required'],
             'status' => ['required'],
             'content' => ['required'],
+            'developers' => ['array', 'min:1', 'required'],
         ];
     }
 
@@ -24,6 +26,7 @@ class StoreRequest extends FormRequest
     {
         return [
             'feature_id.required' => 'Feature is required',
+            'due_date.required' => 'Due date is required',
             'status.required' => 'Status is required',
             'content.required' => 'Content is required',
         ];

@@ -2,119 +2,65 @@
 
 namespace App\Domain\Services\Request;
 
-use App\Enums\Request\Task\Status;
-use App\Enums\Request\TypeRequest;
-use App\Enums\Workflows\Status as WorkflowsStatus;
-use App\Models\Request\Request;
+use App\Data\Applications\TaskDto;
+use App\Domain\Services\Applications\TaskService as ApplicationsTaskService;
+use App\Models\Request\RequestApplication;
 use App\Models\Request\RequestFeature;
 use App\Models\Request\RequestFeatureTask;
-use Illuminate\Support\Facades\DB;
+use App\Models\Request\RequestTaskDeveloper;
 
-class TaskService
+class TaskService extends ApplicationsTaskService
 {
-    public function getByTask()
+    public function totalOutstanding()
     {
-        return $this->queryTask()->get();
+        return $this->queryTasks()->count();
     }
 
-    public function totalTask()
+    public function getTasks()
     {
-        return $this->queryTask()->count();
+        return $this->queryTasks()->get()
+            ->map(fn ($task) => TaskDto::fromModel($task));
     }
 
-    private function queryTask()
+    public function queryTasks()
     {
-        return Request::select(['id', 'code', 'nik_requestor', 'department', 'application_id', 'type_request', 'type_budget', 'date', 'estimated_project', 'status'])
-            ->with(['requestor:nik,nama_karyawan', 'application:id,name,display_name'])
-            ->where('status', WorkflowsStatus::CLOSE)
-            ->whereHas('features')
-            ->where('type_request', TypeRequest::NEW_APPLICATION);
+        return RequestFeatureTask::query()
+            ->withWhereHas('developers', function ($query) {
+                $query->where('nik', authUser()?->nik)
+                    ->with(['developer' => function ($query) {
+                        $query->select('nik', 'nama_karyawan')
+                            ->with('identity:nik,avatar');
+                    }]);
+            });
     }
 
-    public function getTaskByRequest($key)
+    public function apps()
     {
-        return RequestFeatureTask::query()->withWhereHas('feature', function ($query) use ($key) {
-            $query->where('request_id', $key);
-        })
-            ->latest()
+        return RequestApplication::query()
+            ->select(['id', 'display_name'])
             ->get();
     }
 
-    public function findOrFail($key)
-    {
-        return Request::query()
-            ->with('features')
-            ->findOrFail($key);
-    }
-
-    public function store($request)
-    {
-        return DB::transaction(function () use ($request) {
-            return RequestFeatureTask::query()->updateOrCreate([
-                'request_feature_id' => $request->feature_id,
-                'id' => $request->key,
-            ], [
-                'request_feature_id' => $request->feature_id,
-                'status' => Status::resetId($request->status),
-                'content' => $request->content,
-            ])
-                ->load('feature');
-        });
-    }
-
-    public function update($request, $key)
-    {
-        return DB::transaction(function () use ($request, $key) {
-            $task = RequestFeatureTask::query()->findOrFail($key);
-            $from = $task->status->label();
-            $to = Status::resetId($request->status);
-            $task->update([
-                'status' => $to,
-            ]);
-            return [
-                'from' => $from,
-                'to' => $to->label(),
-            ];
-        });
-    }
-
-    public function destroy($key)
-    {
-        return DB::transaction(function () use ($key) {
-            RequestFeatureTask::query()->findOrFail($key)->delete();
-        });
-    }
-
-    public function storeFeature($request)
-    {
-        return DB::transaction(function () use ($request) {
-            return RequestFeature::query()->updateOrCreate([
-                'id' => $request->key,
-                'request_id' => $request->request_id,
-            ], [
-                'request_id' => $request->request_id,
-                'name' => $request->name,
-                'description' => $request->description,
-            ]);
-        });
-    }
-
-    public function getFeatures()
+    public function getFeatures($key)
     {
         return RequestFeature::query()
-            ->latest()
+            ->select(['id', 'name', 'request_id'])
+            ->where('request_id', $key)
             ->get();
     }
 
-    public function findOrFailFeature($key)
+    public function getDevelopers($key)
     {
-        return RequestFeature::query()->findOrFail($key);
-    }
-
-    public function destroyFeature($key)
-    {
-        return DB::transaction(function () use ($key) {
-            RequestFeature::query()->findOrFail($key)->delete();
-        });
+        return RequestTaskDeveloper::query()
+            ->select(['nik', 'request_feature_task_id'])
+            ->whereHas('task', function ($query) use ($key) {
+                $query->where('request_feature_id', $key);
+            })
+            ->with(['developer' => function ($query) {
+                $query->select('nik', 'nama_karyawan')
+                    ->with('identity:nik,avatar');
+            }])
+            ->distinct('nik')
+            ->get();
     }
 }
