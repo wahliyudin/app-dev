@@ -76,7 +76,7 @@ $(function () {
                 const status = $(target).parent().data('id');
                 $.ajax({
                     type: "POST",
-                    url: `/applications/tasks/${key}/update`,
+                    url: `/tasks/${key}/update`,
                     data: {
                         status: status
                     },
@@ -126,7 +126,7 @@ $(function () {
         $('#modal-board').modal('show');
         $.ajax({
             type: "GET",
-            url: `/applications/tasks/${key}/edit`,
+            url: `/tasks/${key}/edit`,
             dataType: "json",
             success: function (response) {
                 fillFormBoard(response);
@@ -153,7 +153,7 @@ $(function () {
                 return new Promise(function (resolve) {
                     $.ajax({
                         type: "DELETE",
-                        url: `/applications/tasks/${key}/destroy`,
+                        url: `/tasks/${key}/destroy`,
                         dataType: 'json',
                     })
                         .done(function (myAjaxJsonResponse) {
@@ -201,7 +201,7 @@ $(function () {
         $(_this).attr('data-kt-indicator', 'on');
         $.ajax({
             type: "POST",
-            url: `/applications/tasks/store`,
+            url: `/tasks/store`,
             processData: false,
             contentType: false,
             data: formData,
@@ -231,12 +231,21 @@ $(function () {
         });
     });
 
+
+    $('#modal-board').on('hide.bs.modal', function () {
+        console.log("modal closed");
+        resetFormBoard();
+    });
+
     function resetFormBoard() {
         $('#modal-board input[name="key"]').val('');
         $('#modal-board input[name="status"]').val('');
         $('#modal-board textarea[name="content"]').val('');
+        $('#modal-board select[name="app_id"]').val('').trigger('change');
         $('#modal-board select[name="feature_id"]').val('').trigger('change');
+        $('#modal-board input[name="temp_feature_id"]').val('');
         $('#modal-board input[name="due_date"]').val('');
+        $('#modal-board input[name="temp_developers[]"]').val('');
         $('#modal-board select[name="developers[]"]').val('').trigger('change');
     }
 
@@ -244,9 +253,10 @@ $(function () {
         $('#modal-board input[name="key"]').val(data.key);
         $('#modal-board input[name="status"]').val(data.status);
         $('#modal-board textarea[name="content"]').val(data.content);
-        $('#modal-board select[name="feature_id"]').val(data.feature_id).trigger('change');
+        $('#modal-board select[name="app_id"]').val(data.app_id).trigger('change');
+        $('#modal-board input[name="temp_feature_id"]').val(data.feature_id);
         $('#modal-board input[name="due_date"]').val(data.due_date);
-        $('#modal-board select[name="developers[]"]').val(data.developers).trigger('change');
+        $('#modal-board input[name="temp_developers[]"]').val(data.developers);
     }
 
     $('#modal-board').on('change', '#app_id', function (e) {
@@ -259,11 +269,13 @@ $(function () {
                 dataType: "json",
                 success: function (response) {
                     let select = $('#modal-board select[name="feature_id"]');
+                    const selectedId = $('#modal-board input[name="temp_feature_id"]').val();
                     select.empty();
                     select.append('<option value="" selected disabled>-- Select --</option>');
                     response.data.forEach(function (item, index) {
                         select.append('<option value="' + item.id + '">' + item.name + '</option>');
                     });
+                    select.val(selectedId).trigger('change');
                 },
                 error: function (jqXHR) {
                     handleErrors(jqXHR);
@@ -282,9 +294,10 @@ $(function () {
                 dataType: "json",
                 success: function (response) {
                     let select = $('#modal-board select[name="developers[]"]');
+                    const selectedIds = $('#modal-board input[name="temp_developers[]"]').val();
                     select.empty();
                     response.data.forEach(function (item, index) {
-                        select.append('<option value="' + item.nik + '">' + item.developer?.nama_karyawan + '</option>');
+                        select.append('<option ' + (selectedIds.includes(item.nik) ? 'selected' : '') + ' value="' + item.nik + '">' + item.developer?.nama_karyawan + '</option>');
                     });
                 },
                 error: function (jqXHR) {

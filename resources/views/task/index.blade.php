@@ -44,6 +44,8 @@
                 </div>
 
                 <div class="modal-body">
+                    <input type="hidden" name="temp_feature_id">
+                    <input type="hidden" name="temp_developers[]">
                     <form action="" id="modal-form">
                         <input type="hidden" name="key">
                         <input type="hidden" name="status">

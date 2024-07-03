@@ -28,7 +28,9 @@ class TaskService extends ApplicationService
 
     public function findOrFailTask($id)
     {
-        return RequestFeatureTask::with('feature', 'developers')->findOrFail($id);
+        return RequestFeatureTask::with(['feature' => function ($query) {
+            $query->with(['request:id,application_id']);
+        }, 'developers'])->findOrFail($id);
     }
 
     public function store($request)

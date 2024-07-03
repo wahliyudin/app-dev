@@ -19,4 +19,9 @@ class RequestFeature extends Model
     {
         return $this->hasMany(RequestFeatureTask::class, 'request_feature_id', 'id');
     }
+
+    public function request()
+    {
+        return $this->belongsTo(Request::class, 'request_id', 'id');
+    }
 }
