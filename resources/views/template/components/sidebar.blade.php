@@ -5,7 +5,7 @@
     <div class="app-sidebar-logo px-6" id="kt_app_sidebar_logo">
         <!--begin::Logo image-->
         <a href="{{ route('home') }}">
-            <img alt="Logo" src="{{ asset('assets/media/logos/tbu.png') }}"
+            <img alt="Logo" src="{{ asset('assets/media/logos/Logo-TBU-white.png') }}"
                 class="h-30px app-sidebar-logo-default" />
         </a>
         <!--end::Logo image-->
@@ -97,44 +97,6 @@
                         </div>
                     </div>
                 @endpermission
-                {{-- @permission('setting_access_permission_read') --}}
-                <div data-kt-menu-trigger="click" class="menu-item menu-accordion" id="outstanding">
-                    <span class="menu-link">
-                        <span class="menu-icon">
-                            <i class="ki-duotone ki-notification-status fs-2">
-                                <i class="path1"></i>
-                                <i class="path2"></i>
-                                <i class="path3"></i>
-                                <i class="path4"></i>
-                            </i>
-                        </span>
-                        <span class="menu-title">Outstanding</span>
-                        <span class="menu-badge">
-                            <span class="badge badge-success" id="grand-total"><i
-                                    class="fa-solid fa-arrows-spin fa-spin text-white"></i></span>
-                        </span>
-                        <span class="menu-arrow"></span>
-                    </span>
-                    <div
-                        class="menu-sub menu-sub-accordion {{ request()->routeIs('outstandings.requests.*') ? 'hover show' : '' }}">
-                        {{-- @permission('setting_approval_read') --}}
-                        <div class="menu-item">
-                            <a class="menu-link {{ request()->routeIs('outstandings.requests.*') ? 'active' : '' }}"
-                                href="{{ route('outstandings.requests.index') }}">
-                                <span class="menu-bullet">
-                                    <span class="bullet bullet-dot"></span>
-                                </span>
-                                <span class="menu-title">Request</span>
-                                <span class="menu-badge">
-                                    <span class="badge badge-success" id="request"><i
-                                            class="fa-solid fa-arrows-spin fa-spin text-white"></i></span>
-                                </span>
-                            </a>
-                        </div>
-                        {{-- @endpermission --}}
-                    </div>
-                </div>
-                {{-- @endpermission --}}
                 {{-- @permission('request_read') --}}
                 <div class="menu-item">
                     <a class="menu-link {{ request()->routeIs('tasks.*') ? 'active' : '' }}"
