@@ -2,17 +2,20 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
+use App\Domain\Services\Applications\MyAppService;
 
 class HomeController extends Controller
 {
-    /**
-     * Show the application dashboard.
-     *
-     * @return \Illuminate\Contracts\Support\Renderable
-     */
+    public function __construct(
+        protected MyAppService $myAppService
+    ) {
+    }
+
     public function index()
     {
-        return view('dashboard');
+        return view('dashboard', [
+            'currentApp' => $this->myAppService->getCurrentApp(),
+            'taskSummary' => $this->myAppService->getTaskSummary(),
+        ]);
     }
 }
