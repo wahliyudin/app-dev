@@ -39,9 +39,9 @@ const btnShow = (key) => {
 }
 const action = (data, type, row) => {
     var btns = '';
-    if (data.is_edit) {
-        btns += btnEdit(row.id);
-    }
+    // if (data.is_edit) {
+    //     btns += btnEdit(row.id);
+    // }
     if (data.is_delete) {
         btns += btnDelete(row.id);
     }

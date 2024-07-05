@@ -16,4 +16,5 @@ Route::middleware(['auth'])->group(function () {
     Route::post('requests/remove', [RequestController::class, 'remove'])->name('requests.remove');
     Route::get('requests/{key}/files', [RequestController::class, 'files'])->name('requests.files');
     Route::post('requests/employees', [RequestController::class, 'employees'])->name('requests.employees');
+    Route::post('requests/{appId}/features', [RequestController::class, 'features'])->name('requests.features');
 });

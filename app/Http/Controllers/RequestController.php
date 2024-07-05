@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Domain\Services\HCIS\EmployeeService;
 use App\Domain\Services\Request\RequestService;
+use App\Http\Requests\Request\StoreRequest;
 use App\Models\Request\RequestAttachment;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
@@ -58,7 +59,7 @@ class RequestController extends Controller
         return view('request.create');
     }
 
-    public function store(Request $request)
+    public function store(StoreRequest $request)
     {
         try {
             $this->requestService->store($request);
@@ -154,5 +155,15 @@ class RequestController extends Controller
         $searchTerm = $request->input('q');
         $data = $this->employeeService->getDataForSelect($searchTerm);
         return response()->json(['results' => $data]);
+    }
+
+    public function features($appId)
+    {
+        try {
+            $data = $this->requestService->featureByAppId($appId);
+            return response()->json($data);
+        } catch (\Throwable $th) {
+            throw $th;
+        }
     }
 }

@@ -2,6 +2,7 @@
 
 namespace App\Domain\Services\Request;
 
+use App\Enums\Request\Task\Status as TaskStatus;
 use App\Enums\Request\TypeRequest;
 use App\Enums\SvgTypeFile\TypeFile;
 use App\Enums\Workflows\Status;
@@ -9,6 +10,7 @@ use App\Models\Request\Request;
 use App\Models\Request\RequestApplication;
 use App\Models\Request\RequestDeveloper;
 use App\Models\Request\RequestFeature;
+use App\Models\Request\RequestFeatureTask;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 
@@ -40,65 +42,104 @@ class RequestService
     public function store($request)
     {
         DB::transaction(function () use ($request) {
-            $application = RequestApplication::query()
-                ->where('id', is_numeric($request->application_name) ? $request->application_name : null)
-                ->first();
-            if (!$application) {
-                $application = RequestApplication::query()->create([
-                    'department_id' => $request->department_id,
-                    'name' => $request->application_name,
-                    'display_name' => str($request->application_name)->ucfirst()->toString(),
-                    'due_date' => $request->estimated_project,
-                ]);
-            }
-            $requestModel = Request::query()->updateOrCreate([
-                'id' => $request->key,
-            ], [
-                'code' => $request->code,
-                'nik_requestor' => $request->nik_requestor,
-                'job_title' => $request->job_title,
-                'department' => $request->department,
-                'application_id' => $application->getKey(),
-                'nik_pic' => $request->pic_user,
-                'estimated_project' => $request->estimated_project,
-                'email' => $request->email,
-                'date' => $request->date,
-                'type_request' => $request->type_request,
-                'type_budget' => $request->type_budget,
-                'description' => $request->description,
-            ]);
-
+            $application = $this->storeApplication($request);
+            $requestModel = $this->updateOrCreateRequest($request, $application);
             if ($request->has('attachments')) {
-                foreach ($request->attachments as $attachment) {
-                    $requestModel->attachments()->updateOrCreate(
-                        ['name' => $attachment['name']],
-                        [
-                            'name' => $attachment['name'],
-                            'original_name' => $attachment['original_name'],
-                            'path' => 'storage/requests/' . $attachment['name'],
-                            'type_file' => TypeFile::svg($attachment['name']),
-                            'display_name' => str(pathinfo($attachment['original_name'], PATHINFO_FILENAME))->ucfirst()->value(),
-                        ]
-                    );
-                    if (Storage::disk('public')->exists('requests/temp/' . $attachment['name'])) {
-                        Storage::disk('public')->move('requests/temp/' . $attachment['name'], 'requests/' . $attachment['name']);
-                    }
-                }
-                $existingFiles = $requestModel->attachments->pluck('name')->toArray();
-                foreach ($existingFiles as $fileName) {
-                    if (!in_array($fileName, array_column($request->attachments, 'name'))) {
-                        Storage::disk('public')->delete('requests/' . $fileName);
-                        $requestModel->attachments()->where('name', $fileName)->delete();
-                    }
-                }
+                $this->storeAttachments($request->attachments, $requestModel);
             }
-
+            if ($request->type_request == 'new_automate_application') {
+                $this->storeNewFeature($requestModel->getKey(), $request->feature_name, $request->description);
+            }
+            if ($request->type_request == 'enhancement_to_existing_application') {
+                $this->storeTaskRevision($request->feature_id, $request->estimated_project, $request->description);
+            }
             if (!$request->key) {
                 RequestWorkflow::setModel($requestModel)->store();
             }
-
             return $requestModel;
         });
+    }
+
+    private function storeNewFeature($requestId, $name, $description)
+    {
+        return RequestFeature::query()->create([
+            'request_id' => $requestId,
+            'name' => $name,
+            'description' => $description,
+        ]);
+    }
+
+    private function storeTaskRevision($featureId, $dueDate, $content)
+    {
+        return RequestFeatureTask::query()->create([
+            'request_feature_id' => $featureId,
+            'due_date' => $dueDate,
+            'content' => $content,
+            'status' => TaskStatus::NOTTING,
+        ]);
+    }
+
+    private function storeAttachments($attachments, $requestModel)
+    {
+        foreach ($attachments as $attachment) {
+            $requestModel->attachments()->updateOrCreate(
+                ['name' => $attachment['name']],
+                [
+                    'name' => $attachment['name'],
+                    'original_name' => $attachment['original_name'],
+                    'path' => 'storage/requests/' . $attachment['name'],
+                    'type_file' => TypeFile::svg($attachment['name']),
+                    'display_name' => str(pathinfo($attachment['original_name'], PATHINFO_FILENAME))->ucfirst()->value(),
+                ]
+            );
+            if (Storage::disk('public')->exists('requests/temp/' . $attachment['name'])) {
+                Storage::disk('public')->move('requests/temp/' . $attachment['name'], 'requests/' . $attachment['name']);
+            }
+        }
+        $existingFiles = $requestModel->attachments->pluck('name')->toArray();
+        foreach ($existingFiles as $fileName) {
+            if (!in_array($fileName, array_column($attachments, 'name'))) {
+                Storage::disk('public')->delete('requests/' . $fileName);
+                $requestModel->attachments()->where('name', $fileName)->delete();
+            }
+        }
+    }
+
+    private function updateOrCreateRequest($request, $application)
+    {
+        return Request::query()->updateOrCreate([
+            'id' => $request->key,
+        ], [
+            'code' => $request->code,
+            'nik_requestor' => $request->nik_requestor,
+            'job_title' => $request->job_title,
+            'department' => $request->department,
+            'application_id' => $application->getKey(),
+            'nik_pic' => $request->pic_user,
+            'estimated_project' => $request->estimated_project,
+            'email' => $request->email,
+            'date' => $request->date,
+            'type_request' => $request->type_request,
+            'type_budget' => $request->type_budget,
+            'description' => $request->description,
+        ]);
+    }
+
+    private function storeApplication($request)
+    {
+        $appId = $request->application_name && is_numeric($request->application_name) ? $request->application_name : ($request->application_id ?? null);
+        $application = RequestApplication::query()
+            ->where('id', $appId)
+            ->first();
+        if (!$application) {
+            $application = RequestApplication::query()->create([
+                'department_id' => $request->department_id,
+                'name' => $request->application_name,
+                'display_name' => str($request->application_name)->ucfirst()->toString(),
+                'due_date' => $request->estimated_project,
+            ]);
+        }
+        return $application;
     }
 
     public function generateCode()
@@ -201,5 +242,15 @@ class RequestService
                 ]);
             }
         });
+    }
+
+    public function featureByAppId($appId)
+    {
+        return RequestFeature::query()
+            ->whereHas('request', function ($query) use ($appId) {
+                $query->where('application_id', $appId);
+            })
+            ->select(['id', 'name'])
+            ->get();
     }
 }

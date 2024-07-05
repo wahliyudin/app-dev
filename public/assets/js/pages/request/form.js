@@ -296,4 +296,51 @@ $(function () {
             }
         });
     });
+
+    $('input[name="type_request"]').on('change', function (e) {
+        e.preventDefault();
+        var type = $(this).val();
+        if (type == 'new_application' || type == 'replace_an_existing_application') {
+            $('#application_name').removeClass('d-none');
+            $('#application_id').addClass('d-none');
+        }
+        if (type == 'new_automate_application' || type == 'enhancement_to_existing_application') {
+            $('#application_name').addClass('d-none');
+            $('#application_id').removeClass('d-none');
+        }
+        if (type == 'new_automate_application') {
+            $('#feature_name').removeClass('d-none');
+            $('#feature_id').addClass('d-none');
+        }
+        if (type == 'enhancement_to_existing_application') {
+            const applicationId = $('select[name="application_id"]').val();
+            $('select[name="application_id"]').val(applicationId).trigger('change');
+            $('#feature_name').addClass('d-none');
+            $('#feature_id').removeClass('d-none');
+        }
+    });
+
+    $('select[name="application_id"]').on('change', function (e) {
+        e.preventDefault();
+        const applicationId = $(this).val();
+        $.ajax({
+            type: "POST",
+            url: `/requests/${applicationId}/features`,
+            dataType: "json",
+            success: function (response) {
+                $('select[name="feature_id"]').empty();
+                $('select[name="feature_id"]').append(
+                    '<option value="" disabled selected>Select an option</option>'
+                )
+                $.each(response, function (key, value) {
+                    $('select[name="feature_id"]').append(
+                        `<option value="${value.id}">${value.name}</option>`
+                    );
+                });
+            },
+            error: function (jqXHR) {
+                handleErrors(jqXHR);
+            }
+        });
+    });
 });

@@ -92,13 +92,27 @@
                             @if ($isShow)
                                 {{ $formDto->application_name }}
                             @else
-                                <select class="form-select form-select-sm" data-control="select2" data-tags="true"
-                                    name="application_name" data-placeholder="Select an option">
-                                    @foreach ($apps as $app)
-                                        <option @selected($app->id == $requestModel?->application_id) value="{{ $app->id }}">
-                                            {{ $app->display_name }}</option>
-                                    @endforeach
-                                </select>
+                                <span class="fs-7 fst-italic text-gray-500">*Choose service request first!</span>
+                                <div id="application_name">
+                                    <select class="form-select form-select-sm" data-control="select2" data-tags="true"
+                                        name="application_name">
+                                        <option value="" disabled selected>Select an option</option>
+                                        @foreach ($apps as $app)
+                                            <option @selected($app->id == $requestModel?->application_id) value="{{ $app->id }}">
+                                                {{ $app->display_name }}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                                <div id="application_id" class="d-none">
+                                    <select class="form-select form-select-sm" data-control="select2"
+                                        name="application_id">
+                                        <option value="" disabled selected>Select an option</option>
+                                        @foreach ($apps as $app)
+                                            <option @selected($app->id == $requestModel?->application_id) value="{{ $app->id }}">
+                                                {{ $app->display_name }}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
                             @endif
                         </td>
                     </tr>
@@ -151,8 +165,9 @@
                             @if ($isShow)
                                 {{ $formDto->email }}
                             @else
-                                <input class="form-control form-control-transparent form-control-sm" placeholder="Email"
-                                    type="email" readonly name="email" value="{{ $formDto->email }}" />
+                                <input class="form-control form-control-transparent form-control-sm"
+                                    placeholder="Email" type="email" readonly name="email"
+                                    value="{{ $formDto->email }}" />
                             @endif
                         </td>
                     </tr>
@@ -223,6 +238,16 @@
         </tbody>
     </table>
     <hr>
+    <div class="form-group mb-4 d-none" id="feature_name">
+        <label for="feature_name" class="form-label">Feature</label>
+        <input type="text" class="form-control form-control-sm" name="feature_name">
+    </div>
+    <div class="form-group mb-4 d-none" id="feature_id">
+        <label for="feature_id" class="form-label">Feature</label>
+        <select class="form-select form-select-sm" data-control="select2" name="feature_id">
+            <option value="" disabled selected>Select an option</option>
+        </select>
+    </div>
     <div class="form-group">
         <label for="description" class="form-label">Detail Description of the Requested Service</label>
         <textarea name="description" id="description" @readonly($isShow) class="form-control">{{ $requestModel?->description }}</textarea>
