@@ -21,7 +21,7 @@ class TaskController extends Controller
         return view('applications.task', [
             'navItemActive' => NavItem::TASK,
             'application' => $app,
-            'tasks' => $this->taskService->getTaskByRequest($app->request?->id),
+            'tasks' => $this->taskService->getTaskByRequest($app->id),
         ]);
     }
 

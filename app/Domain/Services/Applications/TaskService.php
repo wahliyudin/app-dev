@@ -13,7 +13,7 @@ class TaskService extends ApplicationService
     public function getTaskByRequest($key)
     {
         return RequestFeatureTask::query()->withWhereHas('feature', function ($query) use ($key) {
-            $query->where('request_id', $key);
+            $query->where('application_id', $key);
         })
             ->with(['developers' => function ($query) {
                 $query->with(['developer' => function ($query) {
@@ -28,9 +28,7 @@ class TaskService extends ApplicationService
 
     public function findOrFailTask($id)
     {
-        return RequestFeatureTask::with(['feature' => function ($query) {
-            $query->with(['request:id,application_id']);
-        }, 'developers'])->findOrFail($id);
+        return RequestFeatureTask::with(['feature', 'developers'])->findOrFail($id);
     }
 
     public function store($request)

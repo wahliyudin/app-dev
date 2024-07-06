@@ -28,6 +28,8 @@ return new class extends Migration
             $table->text('description');
             $table->string('status')->default(Status::OPEN->value);
             $table->string('note')->nullable();
+            $table->string('feature_name')->nullable();
+            $table->foreignId('feature_id')->nullable();
             $table->timestamps();
         });
     }

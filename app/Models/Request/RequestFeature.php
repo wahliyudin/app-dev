@@ -10,7 +10,7 @@ class RequestFeature extends Model
     use HasFactory;
 
     protected $fillable = [
-        'request_id',
+        'application_id',
         'name',
         'description',
     ];
@@ -20,8 +20,8 @@ class RequestFeature extends Model
         return $this->hasMany(RequestFeatureTask::class, 'request_feature_id', 'id');
     }
 
-    public function request()
+    public function application()
     {
-        return $this->belongsTo(Request::class, 'request_id', 'id');
+        return $this->belongsTo(RequestApplication::class, 'application_id', 'id');
     }
 }

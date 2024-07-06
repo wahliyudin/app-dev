@@ -44,10 +44,8 @@ class TaskService extends ApplicationsTaskService
     public function getFeatures($key)
     {
         return RequestFeature::query()
-            ->select(['id', 'name', 'request_id'])
-            ->whereHas('request', function ($query) use ($key) {
-                $query->where('application_id', $key);
-            })
+            ->select(['id', 'name', 'application_id'])
+            ->where('application_id', $key)
             ->get();
     }
 

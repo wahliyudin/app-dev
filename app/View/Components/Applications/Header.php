@@ -24,9 +24,9 @@ class Header extends Component
     public function render(): View|Closure|string
     {
         return view('components.applications.header', [
-            'total_open' => $this->application?->request?->features?->sum('total_open') ?? 0,
-            'total_progress' => $this->application?->request?->features?->sum('total_progress') ?? 0,
-            'total_done' => $this->application?->request?->features?->sum('total_done') ?? 0,
+            'total_open' => $this->application?->features?->sum('total_open') ?? 0,
+            'total_progress' => $this->application?->features?->sum('total_progress') ?? 0,
+            'total_done' => $this->application?->features?->sum('total_done') ?? 0,
         ]);
     }
 }

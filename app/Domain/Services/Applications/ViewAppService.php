@@ -8,12 +8,12 @@ use App\Models\Request\RequestFeatureTask;
 
 class ViewAppService extends ApplicationService
 {
-    public function getTaskOvertime($requestId, $year, $quarter)
+    public function getTaskOvertime($appId, $year, $quarter)
     {
         list($startDate, $endDate) = quarterDateRange($quarter, $year);
         $tasks = RequestFeatureTask::query()
-            ->whereHas('feature', function ($query) use ($requestId) {
-                $query->where('request_id', $requestId);
+            ->whereHas('feature', function ($query) use ($appId) {
+                $query->where('application_id', $appId);
             })
             ->whereBetween('created_at', [$startDate, $endDate])
             ->get();
@@ -79,22 +79,22 @@ class ViewAppService extends ApplicationService
         ];
     }
 
-    public function getDevelopers($requestId)
+    public function getDevelopers($requestId, $appId)
     {
         return RequestDeveloper::query()
             ->where('request_id', $requestId)
             ->with(['developer' => function ($query) {
                 $query->select('nik', 'nama_karyawan')
                     ->with('identity:nik,avatar');
-            }, 'user' => function ($query) use ($requestId) {
+            }, 'user' => function ($query) use ($appId) {
                 $query->select('nik', 'name')
-                    ->withCount(['tasks as total_task_open' => function ($query) use ($requestId) {
-                        $query->whereHas('feature', function ($query) use ($requestId) {
-                            $query->where('request_id', $requestId);
+                    ->withCount(['tasks as total_task_open' => function ($query) use ($appId) {
+                        $query->whereHas('feature', function ($query) use ($appId) {
+                            $query->where('application_id', $appId);
                         })->whereIn('status', [Status::NOTTING, Status::IN_PROGRESS]);
-                    }, 'tasks as total_task_done' => function ($query) use ($requestId) {
-                        $query->whereHas('feature', function ($query) use ($requestId) {
-                            $query->where('request_id', $requestId);
+                    }, 'tasks as total_task_done' => function ($query) use ($appId) {
+                        $query->whereHas('feature', function ($query) use ($appId) {
+                            $query->where('application_id', $appId);
                         })->whereIn('status', [Status::DONE]);
                     }]);
             }])

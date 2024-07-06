@@ -3,12 +3,10 @@
 namespace App\Domain\Services\Request;
 
 use App\Enums\Request\Task\Status as TaskStatus;
-use App\Enums\Request\TypeRequest;
 use App\Enums\SvgTypeFile\TypeFile;
 use App\Enums\Workflows\Status;
 use App\Models\Request\Request;
 use App\Models\Request\RequestApplication;
-use App\Models\Request\RequestDeveloper;
 use App\Models\Request\RequestFeature;
 use App\Models\Request\RequestFeatureTask;
 use Illuminate\Support\Facades\DB;
@@ -30,6 +28,7 @@ class RequestService
                 $query->select(['nik', 'nama_karyawan', 'position_id'])
                     ->with(['position:position_id,dept_id']);
             },
+            'feature:id,name,description',
             'application:id,name,display_name',
             'pic:nik,nama_karyawan',
             'workflows' => function ($query) {
@@ -47,12 +46,6 @@ class RequestService
             if ($request->has('attachments')) {
                 $this->storeAttachments($request->attachments, $requestModel);
             }
-            if ($request->type_request == 'new_automate_application') {
-                $this->storeNewFeature($requestModel->getKey(), $request->feature_name, $request->description);
-            }
-            if ($request->type_request == 'enhancement_to_existing_application') {
-                $this->storeTaskRevision($request->feature_id, $request->estimated_project, $request->description);
-            }
             if (!$request->key) {
                 RequestWorkflow::setModel($requestModel)->store();
             }
@@ -60,16 +53,16 @@ class RequestService
         });
     }
 
-    private function storeNewFeature($requestId, $name, $description)
+    public function storeNewFeature($appId, $name, $description)
     {
         return RequestFeature::query()->create([
-            'request_id' => $requestId,
+            'application_id' => $appId,
             'name' => $name,
             'description' => $description,
         ]);
     }
 
-    private function storeTaskRevision($featureId, $dueDate, $content)
+    public function storeTaskRevision($featureId, $dueDate, $content)
     {
         return RequestFeatureTask::query()->create([
             'request_feature_id' => $featureId,
@@ -122,6 +115,8 @@ class RequestService
             'type_request' => $request->type_request,
             'type_budget' => $request->type_budget,
             'description' => $request->description,
+            'feature_name' => $request->feature_name,
+            'feature_id' => $request->feature_id,
         ]);
     }
 
@@ -175,6 +170,7 @@ class RequestService
             foreach ($request->attachments as $attachment) {
                 Storage::disk('public')->delete('requests/' . $attachment->name);
             }
+            $request->workflows()->delete();
             $request->attachments()->delete();
             $request->delete();
         });
@@ -200,56 +196,10 @@ class RequestService
             });
     }
 
-    public function getByOutstanding()
-    {
-        return $this->queryOutstanding()->get();
-    }
-
-    public function totalOutstanding()
-    {
-        return $this->queryOutstanding()->count();
-    }
-
-    private function queryOutstanding()
-    {
-        return Request::select(['id', 'code', 'nik_requestor', 'department', 'application_id', 'type_request', 'type_budget', 'date', 'estimated_project', 'status'])
-            ->with(['requestor:nik,nama_karyawan', 'application:id,name,display_name'])
-            ->where('status', Status::CLOSE)
-            ->whereDoesntHave('features')
-            ->where('type_request', TypeRequest::NEW_APPLICATION);
-    }
-
-    public function storeSetting($request)
-    {
-        return DB::transaction(function () use ($request) {
-            foreach ($request->developers as $developer) {
-                RequestDeveloper::query()->updateOrCreate([
-                    'request_id' => $request->key,
-                    'nik' => $developer,
-                ], [
-                    'request_id' => $request->key,
-                    'nik' => $developer,
-                ]);
-            }
-            foreach ($request->features as $feature) {
-                RequestFeature::query()->updateOrCreate([
-                    'request_id' => $request->key,
-                    'id' => $feature['key'],
-                ], [
-                    'request_id' => $request->key,
-                    'name' => $feature['name'],
-                    'description' => $feature['description'],
-                ]);
-            }
-        });
-    }
-
     public function featureByAppId($appId)
     {
         return RequestFeature::query()
-            ->whereHas('request', function ($query) use ($appId) {
-                $query->where('application_id', $appId);
-            })
+            ->where('application_id', $appId)
             ->select(['id', 'name'])
             ->get();
     }

@@ -26,7 +26,7 @@ class StoreRequest extends FormRequest
             'type_request' => ['required'],
             'type_budget' => ['required'],
             'description' => ['required'],
-            'attachments' => ['required', 'array'],
+            // 'attachments' => ['required', 'array'],
         ];
         if (in_array($this->type_request, ['new_application', 'replace_an_existing_application'])) {
             $rules['application_name'] = ['required'];

@@ -3,6 +3,7 @@
 namespace App\Domain\Services\Request;
 
 use App\Domain\Workflows\Workflow;
+use App\Enums\Request\TypeRequest;
 use App\Enums\Workflows\Module;
 use App\Jobs\Request\ApprovalJob;
 use App\Models\Request\Request;
@@ -22,6 +23,14 @@ class RequestWorkflow extends Workflow
 
     protected function handleIsLastAndApprov()
     {
+        /** @var RequestService $requestService */
+        $requestService = app(RequestService::class);
+        if ($this->model->type_request === TypeRequest::NEW_AUTOMATE_APPLICATION) {
+            $requestService->storeNewFeature($this->model->application_id, $this->model->feature_name, $this->model->description);
+        }
+        if ($this->model->type_request === TypeRequest::ENHANCEMENT_TO_EXISTING_APPLICATION) {
+            $requestService->storeTaskRevision($this->model->feature_id, $this->model->estimated_project, $this->model->description);
+        }
         dispatch(new ApprovalJob('emails.request.close', $this->model, $this->nextWorkflow()));
     }
 

@@ -10,7 +10,7 @@ $(function () {
         }
     });
 
-    const request_id = $('input[name="request_id"]').val();
+    const application_id = $('input[name="application_id"]').val();
 
     var datatable = $('#featrures-table').DataTable({
         processing: true,
@@ -20,7 +20,7 @@ $(function () {
         order: [[0, 'asc']],
         ajax: {
             type: "POST",
-            url: `/applications/${request_id}/features/datatable`
+            url: `/applications/${application_id}/features/datatable`
         },
         columns: [
             {
@@ -134,7 +134,7 @@ $(function () {
         e.preventDefault();
         const formData = new FormData();
         formData.append('key', $('#modal-feature input[name="key"]').val());
-        formData.append('request_id', $('#modal-feature input[name="request_id"]').val());
+        formData.append('application_id', $('#modal-feature input[name="application_id"]').val());
         formData.append('name', $('#modal-feature input[name="name"]').val());
         formData.append('description', $('#modal-feature textarea[name="description"]').val());
         const _this = this;

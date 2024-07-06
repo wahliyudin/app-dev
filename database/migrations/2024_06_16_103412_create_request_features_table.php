@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('request_features', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('request_id')->constrained()->cascadeOnDelete();
+            $table->foreignId('application_id')->constrained('request_applications')->cascadeOnDelete();
             $table->string('name');
             $table->text('description')->nullable();
             $table->timestamps();

@@ -26,7 +26,7 @@
 @section('content')
     <div id="kt_app_content_container" class="app-container container-fluid">
         <x-applications.header :navItemActive="$navItemActive" :application="$application" />
-        <input type="hidden" name="request_id" value="{{ $application->request?->id }}">
+        <input type="hidden" name="application_id" value="{{ $application?->id }}">
         <div class="row">
             <div class="col-md-12">
                 <div class="card">
@@ -80,7 +80,7 @@
                 <div class="modal-body">
                     <form action="" id="modal-form">
                         <input type="hidden" name="key">
-                        <input type="hidden" name="request_id" value="{{ $application->request?->id }}">
+                        <input type="hidden" name="application_id" value="{{ $application?->id }}">
                         <div class="row gap-2">
                             <div class="col-md-12">
                                 <label for="">Name</label>

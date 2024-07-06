@@ -155,9 +155,9 @@
                                 {{ \Illuminate\Support\Str::limit($app->description, 100) }}
                             </p>
                             @php
-                                $totalOpen = $app->request?->features?->sum('total_open') ?? 0;
-                                $totalProgress = $app->request?->features?->sum('total_progress') ?? 0;
-                                $totalDone = $app->request?->features?->sum('total_done') ?? 0;
+                                $totalOpen = $app->features?->sum('total_open') ?? 0;
+                                $totalProgress = $app->features?->sum('total_progress') ?? 0;
+                                $totalDone = $app->features?->sum('total_done') ?? 0;
                                 $total = $totalOpen + $totalProgress + $totalDone;
                                 $progress = $total ? round(($totalDone / $total) * 100) : 0;
                             @endphp

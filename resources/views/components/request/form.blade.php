@@ -238,9 +238,11 @@
         </tbody>
     </table>
     <hr>
-    <div class="form-group mb-4 d-none" id="feature_name">
+    <div class="form-group mb-4 {{ !in_array($requestModel?->type_request, [\App\Enums\Request\TypeRequest::NEW_AUTOMATE_APPLICATION, \App\Enums\Request\TypeRequest::ENHANCEMENT_TO_EXISTING_APPLICATION]) ? 'd-none' : '' }}"
+        id="feature_name">
         <label for="feature_name" class="form-label">Feature</label>
-        <input type="text" class="form-control form-control-sm" name="feature_name">
+        <input type="text" class="form-control form-control-sm" name="feature_name" @readonly($isShow)
+            value="{{ $requestModel?->feature_name ?? $requestModel?->feature?->name }}">
     </div>
     <div class="form-group mb-4 d-none" id="feature_id">
         <label for="feature_id" class="form-label">Feature</label>

@@ -33,4 +33,9 @@ class RequestApplication extends Model
     {
         return $this->hasOne(Request::class, 'application_id', 'id');
     }
+
+    public function features()
+    {
+        return $this->hasMany(RequestFeature::class, 'application_id', 'id');
+    }
 }

@@ -12,19 +12,19 @@ class FeatureService extends ApplicationService
         return DB::transaction(function () use ($request) {
             return RequestFeature::query()->updateOrCreate([
                 'id' => $request->key,
-                'request_id' => $request->request_id,
+                'application_id' => $request->application_id,
             ], [
-                'request_id' => $request->request_id,
+                'application_id' => $request->application_id,
                 'name' => $request->name,
                 'description' => $request->description,
             ]);
         });
     }
 
-    public function getFeatures($requestId)
+    public function getFeatures($appId)
     {
         return RequestFeature::query()
-            ->where('request_id', $requestId)
+            ->where('application_id', $appId)
             ->latest()
             ->get();
     }

@@ -57,7 +57,7 @@
                                 <select name="feature_id" id="feature" class="form-select" data-control="select2"
                                     data-dropdown-parent="#modal-board">
                                     <option value="" selected disabled>- Select -</option>
-                                    @foreach ($application->request->features as $feature)
+                                    @foreach ($application->features as $feature)
                                         <option value="{{ $feature->id }}">{{ $feature->name }}</option>
                                     @endforeach
                                 </select>

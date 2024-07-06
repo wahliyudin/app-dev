@@ -52,7 +52,7 @@ class TaskController extends Controller
                 'key' => $task->getKey(),
                 'status' => $task->status->id(),
                 'content' => $task->content,
-                'app_id' => $task->feature?->request?->application_id,
+                'app_id' => $task->feature?->application_id,
                 'feature_id' => $task->feature->getKey(),
                 'due_date' => $task->due_date,
                 'developers' => $task->developers->pluck('nik')->toArray(),

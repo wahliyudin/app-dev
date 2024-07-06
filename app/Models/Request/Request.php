@@ -32,6 +32,8 @@ class Request extends Model implements ModelThatHaveWorkflow
         'description',
         'status',
         'note',
+        'feature_name',
+        'feature_id',
     ];
 
     protected $casts = [
@@ -74,13 +76,13 @@ class Request extends Model implements ModelThatHaveWorkflow
         return $this->hasMany(RequestAttachment::class, 'request_id', 'id');
     }
 
-    public function features()
-    {
-        return $this->hasMany(RequestFeature::class, 'request_id', 'id');
-    }
-
     public function developers()
     {
         return $this->hasMany(RequestDeveloper::class, 'request_id', 'id');
+    }
+
+    public function feature()
+    {
+        return $this->belongsTo(RequestFeature::class, 'feature_id', 'id');
     }
 }

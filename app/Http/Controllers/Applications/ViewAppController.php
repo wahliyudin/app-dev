@@ -22,7 +22,7 @@ class ViewAppController extends Controller
             'application' => $app,
             'taskSummary' => $this->viewAppService->getTaskSummary($app->request->id),
             'quarters' => $this->viewAppService->quarterOptions(),
-            'developers' => $this->viewAppService->getDevelopers($app->request->id),
+            'developers' => $this->viewAppService->getDevelopers($app->request->id, $app->id),
         ]);
     }
 

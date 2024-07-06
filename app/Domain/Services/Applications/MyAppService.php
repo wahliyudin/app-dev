@@ -4,6 +4,7 @@ namespace App\Domain\Services\Applications;
 
 use App\Enums\Request\Application\Status;
 use App\Enums\Request\Task\Status as TaskStatus;
+use App\Enums\Workflows\Status as WorkflowsStatus;
 use App\Models\Request\RequestApplication;
 
 class MyAppService extends ApplicationService
@@ -11,22 +12,23 @@ class MyAppService extends ApplicationService
     public function getApps($status = null)
     {
         return RequestApplication::query()
-            ->with(['request' => function ($query) {
+            ->withWhereHas('request', function ($query) {
                 $query->select(['id', 'code', 'application_id'])
-                    ->with(['features' => function ($query) {
-                        $query->withCount(['tasks as total_open' => function ($query) {
-                            $query->where('status', TaskStatus::NOTTING);
-                        }, 'tasks as total_progress' => function ($query) {
-                            $query->where('status', TaskStatus::IN_PROGRESS);
-                        }, 'tasks as total_done' => function ($query) {
-                            $query->where('status', TaskStatus::DONE);
-                        }]);
-                    }, 'developers' => function ($query) {
+                    ->where('status', WorkflowsStatus::CLOSE)
+                    ->with(['developers' => function ($query) {
                         $query->with(['developer' => function ($query) {
                             $query->select('nik', 'nama_karyawan')
                                 ->with('identity:nik,avatar');
                         }]);
                     }]);
+            })->with(['features' => function ($query) {
+                $query->withCount(['tasks as total_open' => function ($query) {
+                    $query->where('status', TaskStatus::NOTTING);
+                }, 'tasks as total_progress' => function ($query) {
+                    $query->where('status', TaskStatus::IN_PROGRESS);
+                }, 'tasks as total_done' => function ($query) {
+                    $query->where('status', TaskStatus::DONE);
+                }]);
             }])
             ->when($status, function ($query) use ($status) {
                 return $query->where('status', $status);
@@ -37,6 +39,9 @@ class MyAppService extends ApplicationService
     public function getCurrentApp()
     {
         $apps = RequestApplication::query()
+            ->whereHas('request', function ($query) {
+                $query->where('status', WorkflowsStatus::CLOSE);
+            })
             ->get();
         $total = $apps->count();
         $pending = $apps->where('status', Status::PENDING)->count();

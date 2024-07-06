@@ -13,30 +13,30 @@ class ApplicationService
         return RequestApplication::query()
             ->with(['request' => function ($query) {
                 $query->select(['id', 'code', 'application_id'])
-                    ->with(['features' => function ($query) {
-                        $query->withCount(['tasks as total_open' => function ($query) {
-                            $query->where('status', Status::NOTTING);
-                        }, 'tasks as total_progress' => function ($query) {
-                            $query->where('status', Status::IN_PROGRESS);
-                        }, 'tasks as total_done' => function ($query) {
-                            $query->where('status', Status::DONE);
-                        }]);
-                    }, 'developers' => function ($query) {
+                    ->with(['developers' => function ($query) {
                         $query->with(['developer' => function ($query) {
                             $query->select('nik', 'nama_karyawan')
                                 ->with('identity:nik,avatar');
                         }]);
                     }]);
+            }, 'features' => function ($query) {
+                $query->withCount(['tasks as total_open' => function ($query) {
+                    $query->where('status', Status::NOTTING);
+                }, 'tasks as total_progress' => function ($query) {
+                    $query->where('status', Status::IN_PROGRESS);
+                }, 'tasks as total_done' => function ($query) {
+                    $query->where('status', Status::DONE);
+                }]);
             }])
             ->findOrFail($id);
     }
 
-    public function getTaskSummary($requestId = null)
+    public function getTaskSummary($appId = null)
     {
         $tasks = RequestFeatureTask::query()
-            ->when($requestId, function ($query) use ($requestId) {
-                $query->whereHas('feature', function ($query) use ($requestId) {
-                    $query->where('request_id', $requestId);
+            ->when($appId, function ($query) use ($appId) {
+                $query->whereHas('feature', function ($query) use ($appId) {
+                    $query->where('application_id', $appId);
                 });
             })
             ->get();
