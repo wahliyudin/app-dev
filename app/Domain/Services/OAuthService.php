@@ -78,6 +78,9 @@ class OAuthService
             if (!$oAuthToken) {
                 throw new \Exception('Failed to save oauth token');
             }
+            if (!$user->hasPermission('dashboard_dashboard_read')) {
+                $user->givePermission('dashboard_dashboard_read');
+            }
             Auth::login($user);
             return $user;
         });

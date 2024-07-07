@@ -35,6 +35,7 @@ class SidebarWithPermissionSeeder extends Seeder
             $parentName = str($module['title'])->lower()->value();
             $parent = Sidebar::query()->updateOrCreate([
                 'name' => str($parentName)->snake()->value(),
+                'parent_id' => null,
             ], [
                 'title' => isset($module['label']) ? $module['label'] : $module['title'],
                 'name' => str($parentName)->snake()->value(),

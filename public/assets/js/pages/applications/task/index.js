@@ -14,6 +14,8 @@ $(function () {
     $('#due_date').flatpickr();
 
     const tasks = JSON.parse($('input[name="tasks"]').val());
+    const permission = JSON.parse($('input[name="permission"]').val());
+    console.log(permission);
 
     const board = new Board(tasks);
 
@@ -55,7 +57,7 @@ $(function () {
         dragBoards: false,
         widthBoard: '390px',
         itemAddOptions: {
-            enabled: true,
+            enabled: permission.is_create ?? false,
             content: `Add a card`,
             class: 'kanban-title-button btn btn-light-secondary btn-sm ps-4 pe-3 w-100 text-start text-black fs-6',
             footer: true,
@@ -98,6 +100,8 @@ $(function () {
                             status: $(el).find('#due_date').data('status'),
                             due_date: $(el).find('#due_date').data('date'),
                             feature_name: $(el).find('#feature').text(),
+                            is_update: permission?.is_update ?? false,
+                            is_delete: permission?.is_delete ?? false,
                         });
                         kanban.addElement($(source).parent().data('id'), item);
                     }

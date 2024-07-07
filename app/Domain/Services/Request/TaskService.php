@@ -4,6 +4,7 @@ namespace App\Domain\Services\Request;
 
 use App\Data\Applications\TaskDto;
 use App\Domain\Services\Applications\TaskService as ApplicationsTaskService;
+use App\Enums\Request\Task\Status;
 use App\Models\Request\RequestApplication;
 use App\Models\Request\RequestFeature;
 use App\Models\Request\RequestFeatureTask;
@@ -13,7 +14,7 @@ class TaskService extends ApplicationsTaskService
 {
     public function totalOutstanding()
     {
-        return $this->queryTasks()->count();
+        return $this->queryTasks()->where('status', '!=', Status::DONE)->count();
     }
 
     public function getTasks()

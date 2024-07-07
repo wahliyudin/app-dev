@@ -18,6 +18,11 @@ class TaskController extends Controller
         return view('task.index', [
             'tasks' => $this->taskService->getTasks(),
             'apps' => $this->taskService->apps(),
+            'permission' => [
+                'is_create' => hasPermission('application_task_create'),
+                'is_update' => hasPermission('application_task_update'),
+                'is_delete' => hasPermission('application_task_delete'),
+            ],
         ]);
     }
 

@@ -27,6 +27,8 @@ class FeatureController extends Controller
     {
         $data = $this->featureService->getFeatures($id);
         return datatables()->of($data)
+            ->addColumn('is_update', fn () => hasPermission('application_feature_update'))
+            ->addColumn('is_delete', fn () => hasPermission('application_feature_delete'))
             ->addIndexColumn()
             ->make();
     }

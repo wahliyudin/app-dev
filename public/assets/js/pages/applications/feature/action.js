@@ -37,12 +37,12 @@ const btnDelete = (key) => {
 }
 const action = (data, type, row) => {
     var btns = '';
-    // if (data.is_edit) {
-    btns += btnEdit(row.id);
-    // }
-    // if (data.is_delete) {
-    btns += btnDelete(row.id);
-    // }
+    if (data.is_update) {
+        btns += btnEdit(row.id);
+    }
+    if (data.is_delete) {
+        btns += btnDelete(row.id);
+    }
     return '<div class="d-flex align-items-center gap-2">' + btns + '</div>';
 }
 

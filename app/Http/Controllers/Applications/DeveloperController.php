@@ -30,6 +30,8 @@ class DeveloperController extends Controller
             ->editColumn('developer', function ($data) {
                 return $data->developer?->nama_karyawan;
             })
+            ->addColumn('is_update', fn () => hasPermission('application_developer_update'))
+            ->addColumn('is_delete', fn () => hasPermission('application_developer_delete'))
             ->addIndexColumn()
             ->make();
     }

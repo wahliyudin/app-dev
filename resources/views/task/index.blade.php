@@ -104,6 +104,7 @@
             </div>
         </div>
     </div>
+    <input type="hidden" name="permission" value="{{ json_encode($permission) }}">
 @endpush
 
 @push('css')

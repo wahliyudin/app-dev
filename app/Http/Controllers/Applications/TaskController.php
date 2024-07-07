@@ -22,6 +22,11 @@ class TaskController extends Controller
             'navItemActive' => NavItem::TASK,
             'application' => $app,
             'tasks' => $this->taskService->getTaskByRequest($app->id),
+            'permission' => [
+                'is_create' => hasPermission('application_task_create'),
+                'is_update' => hasPermission('application_task_update'),
+                'is_delete' => hasPermission('application_task_delete'),
+            ],
         ]);
     }
 

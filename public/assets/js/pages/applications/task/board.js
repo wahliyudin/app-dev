@@ -49,6 +49,8 @@ export default class Board {
 
     item(task) {
         task.due_date_badge = this.badgeDueDate(task.due_date, task.status);
+        const btnEdit = task.is_update ? this.btnEdit(task.key) : '';
+        const btnDelete = task.is_delete ? this.btnDelete(task.key) : '';
         return {
             'title': `
                 <div class="d-flex flex-column position-relative" data-item-key="${task.key}">
@@ -62,28 +64,36 @@ export default class Board {
                         </div>
                         ${task.due_date_badge}
                     </div>
-                    <div class="position-absolute" style="top: -20px; right: 0;">
-                        <button type="button" class="btn btn-icon btn-bg-light btn-active-color-danger w-20px h-20px p-0" data-key="${task.key}" id="btn-delete">
-                            <i class="ki-duotone ki-trash fs-2">
-                                <i class="path1"></i>
-                                <i class="path2"></i>
-                                <i class="path3"></i>
-                                <i class="path4"></i>
-                                <i class="path5"></i>
-                            </i>
-                        </button>
-                    </div>
-                    <div class="position-absolute" style="top: -20px; right: -20px;">
-                        <button type="button" class="btn btn-icon btn-bg-light btn-active-color-primary w-20px h-20px p-0" data-key="${task.key}" id="btn-edit">
-                            <i class="ki-duotone ki-notepad-edit fs-2">
-                                <i class="path1"></i>
-                                <i class="path2"></i>
-                            </i>
-                        </button>
-                    </div>
+                    ${btnDelete}
+                    ${btnEdit}
                 </div>
             `,
         };
+    }
+
+    btnDelete(key) {
+        return `<div class="position-absolute" style="top: -20px; right: 0;">
+            <button type="button" class="btn btn-icon btn-bg-light btn-active-color-danger w-20px h-20px p-0" data-key="${key}" id="btn-delete">
+                <i class="ki-duotone ki-trash fs-2">
+                    <i class="path1"></i>
+                    <i class="path2"></i>
+                    <i class="path3"></i>
+                    <i class="path4"></i>
+                    <i class="path5"></i>
+                </i>
+            </button>
+        </div>`;
+    }
+
+    btnEdit(key) {
+        return `<div class="position-absolute" style="top: -20px; right: -20px;">
+            <button type="button" class="btn btn-icon btn-bg-light btn-active-color-primary w-20px h-20px p-0" data-key="${key}" id="btn-edit">
+                <i class="ki-duotone ki-notepad-edit fs-2">
+                    <i class="path1"></i>
+                    <i class="path2"></i>
+                </i>
+            </button>
+        </div>`;
     }
 
     badgeDueDate(due_date, status) {

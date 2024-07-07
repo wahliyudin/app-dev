@@ -17,6 +17,31 @@ return [
             'permissions' => 'c,r,u,d,approve,reject',
         ],
         [
+            'title' => 'APPLICATION',
+            'child' => [
+                [
+                    'title' => 'TASK',
+                    'permissions' => 'c,r,u,d',
+                ],
+                [
+                    'title' => 'FEATURE',
+                    'permissions' => 'c,r,u,d',
+                ],
+                [
+                    'title' => 'FILE',
+                    'permissions' => 'r',
+                ],
+                [
+                    'title' => 'DEVELOPER',
+                    'permissions' => 'c,r,u,d',
+                ],
+                [
+                    'title' => 'SETTING',
+                    'permissions' => 'r,u',
+                ],
+            ]
+        ],
+        [
             'title' => 'SETTING',
             'child' => [
                 [

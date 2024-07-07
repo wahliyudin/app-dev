@@ -34,4 +34,16 @@ enum NavItem: string
             self::SETTING => route('applications.settings.index', $id),
         };
     }
+
+    public function isAuthorize()
+    {
+        return match ($this) {
+            self::OVERVIEW => true,
+            self::TASK => hasPermission('application_task_read'),
+            self::FEATURE => hasPermission('application_feature_read'),
+            self::FILE => hasPermission('application_file_read'),
+            self::DEVELOPER => hasPermission('application_developer_read'),
+            self::SETTING => hasPermission('application_setting_read'),
+        };
+    }
 }

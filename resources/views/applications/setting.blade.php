@@ -124,22 +124,24 @@
                         </div>
                     </div>
                 </div>
-                <div class="card-footer d-flex justify-content-end py-6 px-9">
-                    <button type="button" class="btn btn-primary ps-4" id="btn-save">
-                        <span class="indicator-label">
-                            <div class="d-flex align-items-center gap-2">
-                                <i class="ki-duotone ki-save-2 fs-2">
-                                    <i class="path1"></i>
-                                    <i class="path2"></i>
-                                </i>
-                                <span>Save Changes</span>
-                            </div>
-                        </span>
-                        <span class="indicator-progress">
-                            Please wait... <span class="spinner-border spinner-border-sm align-middle ms-2"></span>
-                        </span>
-                    </button>
-                </div>
+                @permission('application_setting_update')
+                    <div class="card-footer d-flex justify-content-end py-6 px-9">
+                        <button type="button" class="btn btn-primary ps-4" id="btn-save">
+                            <span class="indicator-label">
+                                <div class="d-flex align-items-center gap-2">
+                                    <i class="ki-duotone ki-save-2 fs-2">
+                                        <i class="path1"></i>
+                                        <i class="path2"></i>
+                                    </i>
+                                    <span>Save Changes</span>
+                                </div>
+                            </span>
+                            <span class="indicator-progress">
+                                Please wait... <span class="spinner-border spinner-border-sm align-middle ms-2"></span>
+                            </span>
+                        </button>
+                    </div>
+                @endpermission
             </form>
         </div>
     </div>

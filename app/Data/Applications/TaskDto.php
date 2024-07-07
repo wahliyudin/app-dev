@@ -12,6 +12,9 @@ class TaskDto
         public readonly ?string $content = null,
         public readonly ?string $due_date = null,
         public readonly ?string $status = null,
+        public readonly ?bool $is_create = false,
+        public readonly ?bool $is_update = false,
+        public readonly ?bool $is_delete = false,
         public readonly ?array $developers = null,
     ) {
     }
@@ -30,6 +33,9 @@ class TaskDto
             $task->content,
             $task->due_date,
             $task->status->value,
+            hasPermission('application_task_create'),
+            hasPermission('application_task_update'),
+            hasPermission('application_task_delete'),
             self::convertDevelopers($task->developers),
         );
     }

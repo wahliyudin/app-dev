@@ -5,7 +5,6 @@ namespace App\Http\Controllers\Setting;
 use App\Domain\Repositories\UserRepository;
 use App\Domain\Services\Setting\AccessPermissionService;
 use App\Http\Controllers\Controller;
-use App\Models\HCIS\Employee;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;

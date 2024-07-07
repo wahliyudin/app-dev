@@ -94,12 +94,14 @@
 
         <ul class="nav nav-stretch nav-line-tabs nav-line-tabs-2x border-transparent fs-5 fw-bold">
             @foreach (\App\Enums\Applications\NavItem::cases() as $navItem)
-                <li class="nav-item">
-                    <a class="nav-link text-active-primary py-5 me-6 {{ $navItem === $navItemActive ? 'active' : '' }}"
-                        href="{{ $navItem->url($application->id) }}">
-                        {{ $navItem->label() }}
-                    </a>
-                </li>
+                @if ($navItem->isAuthorize())
+                    <li class="nav-item">
+                        <a class="nav-link text-active-primary py-5 me-6 {{ $navItem === $navItemActive ? 'active' : '' }}"
+                            href="{{ $navItem->url($application->id) }}">
+                            {{ $navItem->label() }}
+                        </a>
+                    </li>
+                @endif
             @endforeach
         </ul>
     </div>

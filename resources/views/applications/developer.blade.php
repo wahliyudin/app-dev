@@ -40,10 +40,12 @@
                                 <input type="text" data-kt-access-table-filter="search"
                                     class="form-control form-control-solid w-250px ps-13" placeholder="Search" />
                             </div>
-                            <button type="button" class="btn btn-primary btn-sm ps-4" id="btn-add-developer"
-                                data-bs-toggle="modal" data-bs-target="#modal-developer">
-                                <i class="ki-duotone ki-plus fs-2"></i>Add Developer
-                            </button>
+                            @permission('application_developer_create')
+                                <button type="button" class="btn btn-primary btn-sm ps-4" id="btn-add-developer"
+                                    data-bs-toggle="modal" data-bs-target="#modal-developer">
+                                    <i class="ki-duotone ki-plus fs-2"></i>Add Developer
+                                </button>
+                            @endpermission
                         </div>
                         <table class="table align-middle table-row-dashed fs-6 gy-5" id="developers-table">
                             <thead>

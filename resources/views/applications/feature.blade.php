@@ -40,10 +40,12 @@
                                 <input type="text" data-kt-access-table-filter="search"
                                     class="form-control form-control-solid w-250px ps-13" placeholder="Search" />
                             </div>
-                            <button type="button" class="btn btn-primary btn-sm ps-4" id="btn-add-feature"
-                                data-bs-toggle="modal" data-bs-target="#modal-feature">
-                                <i class="ki-duotone ki-plus fs-2"></i>Add Feature
-                            </button>
+                            @permission('application_feature_create')
+                                <button type="button" class="btn btn-primary btn-sm ps-4" id="btn-add-feature"
+                                    data-bs-toggle="modal" data-bs-target="#modal-feature">
+                                    <i class="ki-duotone ki-plus fs-2"></i>Add Feature
+                                </button>
+                            @endpermission
                         </div>
                         <table class="table align-middle table-row-dashed fs-6 gy-5" id="featrures-table">
                             <thead>
