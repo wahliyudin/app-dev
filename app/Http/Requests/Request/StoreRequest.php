@@ -17,7 +17,7 @@ class StoreRequest extends FormRequest
             'department_id' => ['required'],
             'nik_requestor' => ['required'],
             'code' => ['required'],
-            'job_title' => ['required'],
+            'job_title' => ['required', 'max:50'],
             'department' => ['required'],
             'pic_user' => ['required'],
             'estimated_project' => ['required'],

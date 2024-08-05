@@ -28,7 +28,7 @@
         <x-applications.header :navItemActive="$navItemActive" :application="$application" />
         <div class="card">
             <div class="card-header">
-                <div class="card-title fs-3 fw-bold">Project Settings</div>
+                <div class="card-title fs-3 fw-bold">Application Settings</div>
             </div>
 
             <form id="form-setting" class="form" enctype="multipart/form-data">
@@ -36,7 +36,7 @@
                 <div class="card-body p-9">
                     <div class="row mb-5">
                         <div class="col-xl-3">
-                            <div class="fs-6 fw-semibold mt-2 mb-3">Project Logo</div>
+                            <div class="fs-6 fw-semibold mt-2 mb-3">Application Logo</div>
                         </div>
                         <div class="col-lg-8">
                             <div class="image-input image-input-outline" data-kt-image-input="true"
@@ -74,7 +74,7 @@
                     </div>
                     <div class="row mb-8">
                         <div class="col-xl-3">
-                            <div class="fs-6 fw-semibold mt-2 mb-3">Project Name</div>
+                            <div class="fs-6 fw-semibold mt-2 mb-3">Application Name</div>
                         </div>
                         <div class="col-xl-9 fv-row">
                             <input type="text" class="form-control form-control-solid" name="display_name"
@@ -83,7 +83,7 @@
                     </div>
                     <div class="row mb-8">
                         <div class="col-xl-3">
-                            <div class="fs-6 fw-semibold mt-2 mb-3">Project Description</div>
+                            <div class="fs-6 fw-semibold mt-2 mb-3">Application Description</div>
                         </div>
                         <div class="col-xl-9 fv-row">
                             <textarea name="description" class="form-control form-control-solid h-100px">{{ $application->description }}</textarea>

@@ -28,7 +28,7 @@
     <div id="kt_app_content_container" class="app-container container-fluid">
         <div class="card">
             <div class="card-body">
-                <x-request.form :requestModel="$request" :isShow="true" />
+                <x-request.form :requestModel="$request" :isShow="true" :withApproval="true" />
             </div>
         </div>
     </div>

@@ -16,6 +16,7 @@ class Form extends Component
      */
     public function __construct(
         public $requestModel = null,
+        public $withApproval = false,
         public $isShow = false,
     ) {
     }

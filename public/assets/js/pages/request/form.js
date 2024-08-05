@@ -87,6 +87,10 @@ $(function () {
                             }
                             file._downloadLink = Dropzone.createElement(`<a class="btn btn-info w-100 btn-sm" id="bt-down" target="_blank" style="cursor:pointer;" href="${item.path}" title="Download" data-dz-download><i class="fa fa-download" style="cursor:pointer;"></i></a>`);
                             file.previewElement.appendChild(file._downloadLink);
+                            const dzImage = file.previewElement.querySelector('.dz-image');
+                            if (dzImage) {
+                                dzImage.style.width = '200px';
+                            }
                             file.previewElement.classList.add('dz-complete');
                         });
                     },
@@ -184,12 +188,12 @@ $(function () {
         var _this = this;
         $(_this).attr("data-kt-indicator", "on");
         Swal.fire({
-            title: 'Apa kamu yakin?',
+            title: 'Are you sure?',
             icon: 'warning',
             showCancelButton: true,
             confirmButtonColor: '#3085d6',
             cancelButtonColor: '#d33',
-            confirmButtonText: 'Yakin!',
+            confirmButtonText: 'Yes, approve it!',
             preConfirm: () => {
                 return new Promise(function (resolve) {
                     $.ajax({
@@ -237,14 +241,14 @@ $(function () {
         var _this = this;
         $(_this).attr("data-kt-indicator", "on");
         Swal.fire({
-            title: "Tolak?",
-            text: "Masukan alasan kenapa ditolak!",
+            title: "Are you sure?",
+            text: "Enter the reason for rejection!",
             input: 'textarea',
             icon: 'warning',
-            inputPlaceholder: 'Catatan',
+            inputPlaceholder: 'Reason',
             showCancelButton: true,
-            confirmButtonText: 'Ya, tolak!',
-            cancelButtonText: "Batal",
+            confirmButtonText: 'Yes, reject!',
+            cancelButtonText: "Cancel",
             reverseButtons: true,
             confirmButtonColor: '#3085d6',
             cancelButtonColor: '#d33',

@@ -72,10 +72,12 @@
                             @if (count($sidebarChildren) > 0)
                                 <tr>
                                     <td rowspan="{{ count($sidebarChildren) + 1 }}">
-                                        <input class="form-check-input checkall_modul"
-                                            {{ $total >= count($sidebarChildren) ? 'checked' : '' }} type="checkbox"
-                                            value="{{ $sidebar['name'] }}" name="menu">
-                                        {{ $sidebar['title'] }}
+                                        <div class="form-check">
+                                            <input class="form-check-input checkall_modul"
+                                                {{ $total >= count($sidebarChildren) ? 'checked' : '' }} type="checkbox"
+                                                value="{{ $sidebar['name'] }}" name="menu">
+                                            {{ $sidebar['title'] }}
+                                        </div>
                                     </td>
                                 </tr>
                             @endif
