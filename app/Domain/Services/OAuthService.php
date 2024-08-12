@@ -4,7 +4,7 @@ namespace App\Domain\Services;
 
 use App\Domain\Repositories\OAuthRepository;
 use App\Domain\Repositories\UserRepository;
-use App\Domain\API\HCIS\UserService;
+use App\Domain\API\Employee\UserService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -18,17 +18,21 @@ class OAuthService
         protected OAuthRepository $oAuthRepository,
         protected UserService $userService,
         protected UserRepository $userRepository,
-    ) {
+    ) {}
+
+    private function url()
+    {
+        return rtrim(config('sso.client_url'), '/');
     }
 
     private function urlAuthorize(string $query)
     {
-        return config('urls.hcis') . "oauth/authorize?$query";
+        return $this->url() . "/oauth/authorize?$query";
     }
 
     private function urlCallback()
     {
-        return config('urls.hcis') . "oauth/token";
+        return $this->url() . "/oauth/token";
     }
 
     public function authorize(Request $request)
@@ -67,10 +71,10 @@ class OAuthService
                 return to_route('login')->with('error', $response['message']);
             }
             $res = $this->userService->first($response['access_token']);
-            if (!isset($res['data'])) {
+            if (!isset($res)) {
                 throw new \Exception('User not found');
             }
-            $user = $this->userRepository->store(isset($res['data']) ? $res['data'] : null);
+            $user = $this->userRepository->store(isset($res) ? $res : null);
             if (!$user) {
                 throw new \Exception('Failed to save user');
             }
@@ -93,7 +97,7 @@ class OAuthService
             $response = Http::withoutVerifying()->withHeaders([
                 "Accept" => "application/json",
                 "Authorization" => "Bearer " . $oAuthToken->access_token
-            ])->get(config('urls.hcis') . 'api/logout');
+            ])->get($this->url() . '/api/logout');
             $oAuthToken->delete();
         }
     }

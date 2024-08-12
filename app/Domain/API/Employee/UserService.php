@@ -1,12 +1,12 @@
 <?php
 
-namespace App\Domain\API\HCIS;
+namespace App\Domain\API\Employee;
 
-use App\Domain\API\HCIS\Contracts\HCISService;
+use App\Domain\API\Employee\Contracts\EmployeeService;
 
-class UserService extends HCISService
+class UserService extends EmployeeService
 {
-    const PREFIX = '/authuser';
+    const PREFIX = '/user';
 
     public function url(): string
     {

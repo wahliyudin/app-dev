@@ -14,7 +14,7 @@ class UserRepository
             'email' => $data['email'],
         ], [
             'nik' => $data['nik'],
-            'name' => $data['employee']['nama_karyawan'],
+            'name' => $data['name'],
             'email' => $data['email'],
             'password' => isset($data['password']) ? $data['password'] : null,
         ]);
