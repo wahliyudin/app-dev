@@ -2,46 +2,31 @@
 
 namespace App\Domain\Services\HCIS;
 
-use App\Models\HCIS\Employee;
-use Illuminate\Support\Facades\DB;
+use App\Domain\Gateway\Dto\EmployeeDto;
+use App\Domain\Gateway\Services\EmployeeService as ParentService;
 
 class EmployeeService
 {
+    public function __construct(
+        public ParentService $parentService
+    ) {}
+
     public function all(array $attributes)
     {
-        return Employee::select($attributes)->get();
+        $employees = $this->parentService->select($attributes)->all();
+        return EmployeeDto::collect($employees);
     }
 
     public function findByNik($nik)
     {
-        return Employee::query()
-            ->with([
-                'position' => function ($query) {
-                    $query->with([
-                        'divisi',
-                        'project',
-                        'department',
-                    ]);
-                }
-            ])
+        $employee = $this->parentService->with(['position.divisi', 'position.project', 'position.department'])
             ->where('nik', $nik)
             ->first();
+        return EmployeeDto::from($employee);
     }
 
     public function getDataForSelect($term, $withNik = true)
     {
-        $selectText = $withNik ? DB::raw("CONCAT(nik, ' - ', nama_karyawan) AS text") : 'nama_karyawan AS text';
-        return Employee::select([
-            'nik AS id',
-            'email_perusahaan',
-            $selectText,
-        ])
-            ->when($term, function ($query, $term) {
-                $term = mb_strtolower($term);
-                $query->whereRaw('LOWER(nama_karyawan) like ?', ["%{$term}%"])
-                    ->orWhere('nik', 'like', '%' . $term . '%');
-            })
-            ->limit(10)
-            ->get();
+        return $this->parentService->dataForSelect($term, $withNik);
     }
 }

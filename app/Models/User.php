@@ -53,7 +53,7 @@ class User extends Authenticatable implements LaratrustUser
         ];
     }
 
-    public function oatuhToken(): HasOne
+    public function oauthToken(): HasOne
     {
         return $this->hasOne(OauthToken::class);
     }

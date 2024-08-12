@@ -2,26 +2,30 @@
 
 namespace App\Domain\Services\Setting;
 
-use App\Models\HCIS\Employee;
+use App\Domain\Gateway\Services\EmployeeService;
 use App\Models\Role;
 use App\Models\Sidebar;
 use App\Models\User;
 
 class AccessPermissionService
 {
+    public function __construct(
+        public EmployeeService $employeeService
+    ) {}
+
     public function datatable()
     {
         $users = User::select(['nik', 'name'])->get();
-        $employees = Employee::select(['nik', 'nama_karyawan', 'email_perusahaan'])
+        $employees = $this->employeeService->select(['nik', 'nama_karyawan', 'email_perusahaan'])
             ->whereIn('nik', $users->pluck('nik'))
-            ->get();
+            ->all();
         $admin = $users->where('nik', 12345678)->first();
         if ($admin) {
-            $employees->add(new Employee([
+            array_push($employees, [
                 'nik' => $admin->nik,
                 'nama_karyawan' => $admin->name,
                 'email_perusahaan' => 'administrator@tbu.co.id',
-            ]));
+            ]);
         }
         return $employees;
     }

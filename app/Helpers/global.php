@@ -1,6 +1,7 @@
 <?php
 
-use App\Models\HCIS\Employee;
+use App\Domain\Gateway\Dto\EmployeeDto;
+use App\Domain\Gateway\Services\EmployeeService;
 use App\Models\User;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\File;
@@ -47,11 +48,14 @@ if (!function_exists('userAuth')) {
 }
 
 if (!function_exists('employeeByNIK')) {
-    function employeeByNIK($nik = null): ?Employee
+    function employeeByNIK($nik = null)
     {
-        return Employee::where('nik', $nik ?? userAuth()->nik)
-            ->with(['position.divisi', 'position.project', 'position.department'])
+        /** @var EmployeeService $employeeService */
+        $employeeService = app(EmployeeService::class);
+        $employee = $employeeService->with(['position.divisi', 'position.project', 'position.department'])
+            ->where('nik', $nik ?? userAuth()->nik)
             ->first();
+        return EmployeeDto::from($employee);
     }
 }
 

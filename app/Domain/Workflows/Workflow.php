@@ -7,6 +7,7 @@ use App\Enums\Workflows\Module;
 use App\Enums\Workflows\Status;
 use App\Models\Setting\SettingApproval;
 use App\Domain\API\HCIS\ApprovalRepository as HCISApprovalRepository;
+use App\Domain\Gateway\Services\WorkflowService;
 use App\Domain\Repositories\Setting\ApprovalRepository;
 use App\Domain\Workflows\Repositories\WorkflowRepository;
 use App\Domain\Workflows\Contracts\ModelThatHaveWorkflow;
@@ -82,9 +83,9 @@ abstract class Workflow
     private function patchDataWorkflows(array $data, $nik)
     {
         $payload = $this->preparePayload($data, $nik);
-        /** @var HCISApprovalRepository $HCISApprovalRepository */
-        $HCISApprovalRepository = app(HCISApprovalRepository::class);
-        $response = $HCISApprovalRepository->getBySubmitted($payload);
+        /** @var WorkflowService $workflowService */
+        $workflowService = app(WorkflowService::class);
+        $response = $workflowService->getBySubmitted($payload);
         if (isset($response['exception'])) {
             throw ValidationException::withMessages([isset($response['message']) ? $response['message'] : 'Something went wrong!']);
         }

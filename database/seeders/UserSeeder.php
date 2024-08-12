@@ -6,6 +6,7 @@ use App\Models\Permission;
 use App\Models\User;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\Hash;
 
 class UserSeeder extends Seeder
 {
@@ -16,12 +17,12 @@ class UserSeeder extends Seeder
     {
         $permissions = Permission::query()->get()->pluck('id')->toArray();
         User::query()->updateOrCreate([
-            'nik' => 11190659,
+            'nik' => 12345678,
         ], [
-            'nik' => 11190659,
-            'name' => 'MARIANTI',
-            'email' => 'marianti@tbu.co.id',
-            'password' => bcrypt('1234567890')
+            'nik' => 12345678,
+            'name' => 'Administrator',
+            'email' => 'administrator@tbu.co.id',
+            'password' => Hash::make(1234567890)
         ])->syncPermissions($permissions);
     }
 }
