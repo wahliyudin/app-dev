@@ -17,7 +17,7 @@ class AccessPermissionService
     {
         $users = User::select(['nik', 'name'])->get();
         $employees = $this->employeeService->select(['nik', 'nama_karyawan', 'email_perusahaan'])
-            ->whereIn('nik', $users->pluck('nik'))
+            ->whereIn('nik', $users->pluck('nik')->toArray())
             ->all();
         $admin = $users->where('nik', 12345678)->first();
         if ($admin) {

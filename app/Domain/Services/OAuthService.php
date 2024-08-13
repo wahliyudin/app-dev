@@ -44,6 +44,8 @@ class OAuthService
             'response_type' => 'code',
             'state' => $state,
             'prompt' => 'consent',
+            'error' => $request->session()->get('error'),
+            'warning' => $request->session()->get('warning'),
         ]);
         return redirect($this->urlAuthorize($query));
     }
@@ -72,8 +74,8 @@ class OAuthService
                     throw new \Exception($response['message']);
                 }
                 $res = $this->userService->currentUser($response['access_token']);
-                if (!isset($res)) {
-                    throw new \Exception('User not found');
+                if (!isset($res['nik'])) {
+                    throw new \Exception('Pastikan internetmu bagus', 422);
                 }
                 $user = $this->userRepository->store(isset($res) ? $res : null);
                 if (!$user) {
@@ -90,7 +92,11 @@ class OAuthService
                 return $user;
             });
         } catch (\Throwable $th) {
-            $request->session()->put('error', $th->getMessage());
+            if ($th->getCode() != 500) {
+                $request->session()->put('warning', $th->getMessage());
+            } else {
+                $request->session()->put('error', $th->getMessage());
+            }
             return to_route('login')->setSession($request->session());
         }
     }

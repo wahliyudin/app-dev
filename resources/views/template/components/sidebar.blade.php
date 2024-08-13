@@ -57,6 +57,38 @@
                     <div data-kt-menu-trigger="click" class="menu-item menu-accordion" id="approval">
                         <span class="menu-link">
                             <span class="menu-icon">
+                                <i class="ki-duotone ki-notepad-bookmark fs-2">
+                                    <i class="path1"></i>
+                                    <i class="path2"></i>
+                                    <i class="path3"></i>
+                                    <i class="path4"></i>
+                                    <i class="path5"></i>
+                                    <i class="path6"></i>
+                                </i>
+                            </span>
+                            <span class="menu-title">History Approval</span>
+                            <span class="menu-arrow"></span>
+                        </span>
+                        <div
+                            class="menu-sub menu-sub-accordion {{ request()->routeIs('history-approvals.requests.*') ? 'hover show' : '' }}">
+                            @permission('request_approve|request_reject')
+                                <div class="menu-item">
+                                    <a class="menu-link {{ request()->routeIs('history-approvals.requests.*') ? 'active' : '' }}"
+                                        href="{{ route('history-approvals.requests.index') }}">
+                                        <span class="menu-bullet">
+                                            <span class="bullet bullet-dot"></span>
+                                        </span>
+                                        <span class="menu-title">Request</span>
+                                    </a>
+                                </div>
+                            @endpermission
+                        </div>
+                    </div>
+                @endpermission
+                @permission('request_approve|request_reject')
+                    <div data-kt-menu-trigger="click" class="menu-item menu-accordion" id="approval">
+                        <span class="menu-link">
+                            <span class="menu-icon">
                                 <i class="ki-duotone ki-check fs-2"></i>
                             </span>
                             <span class="menu-title">Approval</span>

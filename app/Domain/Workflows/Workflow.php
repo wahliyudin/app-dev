@@ -13,6 +13,7 @@ use App\Domain\Workflows\Repositories\WorkflowRepository;
 use App\Domain\Workflows\Contracts\ModelThatHaveWorkflow;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\ValidationException;
 
 abstract class Workflow
@@ -86,9 +87,6 @@ abstract class Workflow
         /** @var WorkflowService $workflowService */
         $workflowService = app(WorkflowService::class);
         $response = $workflowService->getBySubmitted($payload);
-        if (isset($response['exception'])) {
-            throw ValidationException::withMessages([isset($response['message']) ? $response['message'] : 'Something went wrong!']);
-        }
         return $response;
     }
 
@@ -118,26 +116,28 @@ abstract class Workflow
 
     public function lastAction(LastAction $lastAction, $note = null)
     {
-        $workflow = $this->currentWorkflow();
-        if (!$workflow->nik == userAuth()?->nik) {
-            throw ValidationException::withMessages(['Anda tidak berhak melakukan aksi ini']);
-        }
-        $isLast = $this->isLast();
-        if ($isLast && $lastAction == LastAction::APPROV) {
-            $newModel = WorkflowRepository::updateStatusAndNote($this->model, Status::CLOSE, $note);
-            $this->handleChanges($newModel);
-            $this->handleIsLastAndApprov();
-        }
-        if (!$isLast && $lastAction == LastAction::APPROV) {
-            $this->handleIsNotLastAndApprov();
-        }
-        if ($lastAction == LastAction::REJECT) {
-            $newModel = WorkflowRepository::updateStatusAndNote($this->model, Status::REJECT, $note);
-            $this->handleChanges($newModel);
-            $this->handleIsRejected();
-        }
-        $result = WorkflowRepository::updateLasAction($workflow, $lastAction);
-        return $result;
+        return DB::transaction(function () use ($lastAction, $note) {
+            $workflow = $this->currentWorkflow();
+            if (!$workflow->nik == userAuth()?->nik) {
+                throw ValidationException::withMessages(['Anda tidak berhak melakukan aksi ini']);
+            }
+            $isLast = $this->isLast();
+            if ($isLast && $lastAction == LastAction::APPROV) {
+                $newModel = WorkflowRepository::updateStatusAndNote($this->model, Status::CLOSE, $note);
+                $this->handleChanges($newModel);
+                $this->handleIsLastAndApprov();
+            }
+            if (!$isLast && $lastAction == LastAction::APPROV) {
+                $this->handleIsNotLastAndApprov();
+            }
+            if ($lastAction == LastAction::REJECT) {
+                $newModel = WorkflowRepository::updateStatusAndNote($this->model, Status::REJECT, $note);
+                $this->handleChanges($newModel);
+                $this->handleIsRejected();
+            }
+            $result = WorkflowRepository::updateLasAction($workflow, $lastAction);
+            return $result;
+        });
     }
 
     public function addAdditionalParam(array $param)

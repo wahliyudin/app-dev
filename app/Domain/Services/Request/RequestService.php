@@ -4,6 +4,7 @@ namespace App\Domain\Services\Request;
 
 use App\Enums\Request\Task\Status as TaskStatus;
 use App\Enums\SvgTypeFile\TypeFile;
+use App\Enums\Workflows\LastAction;
 use App\Enums\Workflows\Status;
 use App\Models\Request\Request;
 use App\Models\Request\RequestApplication;
@@ -174,6 +175,17 @@ class RequestService
             $request->attachments()->delete();
             $request->delete();
         });
+    }
+
+    public function getByHistoryApproval()
+    {
+        return Request::select(['id', 'code', 'nik_requestor', 'department', 'application_id', 'type_request', 'type_budget', 'date', 'estimated_project', 'status'])
+            ->with(['requestor:nik,nama_karyawan', 'application:id,name,display_name'])
+            ->whereHas('workflows', function ($query) {
+                $query->where('nik', userAuth()?->nik)
+                    ->where('last_action', '!=', LastAction::NOTTING);
+            })
+            ->get();
     }
 
     public function getByCurrentApproval()

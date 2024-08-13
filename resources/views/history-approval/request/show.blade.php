@@ -9,12 +9,12 @@
                 Show Request
             </h1>
             <ul class="breadcrumb breadcrumb-separatorless fw-semibold fs-7 my-0 pt-1">
-                <li class="breadcrumb-item text-muted">Approval</li>
+                <li class="breadcrumb-item text-muted">History Approval</li>
                 <li class="breadcrumb-item">
                     <span class="bullet bg-gray-400 w-5px h-2px"></span>
                 </li>
                 <li class="breadcrumb-item text-muted">
-                    <a href="{{ route('approvals.requests.index') }}" class="text-muted text-hover-primary">
+                    <a href="{{ route('history-approvals.requests.index') }}" class="text-muted text-hover-primary">
                         Request </a>
                 </li>
                 <li class="breadcrumb-item">

@@ -9,7 +9,7 @@
                 Request
             </h1>
             <ul class="breadcrumb breadcrumb-separatorless fw-semibold fs-7 my-0 pt-1">
-                <li class="breadcrumb-item text-muted">Approval</li>
+                <li class="breadcrumb-item text-muted">History Approval</li>
                 <li class="breadcrumb-item">
                     <span class="bullet bg-gray-400 w-5px h-2px"></span>
                 </li>
@@ -67,5 +67,5 @@
 
 @push('js')
     <script src="{{ asset('assets/plugins/custom/datatables/datatables.bundle.js') }}"></script>
-    <script type="module" src="{{ asset('assets/js/pages/approval/request/index.js') }}"></script>
+    <script type="module" src="{{ asset('assets/js/pages/history-approval/request/index.js') }}"></script>
 @endpush

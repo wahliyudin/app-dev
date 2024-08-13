@@ -8,7 +8,9 @@ class OAuthRepository
 {
     public function findByUserId(int $userId): ?OAuthToken
     {
-        return OAuthToken::query()->where('user_id', $userId)->first();
+        return OAuthToken::query()
+            ->where('user_id', $userId)
+            ->first();
     }
 
     public function store($response, int $userId)
