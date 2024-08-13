@@ -54,6 +54,7 @@ $(function () {
     var kanban = new jKanban({
         element: '#kt_docs_jkanban_rich',
         gutter: '0',
+        dragItems: permission.is_update ?? false,
         dragBoards: false,
         widthBoard: '390px',
         itemAddOptions: {
