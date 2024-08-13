@@ -14,7 +14,7 @@
 
 @section('content')
     <div id="kt_app_content_container" class="app-container  container-fluid ">
-        <div class="row g-6 g-xl-9">
+        <div class="row g-6 g-xl-9 justify-content-center">
             <div class="col-lg-6 col-xxl-4">
                 <div class="card h-100">
                     <div class="card-body p-4">
@@ -104,10 +104,79 @@
                     </div>
                 </div>
             </div>
+            <div class="col-lg-4 col-xxl-4">
+                <div class="card  card-flush h-lg-100">
+                    <div class="card-header mt-6">
+                        <div class="card-title flex-column">
+                            <h3 class="fw-bold mb-1">Developers</h3>
+
+                            <div class="fs-6 text-gray-400">Total {{ $developers->count() }} developers</div>
+                        </div>
+                    </div>
+                    <div class="card-body d-flex flex-column p-9 pt-3 mb-9">
+                        @foreach ($developers as $developer)
+                            <div class="d-flex align-items-center mb-5">
+                                <div class="me-5 position-relative">
+                                    <div class="symbol symbol-35px symbol-circle">
+                                        <img alt="Pic"
+                                            src="{{ \App\Data\Applications\TaskDto::avatar($developer->employee?->identity?->avatar) }}" />
+                                    </div>
+                                </div>
+                                <div class="fw-semibold">
+                                    <span
+                                        class="fs-5 fw-bold text-gray-900">{{ $developer->employee?->nama_karyawan }}</span>
+                                    <div class="text-gray-400">
+                                        {{ $developer->employee?->nik }}
+                                    </div>
+                                </div>
+                            </div>
+                        @endforeach
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-8 col-xxl-4">
+                <div class="card">
+                    <div class="card-header border-0 pt-6">
+                        <div class="card-title">
+                            <h3 class="fw-bold mb-1">Applications</h3>
+                        </div>
+                        <div class="card-toolbar">
+                            <div class="d-flex align-items-center position-relative my-1">
+                                <i class="ki-duotone ki-magnifier fs-3 position-absolute ms-5">
+                                    <span class="path1"></span>
+                                    <span class="path2"></span>
+                                </i>
+                                <input type="text" data-kt-table-filter="search"
+                                    class="form-control form-control-solid w-250px ps-13" placeholder="Search" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body pt-0">
+                        <table class="table align-middle table-row-dashed fs-6 gy-5" id="datatable">
+                            <thead>
+                                <tr class="text-start text-gray-400 fw-bold fs-7 text-uppercase gs-0">
+                                    <th class="text-nowrap">Name</th>
+                                    <th class="text-nowrap text-center">Due Date</th>
+                                    <th class="text-nowrap text-end">Status</th>
+                                </tr>
+                            </thead>
+                            <tbody class="fw-semibold text-gray-600">
+
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 @endsection
 
+@push('css')
+    <link href="{{ asset('assets/plugins/custom/datatables/datatables.bundle.css') }}" rel="stylesheet"
+        type="text/css" />
+@endpush
+
 @push('js')
+    <script src="{{ asset('assets/plugins/custom/datatables/datatables.bundle.js') }}"></script>
     <script src="{{ asset('assets/js/pages/dashboard.js') }}"></script>
 @endpush

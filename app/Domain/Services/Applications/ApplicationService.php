@@ -68,4 +68,9 @@ class ApplicationService
             'data' => [$totalInProgressPercentage, $totalDonePercentage, $totalNottingPercentage, $totalOverduePercentage],
         ];
     }
+
+    public function getAll()
+    {
+        return RequestApplication::query()->get();
+    }
 }

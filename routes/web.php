@@ -16,6 +16,7 @@ Route::get('sso/login', [OAuthController::class, 'login'])->name('sso.login');
 Route::get('sso/callback', [OAuthController::class, 'callback'])->name('sso.callback');
 Route::middleware(['auth'])->group(function () {
     Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+    Route::post('/home/applications', [App\Http\Controllers\HomeController::class, 'applications'])->name('home.applications');
 
     Route::get('globals/sidebar', [App\Http\Controllers\GlobalController::class, 'sidebar'])->name('globals.sidebar');
 });

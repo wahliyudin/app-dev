@@ -1,6 +1,12 @@
 "use strict"
 
 $(function () {
+    $.ajaxSetup({
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        }
+    });
+
     var initChart = function () {
         // init chart
         var element = document.getElementById("kt_project_list_chart");
@@ -125,4 +131,48 @@ $(function () {
 
     initChart();
     initGraph();
+
+    var datatable = $('#datatable').DataTable({
+        processing: true,
+        serverSide: false,
+        order: [[0, 'asc']],
+        ajax: {
+            type: "POST",
+            url: "/home/applications"
+        },
+        columns: [
+            {
+                name: 'name',
+                data: null,
+                render: function (data, type, row, meta) {
+                    return `<div class="d-flex align-items-center">
+                                <div class="symbol symbol-50px me-3">
+                                    <img src="${row.logo}" class=""
+                                        alt="" />
+                                </div>
+
+                                <div class="d-flex justify-content-start flex-column">
+                                    <span class="text-gray-800 fw-bold mb-1 fs-6">${row.display_name}</span>
+                                    ${row.description ? `<span class="text-gray-400 fw-semibold d-block fs-7">${row.description}</span>` : ''}
+                                </div>
+                            </div>`
+                },
+            },
+            {
+                name: 'due_date',
+                data: 'due_date',
+                class: 'text-center',
+            },
+            {
+                name: 'status',
+                data: 'status',
+                class: 'text-end',
+            },
+        ],
+    });
+
+    const filterSearch = document.querySelector('[data-kt-table-filter="search"]');
+    filterSearch.addEventListener('keyup', function (e) {
+        datatable.search(e.target.value).draw();
+    });
 });

@@ -79,4 +79,17 @@ class DeveloperService extends ApplicationService
             RequestDeveloper::query()->findOrFail($key)->delete();
         });
     }
+
+    public function getAllDevelopers()
+    {
+        return User::query()
+            ->whereHas('roles', function ($query) {
+                $query->where('name', 'developer');
+            })
+            ->with(['employee' => function ($query) {
+                $query->select(['nik', 'nama_karyawan'])
+                    ->with('identity:nik,avatar');
+            }])
+            ->get();
+    }
 }
