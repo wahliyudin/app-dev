@@ -56,7 +56,7 @@ return [
         ],
     ],
     'roles' => [
-        'user',
+        'staff',
         'administrator',
         'developer',
     ],

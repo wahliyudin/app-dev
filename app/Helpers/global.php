@@ -13,6 +13,13 @@ if (!function_exists('authUser')) {
     }
 }
 
+if (!function_exists('hasRole')) {
+    function hasRole($role)
+    {
+        return auth()->user()->hasRole($role);
+    }
+}
+
 if (!function_exists('hasPermission')) {
     function hasPermission($permission)
     {
