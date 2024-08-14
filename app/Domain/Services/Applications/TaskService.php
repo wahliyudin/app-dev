@@ -21,9 +21,14 @@ class TaskService extends ApplicationService
                         ->with('identity:nik,avatar');
                 }]);
             }])
-            ->latest()
+            ->when(!hasRole('administrator'), function ($query) {
+                $query->whereHas('developers', function ($query) {
+                    $query->where('nik', authUser()?->nik);
+                });
+            })
+            ->oldest('due_date')
             ->get()
-            ->map(fn ($task) => TaskDto::fromModel($task));
+            ->map(fn(RequestFeatureTask $task) => TaskDto::fromModel($task));
     }
 
     public function findOrFailTask($id)

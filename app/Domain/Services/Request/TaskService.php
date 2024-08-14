@@ -19,7 +19,7 @@ class TaskService extends ApplicationsTaskService
 
     public function getTasks()
     {
-        return $this->queryTasks()->latest()
+        return $this->queryTasks()->oldest('due_date')
             ->get()
             ->map(fn(RequestFeatureTask $task) => TaskDto::fromModel($task));
     }
@@ -27,12 +27,14 @@ class TaskService extends ApplicationsTaskService
     public function queryTasks()
     {
         return RequestFeatureTask::query()
-            ->withWhereHas('developers', function ($query) {
-                $query->where('nik', authUser()?->nik)
-                    ->with(['developer' => function ($query) {
-                        $query->select('nik', 'nama_karyawan')
-                            ->with('identity:nik,avatar');
-                    }]);
+            ->with('developers', function ($query) {
+                $query->with(['developer' => function ($query) {
+                    $query->select('nik', 'nama_karyawan')
+                        ->with('identity:nik,avatar');
+                }]);
+            })
+            ->whereHas('developers', function ($query) {
+                $query->where('nik', authUser()?->nik);
             });
     }
 
