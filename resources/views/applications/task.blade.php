@@ -136,6 +136,19 @@
         #accordian-task .accordion-button::after {
             display: none;
         }
+
+        .kanban-item {
+            transition: opacity 0.5s ease, transform 0.5s ease;
+        }
+
+        .kanban-item.hide {
+            opacity: 0;
+            transform: scale(0.9);
+        }
+
+        .kanban-item.hidden {
+            display: none;
+        }
     </style>
     <link rel="stylesheet" href="{{ asset('assets/plugins/custom/jkanban/jkanban.bundle.css') }}">
     <link rel="stylesheet" href="{{ asset('assets/plugins/custom/toastr/toastr.min.css') }}">

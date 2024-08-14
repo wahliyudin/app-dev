@@ -15,6 +15,6 @@ class UserService extends BaseService
 
     public function currentUser($token = null)
     {
-        return $this->get($this->url(), token: $token)->json();
+        return $this->get($this->url(), token: $token);
     }
 }

@@ -28,19 +28,19 @@ export default class Board {
         const boards = [];
         boards.push({
             'id': '_notting',
-            'title': 'Notting',
+            'title': '<span>Notting</span><br><input type="search" class="form-control form-control-sm mt-2" id="search" placeholder="Search tasks...">',
             'class': 'bg-light-dark',
             'item': nottings,
         });
         boards.push({
             'id': '_in_progress',
-            'title': 'In Progress',
+            'title': '<span>In Progress</span><br><input type="search" class="form-control form-control-sm mt-2" id="search" placeholder="Search tasks...">',
             'class': 'bg-light-warning',
             'item': inProgress,
         });
         boards.push({
             'id': '_done',
-            'title': 'Done',
+            'title': '<span>Done</span><br><input type="search" class="form-control form-control-sm mt-2" id="search" placeholder="Search tasks...">',
             'class': 'bg-light-success',
             'item': dones,
         });

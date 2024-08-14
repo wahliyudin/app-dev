@@ -19,8 +19,9 @@ class TaskService extends ApplicationsTaskService
 
     public function getTasks()
     {
-        return $this->queryTasks()->get()
-            ->map(fn ($task) => TaskDto::fromModel($task));
+        return $this->queryTasks()->latest()
+            ->get()
+            ->map(fn(RequestFeatureTask $task) => TaskDto::fromModel($task));
     }
 
     public function queryTasks()

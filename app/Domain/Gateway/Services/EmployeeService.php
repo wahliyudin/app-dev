@@ -17,8 +17,7 @@ class EmployeeService extends BaseService
     public function all()
     {
         $url = $this->extendUrl('all');
-        $response = $this->get($url)->json();
-        return Arr::get($response, 'data', []);
+        return $this->get($url);
     }
 
     public function first()
@@ -30,10 +29,9 @@ class EmployeeService extends BaseService
     public function dataForSelect($term, $withNik = true)
     {
         $url = $this->extendUrl('data/for-select');
-        $response = $this->get($url, [
+        return $this->get($url, [
             'term' => $term,
             'with_nik' => $withNik,
         ]);
-        return Arr::get($response, 'data', []);
     }
 }

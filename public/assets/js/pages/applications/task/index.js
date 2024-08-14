@@ -252,4 +252,39 @@ $(function () {
         $('#modal-board input[name="due_date"]').val(data.due_date);
         $('#modal-board select[name="developers[]"]').val(data.developers).trigger('change');
     }
+
+
+    function debounce(func, delay) {
+        let debounceTimer;
+        return function () {
+            const context = this;
+            const args = arguments;
+            clearTimeout(debounceTimer);
+            debounceTimer = setTimeout(() => func.apply(context, args), delay);
+        };
+    }
+
+    function searchKanban(e) {
+        var searchTerm = e.target.value.toLowerCase();
+        var board = e.target.closest('.kanban-board');
+        var items = board.querySelectorAll('.kanban-item');
+
+        items.forEach(function (item) {
+            var itemText = item.textContent.toLowerCase();
+
+            if (itemText.includes(searchTerm)) {
+                item.classList.remove('hidden');
+                setTimeout(() => item.classList.remove('hide'), 10);
+            } else {
+                item.classList.add('hide');
+                setTimeout(function () {
+                    item.classList.add('hidden');
+                }, 200);
+            }
+        });
+    }
+
+    document.querySelectorAll('#search').forEach(function (input) {
+        input.addEventListener('input', debounce(searchKanban, 100));
+    });
 });

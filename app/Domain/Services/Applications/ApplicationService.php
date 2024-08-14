@@ -39,6 +39,11 @@ class ApplicationService
                     $query->where('application_id', $appId);
                 });
             })
+            ->when(hasRole('developer'), function ($query) {
+                $query->whereHas('developers', function ($query) {
+                    $query->where('nik', authUser()?->nik);
+                });
+            })
             ->get();
         $now = now()->format('Y-m-d');
         $totalTasks = $tasks->count();

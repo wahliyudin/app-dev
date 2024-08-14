@@ -3,7 +3,6 @@
 namespace App\Domain\Gateway\Services;
 
 use App\Domain\Gateway\Contracts\BaseService;
-use Illuminate\Support\Arr;
 
 class WorkflowService extends BaseService
 {
@@ -16,10 +15,6 @@ class WorkflowService extends BaseService
 
     public function getBySubmitted(array $data)
     {
-        $response = $this->post($this->url(), $data);
-        if ($response->failed()) {
-            throw new \Exception('Something went wrong');
-        }
-        return Arr::get($response->json(), 'data', []);
+        return $this->post($this->url(), $data);
     }
 }
