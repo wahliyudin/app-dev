@@ -71,7 +71,10 @@ export default class Board {
             'title': `
                 <div class="d-flex flex-column position-relative" data-item-key="${task.key}">
                     <div class="d-flex flex-column align-items-start">
-                        <span class="badge badge-light" id="feature">${task.feature_name}</span>
+                        <div class="d-flex align-items-center justify-content-between w-100">
+                            <span class="badge badge-light" id="feature">${task.feature_name}</span>
+                            <span class="badge badge-light" id="feature">${moment(task.created_at).format('DD/MM/YYYY HH:mm')}</span>
+                        </div>
                         <span class="text-dark-50 mt-1" id="content">${task.content}</span>
                     </div>
                     <div class="d-flex align-items-center justify-content-between mt-3">

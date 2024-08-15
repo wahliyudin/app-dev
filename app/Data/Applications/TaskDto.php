@@ -11,13 +11,13 @@ class TaskDto
         public readonly ?string $feature_name = null,
         public readonly ?string $content = null,
         public readonly ?string $due_date = null,
+        public readonly ?string $created_at = null,
         public readonly ?string $status = null,
         public readonly ?bool $is_create = false,
         public readonly ?bool $is_update = false,
         public readonly ?bool $is_delete = false,
         public readonly ?array $developers = null,
-    ) {
-    }
+    ) {}
 
     public static function fromModel(RequestFeatureTask $task): self
     {
@@ -32,6 +32,7 @@ class TaskDto
             $task->feature?->name,
             $task->content,
             $task->due_date,
+            $task->created_at->format('Y-m-d H:i:s'),
             $task->status->value,
             hasPermission('application_task_create'),
             hasPermission('application_task_update'),
