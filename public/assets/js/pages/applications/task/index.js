@@ -1,5 +1,6 @@
 "use strict"
 
+import { loadSidebar } from "../../../utils/sidebar.js";
 import { handleErrors } from "../../helpers/global.js";
 import Board from "./board.js";
 
@@ -314,4 +315,46 @@ $(function () {
             sortBoardByDate(board, order);
         });
     });
+
+    const channel = window.Echo.channel(`app-dev-task`);
+    channel.subscribed(function (e) {
+        console.log('subscribed!!');
+    }).listen('.update-item', (data) => {
+        if (data._token == $('meta[name="csrf-token"]').attr('content')) return;
+        const key = data.key;
+        const status = data.status;
+        const task = data.task;
+        task.is_create = permission.is_create;
+        task.is_update = permission.is_update;
+        task.is_delete = permission.is_delete;
+        const item = board.item(task);
+        if (key) {
+            const elItem = document.querySelector(`#kt_docs_jkanban_rich [data-item-key="${key}"]`);
+            if (elItem) {
+                const nodeItem = elItem.parentNode;
+                kanban.replaceElement(nodeItem, item);
+            }
+        } else {
+            kanban.addElement(status, item);
+            if (permission.is_developer) {
+                loadSidebar();
+            }
+        }
+    }).listen('.move-item', (data) => {
+        if (data._token == $('meta[name="csrf-token"]').attr('content')) return;
+        const task = data.task;
+        task.is_create = permission.is_create;
+        task.is_update = permission.is_update;
+        task.is_delete = permission.is_delete;
+        moveElement(data.targetBoardID, task);
+        if (permission.is_developer) {
+            loadSidebar();
+        }
+    });
+
+    const moveElement = function (targetBoardID, task) {
+        const element = kanban.findElement(task.key);
+        kanban.removeElement(element)
+        return kanban.addElement(targetBoardID, board.item(task));
+    }
 });

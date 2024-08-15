@@ -88,6 +88,7 @@ export default class Board {
                 </div>
             `,
             'date': task.due_date,
+            'eid': task.key
         };
     }
 

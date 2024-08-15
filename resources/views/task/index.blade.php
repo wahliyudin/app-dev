@@ -160,6 +160,7 @@
 @endpush
 
 @push('js')
+    @vite(['resources/js/app.js'])
     <script src="{{ asset('assets/plugins/custom/toastr/toastr.min.js') }}"></script>
     <script src="{{ asset('assets/plugins/custom/jkanban/jkanban.bundle.js') }}"></script>
     <script type="module" src="{{ asset('assets/js/pages/task/index.js') }}"></script>

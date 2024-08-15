@@ -3,6 +3,7 @@
 namespace App\Domain\Services\Applications;
 
 use App\Data\Applications\TaskDto;
+use App\Domain\Websockets\PusherBrodcast;
 use App\Enums\Request\Task\Status;
 use App\Models\Request\RequestFeatureTask;
 use App\Models\Request\RequestTaskDeveloper;
@@ -39,13 +40,14 @@ class TaskService extends ApplicationService
     public function store($request)
     {
         return DB::transaction(function () use ($request) {
+            $status = Status::resetId($request->status);
             $task = RequestFeatureTask::query()->updateOrCreate([
                 'request_feature_id' => $request->feature_id,
                 'id' => $request->key,
             ], [
                 'request_feature_id' => $request->feature_id,
                 'due_date' => $request->due_date,
-                'status' => Status::resetId($request->status),
+                'status' => $status,
                 'content' => $request->content,
             ]);
             foreach ($request->developers as $developer) {
@@ -58,7 +60,9 @@ class TaskService extends ApplicationService
                 ]);
             }
             RequestTaskDeveloper::query()->where('request_feature_task_id', $task->getKey())->whereNotIn('nik', $request->developers)->delete();
-            return TaskDto::fromModel($task);
+            $task = TaskDto::fromModel($task);
+            $this->updatedTask($request->key, $request->status, $task);
+            return $task;
         });
     }
 
@@ -71,10 +75,12 @@ class TaskService extends ApplicationService
             $task->update([
                 'status' => $to,
             ]);
+            $task = TaskDto::fromModel($task);
+            $this->movedTask($to->id(), $task);
             return [
                 'from' => $from,
                 'to' => $to->label(),
-                'task' => TaskDto::fromModel($task),
+                'task' => $task,
             ];
         });
     }
@@ -84,5 +90,32 @@ class TaskService extends ApplicationService
         return DB::transaction(function () use ($key) {
             RequestFeatureTask::query()->findOrFail($key)->delete();
         });
+    }
+
+    public function updatedTask($key, $status, TaskDto $task)
+    {
+        try {
+            PusherBrodcast::send("app-dev-task", 'update-item', [
+                '_token' => session()->token(),
+                'key' => $key,
+                'status' => $status,
+                'task' => $task
+            ]);
+        } catch (\Throwable $th) {
+            logger()->error($th->getMessage());
+        }
+    }
+
+    public function movedTask($target, TaskDto $task)
+    {
+        try {
+            PusherBrodcast::send("app-dev-task", 'move-item', [
+                '_token' => session()->token(),
+                'targetBoardID' => $target,
+                'task' => $task
+            ]);
+        } catch (\Throwable $th) {
+            logger()->error($th->getMessage());
+        }
     }
 }
