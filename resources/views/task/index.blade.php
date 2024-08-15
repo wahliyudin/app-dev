@@ -149,6 +149,11 @@
         .kanban-item.hidden {
             display: none;
         }
+
+        i[class^=fa-],
+        i[class*=" fa-"] {
+            line-height: 0 !important;
+        }
     </style>
     <link rel="stylesheet" href="{{ asset('assets/plugins/custom/jkanban/jkanban.bundle.css') }}">
     <link rel="stylesheet" href="{{ asset('assets/plugins/custom/toastr/toastr.min.css') }}">

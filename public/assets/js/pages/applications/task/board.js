@@ -28,23 +28,39 @@ export default class Board {
         const boards = [];
         boards.push({
             'id': '_notting',
-            'title': '<span>Notting</span><br><input type="search" class="form-control form-control-sm mt-2" id="search" placeholder="Search tasks...">',
+            'title': _this.title('Notting'),
             'class': 'bg-light-dark',
             'item': nottings,
         });
         boards.push({
             'id': '_in_progress',
-            'title': '<span>In Progress</span><br><input type="search" class="form-control form-control-sm mt-2" id="search" placeholder="Search tasks...">',
+            'title': _this.title('In Progress'),
             'class': 'bg-light-warning',
             'item': inProgress,
         });
         boards.push({
             'id': '_done',
-            'title': '<span>Done</span><br><input type="search" class="form-control form-control-sm mt-2" id="search" placeholder="Search tasks...">',
+            'title': _this.title('Done'),
             'class': 'bg-light-success',
             'item': dones,
         });
         _this.boards = boards;
+    }
+
+    title(title) {
+        return `
+            <div class="d-flex flex-column">
+                <div class="d-flex justify-content-between align-items-center">
+                    <span>${title}</span>
+                </div>
+                <div class="input-group mt-2">
+                    <input type="search" class="form-control form-control-sm" id="search" placeholder="Search tasks...">
+                    <div id="sort-button" title="Sort by due date" class="input-group-text cursor-pointer d-flex flex-column align-items-center justify-content-center">
+                       <i class="fa-solid fa-arrow-down-wide-short fs-4"></i>
+                    </div>
+                </div>
+            </div>
+        `;
     }
 
     item(task) {
@@ -68,6 +84,7 @@ export default class Board {
                     ${btnEdit}
                 </div>
             `,
+            'date': task.due_date,
         };
     }
 

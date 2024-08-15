@@ -343,4 +343,31 @@ $(function () {
     document.querySelectorAll('#search').forEach(function (input) {
         input.addEventListener('input', debounce(searchKanban, 100));
     });
+
+    function sortBoardByDate(boardElement, order) {
+        var items = Array.from(boardElement.querySelectorAll('.kanban-item'));
+        items.sort(function (a, b) {
+            var dateA = new Date(a.dataset.date);
+            var dateB = new Date(b.dataset.date);
+            return order === 'asc' ? dateA - dateB : dateB - dateA;
+        });
+        items.forEach(function (item) {
+            boardElement.querySelector('.kanban-drag').appendChild(item);
+        });
+    }
+
+    document.querySelectorAll('#sort-button').forEach(function (button) {
+        button.addEventListener('click', function () {
+            var board = button.closest('.kanban-board');
+            var order = button.getAttribute('data-order');
+            const arrow = button.querySelector('.fa-solid');
+            const orderIcon = arrow.classList.contains('fa-arrow-up-wide-short') ? 'fa-arrow-down-wide-short' : 'fa-arrow-up-wide-short';
+            const newOrder = arrow.classList.contains('fa-arrow-up-wide-short') ? 'desc' : 'asc';
+            arrow.classList.replace('fa-arrow-up-wide-short', orderIcon);
+            arrow.classList.replace('fa-arrow-down-wide-short', orderIcon);
+            button.setAttribute('data-order', newOrder);
+
+            sortBoardByDate(board, order);
+        });
+    });
 });
