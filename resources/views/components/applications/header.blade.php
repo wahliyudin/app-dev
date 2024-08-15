@@ -39,7 +39,7 @@
                                     <span class="path1"></span>
                                     <span class="path2"></span>
                                 </i>
-                                <div class="fs-4 fw-bold" data-kt-countup="true"
+                                <div class="fs-4 fw-bold" id="total-open" data-kt-countup="true"
                                     data-kt-countup-value="{{ $total_open }}">
                                     0
                                 </div>
@@ -54,7 +54,7 @@
                                     <span class="path1"></span>
                                     <span class="path2"></span>
                                 </i>
-                                <div class="fs-4 fw-bold" data-kt-countup="true"
+                                <div class="fs-4 fw-bold" id="total-progress" data-kt-countup="true"
                                     data-kt-countup-value="{{ $total_progress }}">
                                     0
                                 </div>
@@ -68,7 +68,7 @@
                                     <span class="path1"></span>
                                     <span class="path2"></span>
                                 </i>
-                                <div class="fs-4 fw-bold" data-kt-countup="true"
+                                <div class="fs-4 fw-bold" id="total-done" data-kt-countup="true"
                                     data-kt-countup-value="{{ $total_done }}">
                                     0
                                 </div>
@@ -106,3 +106,7 @@
         </ul>
     </div>
 </div>
+<input type="hidden" name="app_id" value="{{ $application->id }}">
+@push('js')
+    <script src="{{ asset('assets/js/pages/applications/header.js') }}"></script>
+@endpush

@@ -114,6 +114,7 @@
     <script src="{{ asset('assets/plugins/global/plugins.bundle.js') }}"></script>
     <script src="{{ asset('assets/js/scripts.bundle.js') }}"></script>
     <!--end::Global Javascript Bundle-->
+    @vite(['resources/js/app.js'])
     @stack('js')
     <script src="{{ asset('assets/js/pages/sidebar.js') }}"></script>
     <!--end::Javascript-->
