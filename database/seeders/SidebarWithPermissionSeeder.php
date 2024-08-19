@@ -22,6 +22,8 @@ class SidebarWithPermissionSeeder extends Seeder
         $modules = config('sidebar-with-permission.sidebars');
         $mapPermission = collect(config('sidebar-with-permission.permissions_map'));
 
+        $resultPermissions = [];
+
         foreach ($roles as $role) {
             $name = str($role)->lower()->snake()->value();
             Role::query()->updateOrCreate([
@@ -42,7 +44,8 @@ class SidebarWithPermissionSeeder extends Seeder
             ]);
             if (isset($module['permissions'])) {
                 $result = $this->checkPermission($module['permissions'], $mapPermission, $parentName);
-                $parent->permissions()->sync($result);
+                $resultPermissions = array_merge($resultPermissions, $result);
+                $parent->permissions()->sync(array_map(fn($respermission) => $respermission->id, $result));
             }
             foreach (isset($module['child']) ? $module['child'] : [] as $child) {
                 $childName = str($child['title'])->lower()->value();
@@ -57,10 +60,37 @@ class SidebarWithPermissionSeeder extends Seeder
                 ], $data);
                 if (isset($child['permissions'])) {
                     $result = $this->checkPermission($child['permissions'], $mapPermission, $childName, $parentName);
-                    $sidebar->permissions()->sync($result);
+                    $resultPermissions = array_merge($resultPermissions, $result);
+                    $sidebar->permissions()->sync(array_map(fn($respermission) => $respermission->id, $result));
                 }
             }
         }
+        $this->buildEnum($resultPermissions);
+    }
+
+    public function buildEnum($permissions)
+    {
+        $filePath = app_path('Enums/Settings/Permission.php'); // Tentukan path file
+        $content = "<?php\n\n";
+        $content .= "namespace App\Enums\Settings;\n\n";
+        $content .= "enum Permission: string \n{\n";
+        foreach ($permissions as $permission) {
+            $key = str($permission->name)->upper()->value();
+            $value = $permission->name;
+            $content .= "    case $key = '$value';\n";
+        }
+        // $content .= "    public function label(): string\n";
+        // $content .= "    {\n";
+        // $content .= '        return match ($this) {' . "\n";
+        // foreach ($permissions as $permission) {
+        //     $key = str($permission->name)->upper()->value();
+        //     $value = $permission->name;
+        //     $content .= "            self::$key => '$value',\n";
+        // }
+        // $content .= "        };\n";
+        // $content .= "    }\n";
+        $content .= "}\n";
+        create_or_update_file($filePath, $content);
     }
 
     public function checkPermission($strPermissions, $mapPermission, $name, $parentName = null)
@@ -73,9 +103,8 @@ class SidebarWithPermissionSeeder extends Seeder
                 'name' => $resultName . '_' . $permissionValue,
                 'display_name' => ucfirst($permissionValue) . ' ' . ucfirst($resultName),
                 'description' => ucfirst($permissionValue) . ' ' . ucfirst($resultName),
-            ])->id;
+            ]);
             $permissions[] = $permission;
-            $permis[] = $permission;
 
             $this->command->info('Creating Permission to ' . $permissionValue . ' for ' . $resultName);
         }

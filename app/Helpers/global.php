@@ -2,9 +2,23 @@
 
 use App\Domain\Gateway\Dto\EmployeeDto;
 use App\Domain\Gateway\Services\EmployeeService;
+use App\Enums\Settings\Permission;
 use App\Models\User;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\File;
+
+if (!function_exists('create_or_update_file')) {
+    function create_or_update_file($filePath, $content)
+    {
+        if (File::exists($filePath)) {
+            File::put($filePath, $content);
+            return "File updated successfully!";
+        } else {
+            File::put($filePath, $content);
+            return "File created successfully!";
+        }
+    }
+}
 
 if (!function_exists('authUser')) {
     function authUser(): ?User
@@ -21,8 +35,9 @@ if (!function_exists('hasRole')) {
 }
 
 if (!function_exists('hasPermission')) {
-    function hasPermission($permission)
+    function hasPermission(Permission|string $permission)
     {
+        $permission = $permission instanceof Permission ? $permission->value : $permission;
         return auth()->user()->hasPermission($permission);
     }
 }

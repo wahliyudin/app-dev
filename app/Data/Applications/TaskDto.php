@@ -2,6 +2,7 @@
 
 namespace App\Data\Applications;
 
+use App\Enums\Settings\Permission;
 use App\Models\Request\RequestFeatureTask;
 
 class TaskDto
@@ -34,9 +35,9 @@ class TaskDto
             $task->due_date,
             $task->created_at->format('Y-m-d H:i:s'),
             $task->status->value,
-            hasPermission('application_task_create'),
-            hasPermission('application_task_update'),
-            hasPermission('application_task_delete'),
+            hasPermission(Permission::APPLICATION_TASK_CREATE),
+            hasPermission(Permission::APPLICATION_TASK_UPDATE),
+            hasPermission(Permission::APPLICATION_TASK_DELETE),
             self::convertDevelopers($task->developers),
         );
     }

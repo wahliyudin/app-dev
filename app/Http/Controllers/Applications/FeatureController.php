@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Applications;
 
 use App\Domain\Services\Applications\FeatureService;
 use App\Enums\Applications\NavItem;
+use App\Enums\Settings\Permission;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Applications\Feature\StoreRequest;
 use Illuminate\Http\Request;
@@ -12,8 +13,7 @@ class FeatureController extends Controller
 {
     public function __construct(
         private FeatureService $featureService
-    ) {
-    }
+    ) {}
 
     public function index($id)
     {
@@ -27,8 +27,8 @@ class FeatureController extends Controller
     {
         $data = $this->featureService->getFeatures($id);
         return datatables()->of($data)
-            ->addColumn('is_update', fn () => hasPermission('application_feature_update'))
-            ->addColumn('is_delete', fn () => hasPermission('application_feature_delete'))
+            ->addColumn('is_update', fn() => hasPermission(Permission::APPLICATION_FEATURE_UPDATE))
+            ->addColumn('is_delete', fn() => hasPermission(Permission::APPLICATION_FEATURE_DELETE))
             ->addIndexColumn()
             ->make();
     }

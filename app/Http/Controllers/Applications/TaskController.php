@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Applications;
 
 use App\Domain\Services\Applications\TaskService;
 use App\Enums\Applications\NavItem;
+use App\Enums\Settings\Permission;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Applications\Task\StoreRequest;
 use App\Http\Requests\Applications\Task\UpdateRequest;
@@ -22,9 +23,9 @@ class TaskController extends Controller
             'application' => $app,
             'tasks' => $this->taskService->getTaskByRequest($app->id),
             'permission' => [
-                'is_create' => hasPermission('application_task_create'),
-                'is_update' => hasPermission('application_task_update'),
-                'is_delete' => hasPermission('application_task_delete'),
+                'is_create' => hasPermission(Permission::APPLICATION_TASK_CREATE),
+                'is_update' => hasPermission(Permission::APPLICATION_TASK_UPDATE),
+                'is_delete' => hasPermission(Permission::APPLICATION_TASK_DELETE),
                 'is_developer' => hasRole('developer'),
             ],
         ]);

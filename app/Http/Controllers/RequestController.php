@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Domain\Services\HCIS\EmployeeService;
 use App\Domain\Services\Request\RequestService;
+use App\Enums\Settings\Permission;
 use App\Http\Requests\Request\StoreRequest;
 use App\Models\Request\RequestAttachment;
 use Illuminate\Http\Request;
@@ -15,8 +16,7 @@ class RequestController extends Controller
     public function __construct(
         protected RequestService $requestService,
         protected EmployeeService $employeeService,
-    ) {
-    }
+    ) {}
 
     public function index()
     {
@@ -48,8 +48,8 @@ class RequestController extends Controller
             ->editColumn('status', function ($data) {
                 return $data->status->badge();
             })
-            ->addColumn('is_edit', fn ($data) => hasPermission('request_update'))
-            ->addColumn('is_delete', fn ($data) => hasPermission('request_delete'))
+            ->addColumn('is_edit', fn($data) => hasPermission(Permission::REQUEST_UPDATE))
+            ->addColumn('is_delete', fn($data) => hasPermission(Permission::REQUEST_DELETE))
             ->rawColumns(['action', 'status'])
             ->make();
     }

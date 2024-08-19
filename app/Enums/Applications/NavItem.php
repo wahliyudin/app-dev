@@ -2,6 +2,8 @@
 
 namespace App\Enums\Applications;
 
+use App\Enums\Settings\Permission;
+
 enum NavItem: string
 {
     case OVERVIEW = 'overview';
@@ -39,11 +41,11 @@ enum NavItem: string
     {
         return match ($this) {
             self::OVERVIEW => true,
-            self::TASK => hasPermission('application_task_read'),
-            self::FEATURE => hasPermission('application_feature_read'),
-            self::FILE => hasPermission('application_file_read'),
-            self::DEVELOPER => hasPermission('application_developer_read'),
-            self::SETTING => hasPermission('application_setting_read'),
+            self::TASK => hasPermission(Permission::APPLICATION_TASK_READ),
+            self::FEATURE => hasPermission(Permission::APPLICATION_FEATURE_READ),
+            self::FILE => hasPermission(Permission::APPLICATION_FILE_READ),
+            self::DEVELOPER => hasPermission(Permission::APPLICATION_DEVELOPER_READ),
+            self::SETTING => hasPermission(Permission::APPLICATION_SETTING_READ),
         };
     }
 }

@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Applications;
 
 use App\Domain\Services\Applications\DeveloperService;
 use App\Enums\Applications\NavItem;
+use App\Enums\Settings\Permission;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Applications\Developer\StoreRequest;
 use Illuminate\Http\Request;
@@ -12,8 +13,7 @@ class DeveloperController extends Controller
 {
     public function __construct(
         private DeveloperService $developerService
-    ) {
-    }
+    ) {}
 
     public function index($id)
     {
@@ -30,8 +30,8 @@ class DeveloperController extends Controller
             ->editColumn('developer', function ($data) {
                 return $data->developer?->nama_karyawan;
             })
-            ->addColumn('is_update', fn () => hasPermission('application_developer_update'))
-            ->addColumn('is_delete', fn () => hasPermission('application_developer_delete'))
+            ->addColumn('is_update', fn() => hasPermission(Permission::APPLICATION_DEVELOPER_UPDATE))
+            ->addColumn('is_delete', fn() => hasPermission(Permission::APPLICATION_DEVELOPER_DELETE))
             ->addIndexColumn()
             ->make();
     }

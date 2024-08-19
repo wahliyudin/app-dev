@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Setting;
 
 use App\Domain\Repositories\UserRepository;
 use App\Domain\Services\Setting\AccessPermissionService;
+use App\Enums\Settings\Permission;
 use App\Http\Controllers\Controller;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -14,8 +15,7 @@ class AccessPermissionController extends Controller
     public function __construct(
         protected AccessPermissionService $accessPermissionService,
         protected UserRepository $userRepository,
-    ) {
-    }
+    ) {}
 
     public function index()
     {
@@ -26,7 +26,7 @@ class AccessPermissionController extends Controller
     {
         $data = $this->accessPermissionService->datatable();
         return datatables()->of($data)
-            ->addColumn('is_setting', hasPermission('setting_access_permission_update'))
+            ->addColumn('is_setting', hasPermission(Permission::SETTING_ACCESS_PERMISSION_UPDATE))
             ->make();
     }
 

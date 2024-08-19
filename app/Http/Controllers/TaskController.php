@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Domain\Services\Request\TaskService;
+use App\Enums\Settings\Permission;
 use App\Http\Requests\Task\StoreRequest;
 use App\Http\Requests\Task\UpdateRequest;
 
@@ -18,9 +19,9 @@ class TaskController extends Controller
             'tasks' => $this->taskService->getTasks(),
             'apps' => $this->taskService->apps(),
             'permission' => [
-                'is_create' => hasPermission('application_task_create'),
-                'is_update' => hasPermission('application_task_update'),
-                'is_delete' => hasPermission('application_task_delete'),
+                'is_create' => hasPermission(Permission::APPLICATION_TASK_CREATE),
+                'is_update' => hasPermission(Permission::APPLICATION_TASK_UPDATE),
+                'is_delete' => hasPermission(Permission::APPLICATION_TASK_DELETE),
                 'is_developer' => hasRole('developer'),
             ],
         ]);
