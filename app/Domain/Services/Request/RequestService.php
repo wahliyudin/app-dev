@@ -29,7 +29,7 @@ class RequestService
     {
         return Request::query()->with([
             'requestor' => function ($query) {
-                $query->select(['nik', 'nama_karyawan', 'position_id'])
+                $query->select(['nik', 'nama_karyawan', 'position_id', 'email_perusahaan'])
                     ->with(['position:position_id,dept_id']);
             },
             'feature:id,name,description',

@@ -42,6 +42,8 @@ abstract class BaseService
         if ($response->failed()) {
             throw new \Exception($response->json('message') ?? 'Something went wrong', $response->status());
         }
+        $data = $response->json();
+        if (isset($data['nik'])) return $data;
         return Arr::get($response->json(), 'data', []);
     }
 

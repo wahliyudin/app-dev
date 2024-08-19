@@ -22,9 +22,8 @@ class ApprovalJob implements ShouldQueue
     public function __construct(
         protected string $view,
         protected Request $request,
-        protected $requestWorkflow
-    ) {
-    }
+        protected $requestWorkflow = null,
+    ) {}
 
     /**
      * Execute the job.
@@ -46,7 +45,6 @@ class ApprovalJob implements ShouldQueue
 
         $data['employee'] = $employee;
         $data['request'] = $this->request;
-
         Mail::send($this->view, $data, function ($message) use ($data) {
             $message->to($data["email"])
                 ->subject($data["title"]);

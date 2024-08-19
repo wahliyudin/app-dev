@@ -148,6 +148,7 @@ $(function () {
             success: function (response) {
                 resetFormFeature();
                 $(_this).attr('data-kt-indicator', 'off');
+                $('#modal-feature [data-bs-dismiss="modal"]').trigger('click');
                 $('#modal-feature').modal('hide');
                 $('#modal-board select[name="feature"]').append(new Option(response.data.name, response.data.key));
                 Swal.fire({

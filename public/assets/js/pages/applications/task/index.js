@@ -213,6 +213,7 @@ $(function () {
             success: function (response) {
                 resetFormBoard();
                 $(_this).attr('data-kt-indicator', 'off');
+                $('#modal-board [data-bs-dismiss="modal"]').trigger('click');
                 $('#modal-board').modal('hide');
                 Swal.fire({
                     icon: 'success',

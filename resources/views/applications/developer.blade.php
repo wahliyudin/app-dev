@@ -133,5 +133,5 @@
 
 @push('js')
     <script src="{{ asset('assets/plugins/custom/datatables/datatables.bundle.js') }}"></script>
-    <script type="module" src="{{ asset('assets/js/pages/applications/developer/index.js') }}"></script>
+    <script type="module" src="{{ asset('assets/js/pages/applications/developer/index.js') }}?v={{ config('app.version') }}"></script>
 @endpush

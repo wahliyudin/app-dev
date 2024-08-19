@@ -192,6 +192,7 @@ $(function () {
             success: function (response) {
                 resetForm();
                 $(_this).attr('data-kt-indicator', 'off');
+                $('#modal-developer [data-bs-dismiss="modal"]').trigger('click');
                 $('#modal-developer').modal('hide');
                 Swal.fire({
                     icon: 'success',

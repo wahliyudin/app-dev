@@ -18,7 +18,7 @@ class RequestWorkflow extends Workflow
 
     protected function handleStoreWorkflow()
     {
-        dispatch(new ApprovalJob('emails.request.approv', $this->model, $this->nextWorkflow()));
+        dispatch(new ApprovalJob('emails.request.approv', $this->model, $this->currentWorkflow()));
     }
 
     protected function handleIsLastAndApprov()
@@ -31,7 +31,7 @@ class RequestWorkflow extends Workflow
         if ($this->model->type_request === TypeRequest::ENHANCEMENT_TO_EXISTING_APPLICATION) {
             $requestService->storeTaskRevision($this->model->feature_id, $this->model->estimated_project, $this->model->description);
         }
-        dispatch(new ApprovalJob('emails.request.close', $this->model, $this->nextWorkflow()));
+        dispatch(new ApprovalJob('emails.request.close', $this->model));
     }
 
     protected function handleIsNotLastAndApprov()
@@ -41,10 +41,8 @@ class RequestWorkflow extends Workflow
 
     protected function handleIsRejected()
     {
-        dispatch(new ApprovalJob('emails.request.reject', $this->model, $this->nextWorkflow()));
+        dispatch(new ApprovalJob('emails.request.reject', $this->model));
     }
 
-    protected function handleChanges(Model $request)
-    {
-    }
+    protected function handleChanges(Model $request) {}
 }
