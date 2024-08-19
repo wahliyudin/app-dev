@@ -2,6 +2,7 @@
 
 namespace App\Domain\Services\Applications;
 
+use App\Enums\Request\Application\Status as ApplicationStatus;
 use App\Enums\Request\Task\Status;
 use App\Models\Request\RequestApplication;
 use App\Models\Request\RequestFeatureTask;
@@ -77,5 +78,13 @@ class ApplicationService
     public function getAll()
     {
         return RequestApplication::query()->get();
+    }
+
+    public function updateCurrentOverdue()
+    {
+        return RequestApplication::query()
+            ->where('due_date', '<', now()->format('Y-m-d'))
+            ->where('status', '!=', ApplicationStatus::OVERDUE)
+            ->update(['status', ApplicationStatus::OVERDUE]);
     }
 }

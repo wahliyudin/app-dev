@@ -8,6 +8,7 @@ enum Status: string
     case PENDING = 'pending';
     case IN_PROGRESS = 'in_progress';
     case COMPLETED = 'completed';
+    case OVERDUE = 'overdue';
 
     public function label(): string
     {
@@ -16,6 +17,7 @@ enum Status: string
             self::IN_PROGRESS => 'In Progress',
             self::PENDING => 'Pending',
             self::COMPLETED => 'Completed',
+            self::OVERDUE => 'Overdue',
         };
     }
 
@@ -26,6 +28,7 @@ enum Status: string
             self::IN_PROGRESS => '<span class="badge badge-light-primary fw-bold px-4 py-3">' . self::IN_PROGRESS->label() . '</span>',
             self::PENDING => '<span class="badge badge-light-warning fw-bold px-4 py-3">' . self::PENDING->label() . '</span>',
             self::COMPLETED => '<span class="badge badge-light-success fw-bold px-4 py-3">' . self::COMPLETED->label() . '</span>',
+            self::OVERDUE => '<span class="badge badge-light-danger fw-bold px-4 py-3">' . self::OVERDUE->label() . '</span>',
         };
     }
 }
