@@ -35,7 +35,7 @@
     data-kt-app-sidebar-push-footer="true" data-kt-app-toolbar-enabled="true" class="app-default">
     <!--begin::Theme mode setup on page load-->
     <script>
-        var defaultThemeMode = "dark";
+        var defaultThemeMode = "light";
         var themeMode;
 
         if (document.documentElement) {

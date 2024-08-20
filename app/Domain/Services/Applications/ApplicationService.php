@@ -4,6 +4,7 @@ namespace App\Domain\Services\Applications;
 
 use App\Enums\Request\Application\Status as ApplicationStatus;
 use App\Enums\Request\Task\Status;
+use App\Enums\Workflows\Status as WorkflowsStatus;
 use App\Models\Request\RequestApplication;
 use App\Models\Request\RequestFeatureTask;
 
@@ -12,23 +13,34 @@ class ApplicationService
     public function findOrFail($id)
     {
         return RequestApplication::query()
-            ->with(['request' => function ($query) {
-                $query->select(['id', 'code', 'application_id'])
-                    ->with(['developers' => function ($query) {
-                        $query->with(['developer' => function ($query) {
-                            $query->select('nik', 'nama_karyawan')
-                                ->with('identity:nik,avatar');
-                        }]);
-                    }]);
-            }, 'features' => function ($query) {
-                $query->withCount(['tasks as total_open' => function ($query) {
-                    $query->where('status', Status::NOTTING);
-                }, 'tasks as total_progress' => function ($query) {
-                    $query->where('status', Status::IN_PROGRESS);
-                }, 'tasks as total_done' => function ($query) {
-                    $query->where('status', Status::DONE);
-                }]);
-            }])
+            ->with([
+                'request' => function ($query) {
+                    $query->select(['id', 'code', 'application_id'])
+                        ->with([
+                            'developers' => function ($query) {
+                                $query->with([
+                                    'developer' => function ($query) {
+                                        $query->select('nik', 'nama_karyawan')
+                                            ->with('identity:nik,avatar');
+                                    }
+                                ]);
+                            }
+                        ]);
+                },
+                'features' => function ($query) {
+                    $query->withCount([
+                        'tasks as total_open' => function ($query) {
+                            $query->where('status', Status::NOTTING);
+                        },
+                        'tasks as total_progress' => function ($query) {
+                            $query->where('status', Status::IN_PROGRESS);
+                        },
+                        'tasks as total_done' => function ($query) {
+                            $query->where('status', Status::DONE);
+                        }
+                    ]);
+                }
+            ])
             ->findOrFail($id);
     }
 
@@ -77,7 +89,9 @@ class ApplicationService
 
     public function getAll()
     {
-        return RequestApplication::query()->get();
+        return RequestApplication::query()->whereHas('request', function ($query) {
+            $query->where('status', WorkflowsStatus::CLOSE);
+        })->get();
     }
 
     public function updateCurrentOverdue()

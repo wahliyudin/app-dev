@@ -56,7 +56,8 @@
                                         alt="" />
                                 </div>
                                 <div class="fs-5 fw-bold mb-2">
-                                    {{ $attachment->display_name }}
+                                    <a target="_blank" href="{{ asset($attachment->path) }}"
+                                        class="text-hover-primary">{{ $attachment->display_name }}</a>
                                 </div>
                             </div>
                             <div class="fs-7 fw-semibold text-gray-400">

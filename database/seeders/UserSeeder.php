@@ -17,11 +17,11 @@ class UserSeeder extends Seeder
     {
         $permissions = Permission::query()->get()->pluck('id')->toArray();
         User::query()->updateOrCreate([
-            'nik' => 12345678,
+            'nik' => 11220827,
         ], [
-            'nik' => 12345678,
-            'name' => 'Administrator',
-            'email' => 'administrator@tbu.co.id',
+            'nik' => 11220827,
+            'name' => 'SITI YULIATI',
+            'email' => 'siti.yuliati@tbu.co.id',
             'password' => Hash::make(1234567890)
         ])->syncPermissions($permissions);
     }
